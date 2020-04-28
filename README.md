@@ -1,2 +1,2 @@
-# truex-html5-reference-app
-Test web app demonstrating the true[X] integration with stitched-in Choice Card flow
+# truex-ctv-web-reference-app
+A demonstration of the true[X] integration for CTV web apps.
