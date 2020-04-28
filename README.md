@@ -14,3 +14,7 @@ This `vmap` ad playlist is marshaled through to the `PlaybackPage.js` component 
 Note that due to common platform limitations (e.g. PS4 allows only one playing video at a time), we have to stop the main video while the true[X] ad experience is being shown, and resume it again once the ad has been completed. 
 
 The `onTruexEvent` method handles true[X] events and repositions the playhead depending on whether the viewer completed an ad or not (earning an ad pod skip in the former case). 
+
+# Build/Develop/Deploy
+
+TODO, refer to platform folders for device specific deployment
