@@ -73,12 +73,12 @@ import { DebugLog } from './support/debug-log';
         // Just push out the timer some more until things settle.
         if (resizeTimer) clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            scaleToAppSize();
+            scaleAppSize();
             renderCurrentPage();
         }, 100);
     }
 
-    function scaleToAppSize() {
+    function scaleAppSize() {
         // Ensure our app shows at a consistent size.
         const screenW = window.innerWidth;
         const screenH = window.innerHeight;
@@ -155,7 +155,7 @@ user agent: ${window.navigator.userAgent}`);
             return baseOnInputAction(action);
         };
 
-        scaleToAppSize();
+        scaleAppSize();
 
         // Handle resizes for when testing in chrome.
         window.addEventListener("resize", onAppResized);
