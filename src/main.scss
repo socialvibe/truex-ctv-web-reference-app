@@ -48,6 +48,11 @@ h1, h3 {
   padding: 0;
 }
 
+#home-page {
+  background-image: url("./assets/details_flow_bg.png");
+  background-size: cover;
+}
+
 .action-button {
   box-sizing: border-box;
   display: inline-block;
