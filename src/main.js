@@ -10,6 +10,7 @@ import { DebugLog } from './support/debug-log';
     const platform = focusManager.platform;
 
     let currentPage = 'home-page';
+    let lastPage;
 
     const debugLog = new DebugLog();
     debugLog.captureConsoleLog();
@@ -34,10 +35,9 @@ import { DebugLog } from './support/debug-log';
     }
 
     function showPage(pageId) {
-        const page = document.querySelector(pageId);
+        lastPage = currentPage;
         currentPage = pageId;
         renderCurrentPage();
-        return page;
     }
 
     function renderCurrentPage() {
@@ -45,25 +45,20 @@ import { DebugLog } from './support/debug-log';
 
         const pageSelector = '#' + currentPage;
 
+        const focusables = [];
+
         if (currentPage == "home-page") {
-            focusManager.setContentFocusables([
-                new Focusable('#play-content-button', () => showPage('playback-page'), null, focusManager)
-            ]);
+            focusables.push(new Focusable('#play-content-button', () => showPage('playback-page'), null, focusManager));
 
         } else if (currentPage == "playback-page") {
             renderPlaybackPage();
 
         } else if (currentPage == "debug-log") {
             debugLog.show();
-            focusManager.setContentFocusables([
-                new Focusable(pageSelector, null, debugLog.onInputAction, focusManager)
-            ]);
-
-        } else {
-            // If the keyword isn't listed in the above - render the error page.
-            enableStyle('#error', 'visible', true);
+            focusables.push(new Focusable(pageSelector, null, debugLog.onInputAction, focusManager));
         }
 
+        focusManager.setContentFocusables(focusables);
         enableStyle(pageSelector, 'visible', true);
     }
 
@@ -125,10 +120,20 @@ import { DebugLog } from './support/debug-log';
         if (!isForThisApp) return; // let the back action proceed, most likely from ad overlay processing.
 
         pushBackActionBlock(); // ensure the next back action is blocked.
+
+        returnToParentPage();
     }
 
     function pushBackActionBlock() {
         history.pushState({app: config.name}, null, null);
+    }
+
+    function returnToParentPage() {
+        let returnToPage = 'home-page';
+        if (currentPage == 'debug-log') {
+            returnToPage = lastPage;
+        }
+        showPage(returnToPage);
     }
 
     function initializeApplication() {
@@ -148,7 +153,7 @@ user agent: ${window.navigator.userAgent}`);
             }
 
             if (action == inputActions.back) {
-                showPage('home-page');
+                returnToParentPage();
                 return true; // handled
             }
 
