@@ -53,6 +53,16 @@ h1, h3 {
   background-size: cover;
 }
 
+.background-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1080px;
+  background: linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
+  background: -webkit-linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
+}
+
 .action-button {
   box-sizing: border-box;
   display: inline-block;
