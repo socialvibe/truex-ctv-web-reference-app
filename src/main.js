@@ -74,25 +74,41 @@ import { DebugLog } from './support/debug-log';
     }
 
     function scaleAppSize() {
-        // Ensure our app shows at a consistent size.
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
+        // Ensure our app uses a consistent 1920x1080 design size that fits within the actual screen size.
         const designW = 1920;
         const designH = 1080;
-        const scaleFactor = Math.min(screenW / designW);
-        const scaleTransform = `scale(${scaleFactor})`;
-        const scaleOrigin = "0px 0px";
 
-        const body = document.body;
-        body.style.transformOrigin = scaleOrigin;
-        body.style.webkitTransformOrigin = scaleOrigin;
-        body.style.transform = scaleTransform;
-        body.style.webkitTransform = scaleTransform;
+        var screenW = Math.max(document.documentElement.clientWidth, window.innerWidth);
+        var screenH = Math.max(document.documentElement.clientHeight, window.innerHeight);
 
-        // Now put the app size in design coordinates, ensuring that the height still fills the
-        // actual screen.
-        body.style.width = "" + designW + "px";
-        body.style.height = "" + (screenH / scaleFactor) + "px";
+        var widthScaleFactor = screenW / designW;
+        var heightScaleFactor = screenH / designH;
+        var scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
+        var scaledH = designH * scaleFactor;
+        var scaledW = designW * scaleFactor;
+
+        // Center in the actual screen.
+        var top = Math.max(screenH - scaledH, 0) / 2;
+        var left = Math.max(screenW - scaledW, 0) / 2;
+
+        function px(value) { return '' + value + 'px' }
+
+        const appContent = document.querySelector('.app-content');
+
+        appContent.style.position = 'absolute';
+        appContent.style.width = px(designW);
+        appContent.style.height = px(designH);
+        appContent.style.top = px(top);
+        appContent.style.left = px(left);
+
+        var transform = 'scale(' + scaleFactor + ')';
+        var origin = '0% 0% 0';
+
+        appContent.style.transform = transform;
+        appContent.style.transformOrigin = origin;
+
+        appContent.style.webkitTransform = transform;
+        appContent.style.webkitTransformOrigin = origin;
 
         console.log(`screen size: ${screenW} ${screenH} scale: ${scaleFactor}`)
     }
