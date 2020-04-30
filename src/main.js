@@ -144,17 +144,15 @@ user agent: ${window.navigator.userAgent}`);
                 // Show debug log with either "4" on the remote, or clicking the left stick on the game controller.
                 // Or the menu key, e.g. for FireTV
                 showPage('debug-log');
-                return true;
+                return true; // handled
             }
 
             if (action == inputActions.back) {
                 showPage('home-page');
-                return true;
+                return true; // handled
             }
 
-            baseOnInputAction(action);
-
-            return false; // not handled
+            return baseOnInputAction(action);
         };
 
         scaleToAppSize();
@@ -170,7 +168,7 @@ user agent: ${window.navigator.userAgent}`);
         pushBackActionBlock();
         window.addEventListener("popstate", onBackAction);
 
-        renderCurrentPage();
+        showPage('home-page');
     }
 
     initializeApplication();
