@@ -18,3 +18,7 @@ The `onTruexEvent` method handles true[X] events and repositions the playhead de
 # Build/Develop/Deploy
 
 TODO, refer to platform folders for device specific deployment
+
+# Usage
+
+* Select "4", Menu, or click Left Stick on remote or controller to show the in app console/debug log. Back action dismisses it again.

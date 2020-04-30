@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font: normal 20px Arial, Helvetica, sans-serif;
+  background-color: black;
+}
+
+h1, h3 {
+  font: normal 32px 'Open Sans', Arial, Helvetica, sans-serif;
+}
+
+// Intended to be at design size of 1920x1080, scaled to fit to the window, centered.
+.app-content {
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.page {
+  display: none;
+
+  &.visible {
+    display: block;
+  }
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.action-button {
+  box-sizing: border-box;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s;
+
+  text-align: left;
+  font: normal 12px sans-serif;
+
+  background-color: white;
+  border: 1px solid #dbe3e7;
+  border-radius: 3px;
+  box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.08);
+
+  margin: 0 12px 14px 0;
+  padding: 25px;
+
+  font-size: 22px;
+
+  .label {
+    font-weight: bold;
+    text-overflow: ellipsis;
+    margin: 0;
+    text-decoration: none;
+    color: #2B2E31;
+  }
+
+  .focused-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: 0.4s;
+  }
+
+  &.hasFocus .focused-background {
+    opacity: 1;
+  }
+}
+
+@import './support/debug-log';
