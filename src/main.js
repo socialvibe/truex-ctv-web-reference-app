@@ -15,6 +15,9 @@ import { DebugLog } from './support/debug-log';
     const debugLog = new DebugLog();
     debugLog.captureConsoleLog();
 
+    const videoStreams = require('./data/video-streams.json');
+    let currentVideo = videoStreams[0];
+
     function removeAllChildrenFrom(parent) {
         if (parent) {
             const childNodes = parent.children;
@@ -32,6 +35,8 @@ import { DebugLog } from './support/debug-log';
 
         // Ensure debug log is empty
         debugLog.hide();
+
+        focusManager.setContentFocusables([]);
     }
 
     function showPage(pageId) {
@@ -45,20 +50,17 @@ import { DebugLog } from './support/debug-log';
 
         const pageSelector = '#' + currentPage;
 
-        const focusables = [];
-
         if (currentPage == "home-page") {
-            focusables.push(new Focusable('#play-content-button', () => showPage('playback-page'), null, focusManager));
+            renderHomePage();
 
         } else if (currentPage == "playback-page") {
             renderPlaybackPage();
 
         } else if (currentPage == "debug-log") {
             debugLog.show();
-            focusables.push(new Focusable(pageSelector, null, debugLog.onInputAction, focusManager));
+            setFocus(pageSelector, null, debugLog.onInputAction);
         }
 
-        focusManager.setContentFocusables(focusables);
         enableStyle(pageSelector, 'visible', true);
     }
 
@@ -123,8 +125,28 @@ import { DebugLog } from './support/debug-log';
         }
     }
 
+    function renderHomePage() {
+        const homePage = document.querySelector('#home-page');
+
+        const titleDiv = homePage.querySelector('.title');
+        titleDiv.innerText = currentVideo.title;
+
+        const descriptionDiv = homePage.querySelector('.description');
+        descriptionDiv.innerText = currentVideo.description;
+
+        setFocus('.play-content-button', () => showPage('playback-page'));
+    }
+
     function renderPlaybackPage() {
 
+    }
+
+    function newFocusable(elementRef, selectAction, inputAction) {
+        return new Focusable(elementRef, selectAction, inputAction, focusManager);
+    }
+
+    function setFocus(elementRef, selectAction, inputAction) {
+        focusManager.setContentFocusables([newFocusable(elementRef, selectAction, inputAction)]);
     }
 
     function onBackAction(event) {

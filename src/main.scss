@@ -66,10 +66,10 @@ h1, h3 {
     font-weight: bold;
   }
 
-  .mission {
+  .description {
     font-size: 30px;
     line-height: 1.8em;
-    width: 50em;
+    width: 55em;
     margin-top: 10px;
   }
 
@@ -80,6 +80,12 @@ h1, h3 {
     background-image: url("./assets/play-content-button.png");
     background-size: cover;
     background-color: transparent;
+  }
+}
+
+.tray {
+  .selected-tile {
+
   }
 }
 

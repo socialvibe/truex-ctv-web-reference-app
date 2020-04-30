@@ -1,0 +1,27 @@
+[
+    {
+        "title" : "The true[X] Employee Experience",
+        "description" : "Our mission is to provide the best advertising experience for consumers, the best monetization for premium publishers, and the best return for brand advertisers. Learn about our team and employee experience.",
+        "cover" : "https://stash.truex.com/reference-apps/scratch/truex_cover_placeholder_spaceneedle.png",
+        "preview" : "https://media.truex.com/video_assets/2017-03-06/a9fbc895-6987-440e-b940-eeef8a714338_large.mp4",
+        "url" : "http://development.scratch.truex.com.s3.amazonaws.com/roku/simon/roku-reference-app-stream-med.mp4",
+        "vmap" : [
+            {
+                "breakId" : "preroll",
+                "timeOffset" : "00:00:00.000",
+                "cardDuration" : "15",
+                "videoAdDuration" : "92",
+                "vastUrl" : "pkg:/res/demo-ad-payload.json",
+                "placementHash" : "74fca63c733f098340b0a70489035d683024440d"
+            },
+            {
+                "breakId" : "midroll-1",
+                "timeOffset" : "00:09:52.000",
+                "cardDuration" : "15",
+                "videoAdDuration" : "92",
+                "vastUrl" : "pkg:/res/demo-ad-payload-2.json",
+                "placementHash" : "74fca63c733f098340b0a70489035d683024440d"
+            }
+        ]
+    }
+]
