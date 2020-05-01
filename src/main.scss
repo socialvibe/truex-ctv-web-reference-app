@@ -17,11 +17,16 @@ body {
   text-align: left;
   padding: 0;
   margin: 0;
+  height: 100%;
+  width: 100%;
 }
 
 h1, h3 {
   font-size: 32px;
 }
+
+$appW: 1920px;
+$appH: 1080px;
 
 // Intended to be at design size of 1920x1080, scaled to fit to the window, centered.
 .app-content {
@@ -130,6 +135,36 @@ h1, h3 {
     margin-left: 50px;
     width: 220px;
     height: 331px;
+  }
+}
+
+.spinner {
+  position: absolute;
+  display: none;
+
+  $spinnerW: 100px;
+  top: ($appH - $spinnerW) / 2;
+  left: ($appW - $spinnerW) / 2;
+  width: $spinnerW;
+  height: $spinnerW;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.show {
+    display: block;
+    animation: rotating 2s linear infinite;
+  }
+
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 

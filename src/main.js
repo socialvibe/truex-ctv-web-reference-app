@@ -1,9 +1,11 @@
-import config from './config';
-import { inputActions } from 'truex-shared/focus_manager/txm_input_actions';
-import { Focusable } from 'truex-shared/focus_manager/txm_focusable';
+import config              from './config';
+import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
+import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { DebugLog } from './support/debug-log';
+import { DebugLog }        from './support/debug-log';
+import { LoadingSpinner }      from "./components/LoadingSpinner";
+
 
 (function () {
     const focusManager = new TXMFocusManager();
@@ -14,6 +16,8 @@ import { DebugLog } from './support/debug-log';
 
     const debugLog = new DebugLog();
     debugLog.captureConsoleLog();
+
+    const spinner = new LoadingSpinner();
 
     const videoStreams = require('./data/video-streams.json');
     let currentVideo = videoStreams[0];
@@ -35,6 +39,9 @@ import { DebugLog } from './support/debug-log';
 
         // Ensure no videos are playing
         stopVideo();
+
+        // Ensure no outstanding loading spinner.
+        spinner.hide();
 
         // Ensure debug log is empty
         debugLog.hide();
@@ -62,6 +69,9 @@ import { DebugLog } from './support/debug-log';
         } else if (currentPage == "debug-log") {
             debugLog.show();
             setFocus(pageSelector, null, debugLog.onInputAction);
+
+        } else if (currentPage == "test-page") {
+            spinner.show();
         }
 
         enableStyle(pageSelector, 'visible', true);
@@ -83,18 +93,18 @@ import { DebugLog } from './support/debug-log';
         const designW = 1920;
         const designH = 1080;
 
-        var screenW = Math.max(document.documentElement.clientWidth, window.innerWidth);
-        var screenH = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        const screenW = window.innerWidth;
+        const screenH = window.innerHeight;
 
-        var widthScaleFactor = screenW / designW;
-        var heightScaleFactor = screenH / designH;
-        var scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
-        var scaledH = designH * scaleFactor;
-        var scaledW = designW * scaleFactor;
+        const widthScaleFactor = screenW / designW;
+        const heightScaleFactor = screenH / designH;
+        const scaleFactor = Math.min(widthScaleFactor, heightScaleFactor);
+        const scaledH = designH * scaleFactor;
+        const scaledW = designW * scaleFactor;
 
         // Center in the actual screen.
-        var top = Math.max(screenH - scaledH, 0) / 2;
-        var left = Math.max(screenW - scaledW, 0) / 2;
+        const top = Math.max(screenH - scaledH, 0) / 2;
+        const left = Math.max(screenW - scaledW, 0) / 2;
 
         function px(value) { return '' + value + 'px' }
 
@@ -106,8 +116,8 @@ import { DebugLog } from './support/debug-log';
         appContent.style.top = px(top);
         appContent.style.left = px(left);
 
-        var transform = 'scale(' + scaleFactor + ')';
-        var origin = '0% 0% 0';
+        const transform = 'scale(' + scaleFactor + ')';
+        const origin = '0% 0% 0';
 
         appContent.style.transform = transform;
         appContent.style.transformOrigin = origin;
@@ -221,7 +231,9 @@ user agent: ${window.navigator.userAgent}`);
             return baseOnInputAction(action);
         };
 
+
         scaleAppSize();
+        renderCurrentPage();
 
         // Handle resizes for when testing in chrome.
         window.addEventListener("resize", onAppResized);
@@ -233,8 +245,6 @@ user agent: ${window.navigator.userAgent}`);
         // see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
         pushBackActionBlock();
         window.addEventListener("popstate", onBackAction);
-
-        showPage('home-page');
     }
 
     initializeApplication();

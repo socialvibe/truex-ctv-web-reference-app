@@ -24,10 +24,6 @@ module.exports = function(env) {
         },
         module: {
             rules: [
-                // {
-                //     test: /\.s?css$/,
-                //     use: ['style-loader', 'css-loader']
-                // },
                 {
                     test: /\.scss$/,
                     use: ['style-loader', 'css-loader', 'sass-loader']
@@ -43,9 +39,14 @@ module.exports = function(env) {
                     },],
                 },
                 {
-                    test: /\.(jpe?g|gif|png|svg)/,
+                    test: /\.(jpeg|.jpg|gif|png)$/i,
                     exclude: /node_modules/,
                     use: 'file-loader',
+                },
+                {
+                    test: /\.svg$/i,
+                    exclude: /node_modules/,
+                    use: 'svg-inline-loader',
                 },
                 {
                     test: /\.js$/,
