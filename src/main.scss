@@ -52,6 +52,19 @@ h1, h3 {
   padding: 0;
 }
 
+.truex-vision-logo {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  $logoImageW: 566px;
+  $logoImageH: 121px;
+  $logoW: 300px;
+  width: $logoW;
+  height: ($logoW * $logoImageH) / $logoImageW;
+  background-image: url("./assets/true-vision-logo.png");
+  background-size: cover;
+}
+
 #home-page {
   background-image: url("assets/home-page-background.png");
   background-size: cover;
@@ -120,17 +133,14 @@ h1, h3 {
   }
 }
 
-.truex-vision-logo {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  $logoImageW: 566px;
-  $logoImageH: 121px;
-  $logoW: 300px;
-  width: $logoW;
-  height: ($logoW * $logoImageH) / $logoImageW;
-  background-image: url("./assets/true-vision-logo.png");
-  background-size: cover;
+#playback-page {
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 @import './support/debug-log';

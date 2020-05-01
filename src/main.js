@@ -33,6 +33,9 @@ import { DebugLog } from './support/debug-log';
             page.classList.remove('visible');
         });
 
+        // Ensure no videos are playing
+        stopVideo();
+
         // Ensure debug log is empty
         debugLog.hide();
 
@@ -142,7 +145,23 @@ import { DebugLog } from './support/debug-log';
     }
 
     function renderPlaybackPage() {
+        stopVideo();
 
+        const playbackPage = document.querySelector('#playback-page');
+        const video = document.createElement('video');
+        video.setAttribute('preload', 'metadata');
+        video.src = currentVideo.url;
+        playbackPage.appendChild(video);
+        video.play();
+    }
+
+    function stopVideo() {
+        // For portable reliability across Smart TVs and game consoles, we stop videos
+        // by completely destroying and recreating them.
+        document.querySelectorAll('.app-content .page video').forEach(video => {
+            video.pause();
+            video.parentNode.removeChild(video);
+        });
     }
 
     function newFocusable(elementRef, selectAction, inputAction) {
