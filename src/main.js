@@ -243,7 +243,8 @@ user agent: ${window.navigator.userAgent}`);
         // We need to field the back action popstate change on FireTV, as we cannot reliably
         // consume back action key events.
         // see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
-        pushBackActionBlock();
+        pushBackActionBlock(); // push a back action block
+        pushBackActionBlock(); // push a 2nd that can be consumed, to land on the previous
         window.addEventListener("popstate", onBackAction);
     }
 
