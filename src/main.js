@@ -155,13 +155,8 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
     }
 
     function renderPlaybackPage() {
-        stopVideo();
-
-        const playbackPage = document.querySelector('#playback-page');
-        const video = document.createElement('video');
-        video.setAttribute('preload', 'metadata');
+        const video = document.querySelector('#playback-page video');
         video.src = currentVideo.url;
-        playbackPage.appendChild(video);
         video.play();
     }
 
@@ -170,7 +165,6 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         // by completely destroying and recreating them.
         document.querySelectorAll('.app-content .page video').forEach(video => {
             video.pause();
-            video.parentNode.removeChild(video);
         });
     }
 
