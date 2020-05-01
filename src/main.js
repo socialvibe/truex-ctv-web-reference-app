@@ -34,7 +34,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
     function hidePage() {
         // Hide whatever page is currently shown.
         document.querySelectorAll('.app-content .page').forEach(page => {
-            page.classList.remove('visible');
+            page.classList.remove('show');
         });
 
         // Ensure no videos are playing
@@ -74,7 +74,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
             spinner.show();
         }
 
-        enableStyle(pageSelector, 'visible', true);
+        enableStyle(pageSelector, 'show', true);
     }
 
     let resizeTimer;
