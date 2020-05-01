@@ -31,6 +31,7 @@ h1, h3 {
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .page {
@@ -57,7 +58,7 @@ h1, h3 {
 
   .content-area {
     position: absolute;
-    top: 186px;
+    top: 146px;
     left: 160px;
   }
 
@@ -84,8 +85,28 @@ h1, h3 {
 }
 
 .tray {
-  .selected-tile {
+  $trayH: 526px;
 
+  margin-top: 60px;
+  width: 1920px;
+  height: $trayH;
+
+  .tile, .selected-tile {
+    display: inline-block;
+    background-color: #6B6B6BFF;
+    vertical-align: top;
+  }
+
+  .selected-tile {
+    width: 375px;
+    height: $trayH;
+    margin-right: 60px;
+  }
+
+  .tile {
+    margin-left: 50px;
+    width: 220px;
+    height: 331px;
   }
 }
 

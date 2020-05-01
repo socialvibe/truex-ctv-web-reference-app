@@ -134,6 +134,10 @@ import { DebugLog } from './support/debug-log';
         const descriptionDiv = homePage.querySelector('.description');
         descriptionDiv.innerText = currentVideo.description;
 
+        const tray = homePage.querySelector('.tray');
+        const selectedTile = tray.querySelector('.selected-tile');
+        selectedTile.src = currentVideo.cover;
+
         setFocus('.play-content-button', () => showPage('playback-page'));
     }
 
