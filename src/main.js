@@ -214,24 +214,23 @@ host: ${window.location.href}
 platform: ${platform.name} model: ${platform.model} version: ${platform.version}
 user agent: ${window.navigator.userAgent}`);
 
-        const baseOnInputAction = focusManager.onInputAction;
+            const baseOnInputAction = focusManager.onInputAction;
 
-        focusManager.onInputAction = (action) => {
-            if (action == inputActions.num4 || action == inputActions.leftStick || action == inputActions.menu) {
-                // Show debug log with either "4" on the remote, or clicking the left stick on the game controller.
-                // Or the menu key, e.g. for FireTV
-                showPage('debug-log');
-                return true; // handled
-            }
+            focusManager.onInputAction = (action) => {
+                if (action == inputActions.num4 || action == inputActions.leftStick || action == inputActions.menu) {
+                    // Show debug log with either "4" on the remote, or clicking the left stick on the game controller.
+                    // Or the menu key, e.g. for FireTV
+                    showPage('debug-log');
+                    return true; // handled
+                }
 
-            if (action == inputActions.back) {
-                returnToParentPage();
-                return true; // handled
-            }
+                if (action == inputActions.back) {
+                    returnToParentPage();
+                    return true; // handled
+                }
 
-            return baseOnInputAction(action);
-        };
-
+                return baseOnInputAction(action);
+            };
 
             scaleAppSize();
             renderCurrentPage();
@@ -239,7 +238,7 @@ user agent: ${window.navigator.userAgent}`);
             // Handle resizes for when testing in chrome.
             window.addEventListener("resize", onAppResized);
 
-        window.addEventListener("keydown", focusManager.onKeyDown);
+            window.addEventListener("keydown", focusManager.onKeyDown);
 
             // We need to field the back action popstate change on FireTV, as we cannot reliably
             // consume back action key events.

@@ -12,7 +12,7 @@ export class LoadingSpinner {
     }
 
     hide() {
-        this._spinnerDiv.classList.add('hide');
+        this._spinnerDiv.classList.remove('show');
     }
 
 }
