@@ -53,8 +53,18 @@ h1, h3 {
 }
 
 #home-page {
-  background-image: url("./assets/details_flow_bg.png");
+  background-image: url("assets/home-page-background.png");
   background-size: cover;
+
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
+    background: -webkit-linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
+  }
 
   .content-area {
     position: absolute;
@@ -88,7 +98,7 @@ h1, h3 {
   $trayH: 526px;
 
   margin-top: 60px;
-  width: 1920px;
+  width: 3000px;
   height: $trayH;
 
   .tile, .selected-tile {
@@ -121,60 +131,6 @@ h1, h3 {
   height: ($logoW * $logoImageH) / $logoImageW;
   background-image: url("./assets/true-vision-logo.png");
   background-size: cover;
-}
-
-.background-overlay {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1080px;
-  background: linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
-  background: -webkit-linear-gradient(bottom, rgba(50, 50, 50, 1), rgba(0, 0, 0, 0));
-}
-
-.action-button {
-  box-sizing: border-box;
-  display: inline-block;
-  cursor: pointer;
-  position: relative;
-  transition: 0.2s;
-
-  text-align: left;
-  font: normal 12px sans-serif;
-
-  background-color: white;
-  border: 1px solid #dbe3e7;
-  border-radius: 3px;
-  box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.08);
-
-  margin: 0 12px 14px 0;
-  padding: 25px;
-
-  font-size: 22px;
-
-  .label {
-    font-weight: bold;
-    text-overflow: ellipsis;
-    margin: 0;
-    text-decoration: none;
-    color: #2B2E31;
-  }
-
-  .focused-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transition: 0.4s;
-  }
-
-  &.hasFocus .focused-background {
-    opacity: 1;
-  }
 }
 
 @import './support/debug-log';
