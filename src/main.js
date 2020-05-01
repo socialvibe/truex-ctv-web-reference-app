@@ -1,9 +1,9 @@
-import config              from './config';
+import config from './config';
 import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { DebugLog }        from './support/debug-log';
+import { DebugLog } from './support/debug-log';
 import { LoadingSpinner }      from "./components/LoadingSpinner";
 
 
@@ -208,7 +208,8 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
     }
 
     function initializeApplication() {
-        console.log(`running ${config.name} ${config.version} ${config.buildDate}
+        try {
+            console.log(`running ${config.name} ${config.version} ${config.buildDate}
 host: ${window.location.href}
 platform: ${platform.name} model: ${platform.model} version: ${platform.version}
 user agent: ${window.navigator.userAgent}`);
@@ -232,20 +233,26 @@ user agent: ${window.navigator.userAgent}`);
         };
 
 
-        scaleAppSize();
-        renderCurrentPage();
+            scaleAppSize();
+            renderCurrentPage();
 
-        // Handle resizes for when testing in chrome.
-        window.addEventListener("resize", onAppResized);
+            // Handle resizes for when testing in chrome.
+            window.addEventListener("resize", onAppResized);
 
         window.addEventListener("keydown", focusManager.onKeyDown);
 
-        // We need to field the back action popstate change on FireTV, as we cannot reliably
-        // consume back action key events.
-        // see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
-        pushBackActionBlock(); // push a back action block
-        pushBackActionBlock(); // push a 2nd that can be consumed, to land on the previous
-        window.addEventListener("popstate", onBackAction);
+            // We need to field the back action popstate change on FireTV, as we cannot reliably
+            // consume back action key events.
+            // see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
+            pushBackActionBlock(); // push a back action block
+            pushBackActionBlock(); // push a 2nd that can be consumed, to land on the previous
+            window.addEventListener("popstate", onBackAction);
+
+            console.log('did initialization');
+        } catch (err) {
+            console.error('initialization error: ' + err);
+            setTimeout(() => debugLog.show(), 0);
+        }
     }
 
     initializeApplication();

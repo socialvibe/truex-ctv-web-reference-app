@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 const path = require('path');
 
 const generateAppConfig = require('./generate-config');
@@ -9,7 +8,6 @@ module.exports = function(env) {
     // Generate the config module that exposes the build configuration to the runtime code base.
     generateAppConfig(env);
 
-    const outputPath = path.join(process.cwd(), '/dist');
     return {
         mode: 'development',
         entry: {
@@ -20,7 +18,7 @@ module.exports = function(env) {
         },
         output: {
             filename: '[name].[hash].js',
-            path: outputPath,
+            path: path.resolve(__dirname, 'dist'),
         },
         module: {
             rules: [
@@ -68,11 +66,6 @@ module.exports = function(env) {
                 filename: 'index.html',
                 template: './src/index.html',
                 chunks: ['main'],
-            }),
-            new Serve({
-                host: '0.0.0.0',
-                port: 8080,
-                static: outputPath
             })
         ],
         devtool: 'cheap-module-source-map'
