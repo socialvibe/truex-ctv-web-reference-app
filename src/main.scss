@@ -27,6 +27,7 @@ h1, h3 {
 
 $appW: 1920px;
 $appH: 1080px;
+$contentM: 160px;
 
 // Intended to be at design size of 1920x1080, scaled to fit to the window, centered.
 .app-content {
@@ -87,7 +88,7 @@ $appH: 1080px;
   .content-area {
     position: absolute;
     top: 146px;
-    left: 160px;
+    left: $contentM;
   }
 
   .title {
@@ -116,8 +117,10 @@ $appH: 1080px;
   $trayH: 526px;
 
   margin-top: 60px;
-  width: 3000px;
+  width: $appW - $contentM;
   height: $trayH;
+  overflow: hidden;
+  white-space: nowrap;
 
   .tile, .selected-tile {
     display: inline-block;
