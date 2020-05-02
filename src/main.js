@@ -59,6 +59,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         hidePage();
 
         const pageSelector = '#' + currentPage;
+        enableStyle(pageSelector, 'show', true);
 
         if (currentPage == "home-page") {
             renderHomePage();
@@ -73,8 +74,6 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         } else if (currentPage == "test-page") {
             spinner.show();
         }
-
-        enableStyle(pageSelector, 'show', true);
     }
 
     let resizeTimer;
@@ -160,10 +159,9 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
             if (video.src != currentVideo.url) {
                 video.src = currentVideo.url;
             }
-            setTimeout(() => {
-                video.currentTime = 0; // TODO: use lastVideoTime
-                video.play();
-            }, 0);
+
+            video.currentTime = 0; // TODO: use lastVideoTime
+            video.play();
 
             setFocus(video, null, action => {
                 if (action == inputActions.select || action == inputActions.playPause) {
