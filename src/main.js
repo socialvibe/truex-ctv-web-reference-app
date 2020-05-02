@@ -155,9 +155,38 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
     }
 
     function renderPlaybackPage() {
-        const video = document.querySelector('#playback-page video');
-        video.src = currentVideo.url;
-        video.play();
+        try {
+            const video = document.querySelector('#playback-page video');
+            if (video.src != currentVideo.url) {
+                video.src = currentVideo.url;
+            }
+            setTimeout(() => {
+                video.currentTime = 0; // TODO: use lastVideoTime
+                video.play();
+            }, 0);
+
+            setFocus(video, null, action => {
+                if (action == inputActions.select || action == inputActions.playPause) {
+                    if (video.paused) video.play();
+                    else video.pause();
+                    return true;
+                }
+
+                if (action == inputActions.fastForward || action == inputActions.moveRight
+                    || action == inputActions.rightShoulder1) {
+                    video.currentTime += 10;
+                    return true;
+                }
+
+                if (action == inputActions.rewind || action == inputActions.moveLeft
+                    || action == inputActions.leftShoulder1) {
+                    video.currentTime -= 10;
+                    return true;
+                }
+            });
+        } catch (err) {
+            console.error('renderPlaybackPage: ' + err);
+        }
     }
 
     function stopVideo() {
@@ -165,6 +194,14 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         // by completely destroying and recreating them.
         document.querySelectorAll('.app-content .page video').forEach(video => {
             video.pause();
+
+            // Note: We need to actually clear the video source to allow video reuse on the PS4.
+            // Otherwise the video hangs when it is shown again.
+            try {
+                video.src = "";
+            } catch (err) {
+                console.warn('could not clear video src');
+            }
         });
     }
 
