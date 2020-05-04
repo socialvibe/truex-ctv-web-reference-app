@@ -180,12 +180,9 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
                 }
             }
 
-            setTimeout(() => {
-                // if (currentVideoTime > 0) video.currentTime = currentVideoTime;
-                console.log('starting playback at ' + initialVideoTime);
-                video.currentTime = initialVideoTime;
-                video.play();
-            }, 0);
+            console.log('starting playback at ' + initialVideoTime);
+            video.currentTime = initialVideoTime;
+            video.play();
 
             setFocus(video, null, action => {
                 if (action == inputActions.select || action == inputActions.playPause) {
