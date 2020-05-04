@@ -24,6 +24,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
     let currentVideoTime = 0;
     let videoEventsInitialized = false;
     let isPlayingVideo = false;
+    let videoTimeupdateInterval;
 
     function removeAllChildrenFrom(parent) {
         if (parent) {
@@ -174,7 +175,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
                 videoEventsInitialized = true;
                 if (platform.isPS4) {
                     // Using a timeupdate listener seems to hang playback on the PS4.
-                    setInterval(onVideoTimeUpdate, 1000);
+                    videoTimeupdateInterval = setInterval(onVideoTimeUpdate, 1000);
                 } else {
                     video.addEventListener("timeupdate", onVideoTimeUpdate);
                 }
@@ -192,13 +193,13 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
                 }
 
                 if (action == inputActions.fastForward || action == inputActions.moveRight
-                    || action == inputActions.rightShoulder1) {
+                    || action == inputActions.rightShoulder1 || action == inputActions.rightShoulder2) {
                     video.currentTime += 10;
                     return true;
                 }
 
                 if (action == inputActions.rewind || action == inputActions.moveLeft
-                    || action == inputActions.leftShoulder1) {
+                    || action == inputActions.leftShoulder1 || action == inputActions.leftShoulder2) {
                     video.currentTime -= 10;
                     return true;
                 }
@@ -228,6 +229,15 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         currentVideoTime = video.currentTime;
 
         video.pause();
+
+        if (platform.isPS4) {
+            if (videoTimeupdateInterval) {
+                clearInterval(videoTimeupdateInterval);
+                videoTimeupdateInterval = null;
+            }
+        } else {
+            video.removeEventListener('timeupdate', onVideoTimeUpdate);
+        }
 
         // Note: We need to actually clear the video source to allow video reuse on the PS4.
         // Otherwise the video hangs when it is shown again.
