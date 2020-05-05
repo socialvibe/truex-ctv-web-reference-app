@@ -8,6 +8,7 @@ export class VideoController {
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isVisible = false;
+        this.videoStarted = false;
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -21,7 +22,8 @@ export class VideoController {
         this.timeLabel = this.controlBarDiv.querySelector('.current-time');
         this.durationLabel = this.controlBarDiv.querySelector('.duration');
 
-        this.lastVideoTime = 0;
+        this.currVideoTime = 0;
+        this.videoDuration = 0;
         this.seekTarget = undefined;
 
         this.platform = platform || new TXMPlatform();
@@ -29,7 +31,7 @@ export class VideoController {
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
     }
 
-    show() {
+    show(forVideoTime) {
         this.controlBarDiv.classList.add('show');
         this.isVisible = true;
         this.refresh();
@@ -53,8 +55,11 @@ export class VideoController {
             video.src = src;
         }
 
-        const initialVideoTime = this.lastVideoTime || 0;
+        const initialVideoTime = this.currVideoTime || 0;
         console.log('starting playback at ' + initialVideoTime);
+
+        this.videoStarted = true;
+        this.show();
 
         video.currentTime = initialVideoTime;
         video.play();
@@ -65,8 +70,6 @@ export class VideoController {
         } else {
             video.addEventListener("timeupdate", this.onVideoTimeUpdate);
         }
-
-        this.show();
     }
 
     stopControlBarTimer() {
@@ -81,7 +84,9 @@ export class VideoController {
 
         const video = this.video;
 
-        this.lastVideoTime = video.currentTime;
+        if (this.videoStarted) {
+            this.currVideoTime = video.currentTime;
+        }
 
         video.pause();
 
@@ -101,6 +106,8 @@ export class VideoController {
         } catch (err) {
             console.warn('could not clear video src');
         }
+
+        this.videoStarted = false;
     }
 
     togglePlayPause() {
@@ -123,16 +130,16 @@ export class VideoController {
 
     stepVideoBy(seconds) {
         const video = this.video;
-        this.seekTarget = video.currentTime + seconds;
+        this.seekTarget = this.currVideoTime + seconds;
         video.currentTime = this.seekTarget;
         this.show();
     }
 
     onVideoTimeUpdate() {
         this.seekTarget = undefined;
-        const currTime = Math.floor(this.video.currentTime);
-        if (currTime == this.lastVideoTime) return;
-        this.lastVideoTime = currTime;
+        const newTime = Math.floor(this.video.currentTime);
+        if (newTime == this.currVideoTime) return;
+        this.currVideoTime = newTime;
         if (this.isVisible) {
             this.refresh();
         }
@@ -151,14 +158,13 @@ export class VideoController {
             this.pauseButton.classList.add('show');
         }
 
-        const duration = video.duration > 0 ? video.duration : 0;
-        const currTime = video.currentTime > 0 ? video.currentTime : 0;
-
-        function percentage(time) {
-            const result = duration ? (time / duration) * 100 : 0;
-            return `${result}%`;
+        const duration = this.videoDuration || video.duration || 0;
+        if (this.videoDuration <= 0) {
+            this.videoDuration = duration;
+            this.durationLabel.innerText = timeLabel(this.videoDuration);
         }
 
+        const currTime = this.currVideoTime;
         this.progressBar.style.width = percentage(currTime);
 
         const seekTarget = this.seekTarget;
@@ -177,6 +183,14 @@ export class VideoController {
             this.seekBar.classList.remove('show');
         }
 
+        this.timeLabel.innerText = timeLabel(currTime);
+        this.timeLabel.style.left = percentage(currTime);
+
+        function percentage(time) {
+            const result = duration ? (time / duration) * 100 : 0;
+            return `${result}%`;
+        }
+
         function pad(value) {
             value = Math.floor(value || 0);
             return (value < 10) ? '0' + value : value.toString();
@@ -193,10 +207,5 @@ export class VideoController {
             if (hours >= 1) return pad(hours) + ':' + result;
             return result;
         }
-
-        this.timeLabel.innerText = timeLabel(currTime);
-        this.timeLabel.style.left = percentage(currTime);
-
-        this.durationLabel.innerText = timeLabel(video.duration);
     }
 }
