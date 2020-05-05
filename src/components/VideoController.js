@@ -89,8 +89,12 @@ export class VideoController {
 
     togglePlayPause() {
         const video = this.video;
-        if (video.paused) video.play();
-        else video.pause();
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+        this.refresh();
     }
 
     stepForward() {
@@ -116,9 +120,15 @@ export class VideoController {
     refresh() {
         const video = this.video;
 
-        // Ensure we show what the next play input action will do
-        this.playButton.style.opacity = video.paused ? 1 : 0;
-        this.pauseButton.style.opacity = video.paused ? 0 : 1;
+        if (video.paused) {
+            // Next play input action will resume playback
+            this.playButton.classList.add('show');
+            this.pauseButton.classList.remove('show');
+        } else {
+            // Next play input action will pause playback
+            this.playButton.classList.remove('show');
+            this.pauseButton.classList.add('show');
+        }
 
         const duration = video.duration > 0 ? video.duration : 0;
         const currTime = video.currentTime > 0 ? video.currentTime : 0;

@@ -206,8 +206,12 @@ $contentM: 160px;
     }
 
     .play-button, .pause-button {
-      display: inline-block;
       vertical-align: middle;
+
+      display: none;
+      &.show {
+        display: inline-block;
+      }
     }
 
     .play-button {
@@ -217,16 +221,16 @@ $contentM: 160px;
     }
 
     .pause-button {
-      display: inline-block;
-
       $pauseW: 16px;
-      $pauseM: ($playW - $pauseW) / 2;
-      margin-left: $pauseM;
-      margin-right: $pauseM;
-
-      // maintain 16x26 aspect ratio
+      $pauseH: ($pauseW * $playH) / $playW; // maintain 16x26 aspect ratio
+      $pauseLeftM: ($playW - $pauseW) / 2;
+      $pauseTopM: ($playH - $pauseH) / 2;
       width: $pauseW;
-      height: ($pauseW * $playH) / $playW;
+      height: $pauseH;
+      margin-left: $pauseLeftM;
+      margin-right: $pauseLeftM;
+      margin-top: $pauseTopM;
+      margin-bottom: $pauseTopM;
     }
 
     .timeline {
