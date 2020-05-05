@@ -179,6 +179,114 @@ $contentM: 160px;
     width: 100%;
     height: 100%;
   }
+
+  .control-bar {
+    $playW: 20px;
+    $playH: 30px;
+    $timelineW: 1300px;
+    $timelineH: 20px;
+    $padding: 6px;
+    $gap: 10px;
+    $durationW: 120px;
+    $controlBarW: $playW + $gap + $timelineW + $gap + $durationW;
+    $controlBarH: $timelineH + 2*$padding;
+
+    position: absolute;
+    width: $controlBarW;
+    bottom: 200px;
+    left: ($appW - $controlBarW) / 2;
+
+    $contentBarBackground: rgba(0, 0, 0, 0.7);
+    background-color: $contentBarBackground;
+    padding: $padding;
+
+    display: none;
+    &.show {
+      display: block;
+    }
+
+    .play-button, .pause-button {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .play-button {
+      // maintain 20x30 aspect ratio
+      width: $playW;
+      height: $playH;
+    }
+
+    .pause-button {
+      display: inline-block;
+
+      $pauseW: 16px;
+      $pauseM: ($playW - $pauseW) / 2;
+      margin-left: $pauseM;
+      margin-right: $pauseM;
+
+      // maintain 16x26 aspect ratio
+      width: $pauseW;
+      height: ($pauseW * $playH) / $playW;
+    }
+
+    .timeline {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      margin-left: 10px;
+      width: $timelineW;
+      height: $timelineH;
+      background-color: #555555;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      background-color: white;
+      top: 0;
+      left: 0;
+    }
+
+    .timeline-seek {
+      position: absolute;
+      background-color: #888888;
+      top: 0;
+      left: 0;
+
+      display: none;
+      &.show {
+        display: block;
+      }
+    }
+
+    .current-time, .duration {
+      display: inline-block;
+      color: white;
+      font-size: 20px;
+    }
+
+    .current-time {
+      text-align: center;
+      position: absolute;
+      left: 0;
+      bottom: -$gap;
+      transform: translateX(-50%);
+
+      background-color: $contentBarBackground;
+
+      width: auto;
+      padding: $padding;
+      height: 1.2em;
+      top: -34px;
+    }
+
+    .duration {
+      vertical-align: middle;
+      margin-left: $gap;
+      text-align: left;
+      height: $timelineH;
+      line-height: $timelineH;
+    }
+  }
 }
 
 @import './support/debug-log';

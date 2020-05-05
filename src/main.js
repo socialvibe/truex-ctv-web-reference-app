@@ -1,10 +1,11 @@
-import config from './config';
+import config              from './config';
 import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { DebugLog } from './support/debug-log';
-import { LoadingSpinner }      from "./components/LoadingSpinner";
+import { DebugLog }        from './support/debug-log';
+import { LoadingSpinner }  from "./components/LoadingSpinner";
+import { VideoController } from "./components/VideoController";
 
 
 (function () {
@@ -19,12 +20,10 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
 
     const spinner = new LoadingSpinner();
 
+    const videoController = new VideoController("#playback-page video", "#playback-page .control-bar", platform);
+
     const videoStreams = require('./data/video-streams.json');
-    let currentVideo = videoStreams[0];
-    let currentVideoTime = 0;
-    let videoEventsInitialized = false;
-    let isPlayingVideo = false;
-    let videoTimeupdateInterval;
+    let currentVideoStream = videoStreams[0];
 
     function removeAllChildrenFrom(parent) {
         if (parent) {
@@ -42,7 +41,7 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         });
 
         // Ensure no videos are playing
-        stopVideo();
+        videoController.stopVideo();
 
         // Ensure no outstanding loading spinner.
         spinner.hide();
@@ -145,107 +144,42 @@ import { LoadingSpinner }      from "./components/LoadingSpinner";
         const homePage = document.querySelector('#home-page');
 
         const titleDiv = homePage.querySelector('.title');
-        titleDiv.innerText = currentVideo.title;
+        titleDiv.innerText = currentVideoStream.title;
 
         const descriptionDiv = homePage.querySelector('.description');
-        descriptionDiv.innerText = currentVideo.description;
+        descriptionDiv.innerText = currentVideoStream.description;
 
         const tray = homePage.querySelector('.tray');
         const selectedTile = tray.querySelector('.selected-tile');
-        selectedTile.src = currentVideo.cover;
+        selectedTile.src = currentVideoStream.cover;
 
         setFocus('.play-content-button', () => {
-            currentVideoTime = 0; // restart the video
+            videoController.lastVideoTime = 0; // restart the video
             showPage('playback-page')
         });
     }
 
     function renderPlaybackPage() {
-        try {
-            if (isPlayingVideo) return;
-            isPlayingVideo = true;
+        videoController.startVideo(currentVideoStream.url);
 
-            const video = getVideo();
-            if (video.src != currentVideo.url) {
-                video.src = currentVideo.url;
+        setFocus(videoController.video, null, action => {
+            if (action == inputActions.select || action == inputActions.playPause) {
+                videoController.togglePlayPause();
+                return true; // handled
             }
 
-            const initialVideoTime = currentVideoTime;
-            if (!videoEventsInitialized) {
-                videoEventsInitialized = true;
-                if (platform.isPS4) {
-                    // Using a timeupdate listener seems to hang playback on the PS4.
-                    videoTimeupdateInterval = setInterval(onVideoTimeUpdate, 1000);
-                } else {
-                    video.addEventListener("timeupdate", onVideoTimeUpdate);
-                }
+            if (action == inputActions.fastForward || action == inputActions.moveRight
+                || action == inputActions.rightShoulder1 || action == inputActions.rightShoulder2) {
+                videoController.stepForward();
+                return true; // handled
             }
 
-            console.log('starting playback at ' + initialVideoTime);
-            video.currentTime = initialVideoTime;
-            video.play();
-
-            setFocus(video, null, action => {
-                if (action == inputActions.select || action == inputActions.playPause) {
-                    if (video.paused) video.play();
-                    else video.pause();
-                    return true;
-                }
-
-                if (action == inputActions.fastForward || action == inputActions.moveRight
-                    || action == inputActions.rightShoulder1 || action == inputActions.rightShoulder2) {
-                    video.currentTime += 10;
-                    return true;
-                }
-
-                if (action == inputActions.rewind || action == inputActions.moveLeft
-                    || action == inputActions.leftShoulder1 || action == inputActions.leftShoulder2) {
-                    video.currentTime -= 10;
-                    return true;
-                }
-            });
-        } catch (err) {
-            console.error('renderPlaybackPage: ' + err);
-        }
-    }
-
-    function onVideoTimeUpdate() {
-        const video = getVideo();
-        if (!video || !isPlayingVideo) return;
-        currentVideoTime = video.currentTime;
-    }
-
-    function getVideo() {
-        return document.querySelector('#playback-page video');
-    }
-
-    function stopVideo() {
-        if (!isPlayingVideo) return;
-        isPlayingVideo = false;
-
-        const video = getVideo();
-        if (!video) return;
-
-        currentVideoTime = video.currentTime;
-
-        video.pause();
-
-        if (platform.isPS4) {
-            if (videoTimeupdateInterval) {
-                clearInterval(videoTimeupdateInterval);
-                videoTimeupdateInterval = null;
+            if (action == inputActions.rewind || action == inputActions.moveLeft
+                || action == inputActions.leftShoulder1 || action == inputActions.leftShoulder2) {
+                videoController.stepBackward();
+                return true; // handled
             }
-        } else {
-            video.removeEventListener('timeupdate', onVideoTimeUpdate);
-        }
-
-        // Note: We need to actually clear the video source to allow video reuse on the PS4.
-        // Otherwise the video hangs when it is shown again.
-        try {
-            video.src = "";
-        } catch (err) {
-            console.warn('could not clear video src');
-        }
+        });
     }
 
     function newFocusable(elementRef, selectAction, inputAction) {
@@ -323,7 +257,7 @@ user agent: ${window.navigator.userAgent}`);
 
             console.log('did initialization');
         } catch (err) {
-            console.error('initialization error: ' + err);
+            console.error('initialization error: ' + platform.describeErrorWithStack(err));
             setTimeout(() => debugLog.show(), 0);
         }
     }
