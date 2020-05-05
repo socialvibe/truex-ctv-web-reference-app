@@ -129,22 +129,31 @@ export class VideoController {
     }
 
     stepForward() {
-        this.stepVideoBy(20);
+        this.stepVideoBy(true);
     }
 
     stepBackward() {
-        this.stepVideoBy(-20);
+        this.stepVideoBy(false);
     }
 
-    stepVideoBy(seconds) {
+    stepVideoBy(forward) {
         const currTime = this.currVideoTime;
-        if (this.isPlayingAdAt(currTime)) return; // don't allow seeking during ad playback
+        //if (this.isPlayingAdAt(currTime)) return; // don't allow seeking during ad playback
+
+        let seekStep = 10; // default seek step seconds
+        const seekChunks = 80; // otherwise, divide up videos in this many chunks for seek steps
+        const duration = this.getPlayingVideoDurationAt(currTime);
+        if (duration > 0) {
+            const dynamicStep = Math.floor(duration / seekChunks);
+            seekStep = Math.max(seekStep, dynamicStep);
+        }
+        if (!forward) seekStep *= -1;
 
         const video = this.video;
         const stepFrom = this.seekTarget >= 0 ? this.seekTarget : currTime;
         const maxTarget = this.rawVideoDuration || video.duration || 0;
         if (maxTarget <= 0) return;
-        this.seekTarget = Math.max(0, Math.min(stepFrom + seconds, maxTarget));
+        this.seekTarget = Math.max(0, Math.min(stepFrom + seekStep, maxTarget));
         video.currentTime = this.seekTarget;
         this.show();
     }

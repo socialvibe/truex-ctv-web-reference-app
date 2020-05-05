@@ -1,12 +1,11 @@
 .video-control-bar {
-  $playW: 20px;
-  $playH: 30px;
+  $playW: 18px;
   $timelineW: 1300px;
-  $timelineH: 20px;
+  $timelineH: 7px;
   $padding: 6px;
   $gap: 10px;
   $durationW: 90px;
-  $controlBarW: $playW + $gap + $timelineW + $gap + $durationW;
+  $controlBarW: $padding + $playW + $gap + $timelineW + $gap + $durationW;
   $controlBarH: $timelineH + 2*$padding;
 
   position: absolute;
@@ -29,25 +28,13 @@
 
   .play-button, .pause-button {
     vertical-align: middle;
+    width: $playW;
+    height: 26px;
 
     display: none;
     &.show {
       display: inline-block;
     }
-  }
-
-  .play-button {
-    width: $playW;
-    height: $playH;
-  }
-
-  .pause-button {
-    $pauseW: ($playH * 16px) / 26px; // maintain 16x26 aspect ratio
-    $pauseM: ($playW - $pauseW) / 2;
-    width: $pauseW;
-    height: $playH;
-    margin-left: $pauseM;
-    margin-right: $pauseM;
   }
 
   .timeline {
