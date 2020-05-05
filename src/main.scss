@@ -187,7 +187,7 @@ $contentM: 160px;
     $timelineH: 20px;
     $padding: 6px;
     $gap: 10px;
-    $durationW: 120px;
+    $durationW: 90px;
     $controlBarW: $playW + $gap + $timelineW + $gap + $durationW;
     $controlBarH: $timelineH + 2*$padding;
 
@@ -243,18 +243,19 @@ $contentM: 160px;
       background-color: #555555;
     }
 
-    .timeline-progress {
+    .timeline-progress, .timeline-seek {
       position: absolute;
-      background-color: white;
       top: 0;
       left: 0;
+      height: $timelineH;
+    }
+
+    .timeline-progress {
+      background-color: white;
     }
 
     .timeline-seek {
-      position: absolute;
       background-color: #888888;
-      top: 0;
-      left: 0;
 
       display: none;
       &.show {
