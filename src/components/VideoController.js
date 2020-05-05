@@ -7,6 +7,7 @@ export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
+        this.isVisible = false;
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -30,11 +31,19 @@ export class VideoController {
 
     show() {
         this.controlBarDiv.classList.add('show');
+        this.isVisible = true;
         this.refresh();
+
+        this.stopControlBarTimer();
+        if (!this.video.paused) {
+            this.controlBarTimer = setTimeout(() => this.hide(), 8 * 1000);
+        }
     }
 
     hide() {
         this.controlBarDiv.classList.remove('show');
+        this.isVisible = false;
+        this.stopControlBarTimer();
     }
 
     startVideo(src) {
@@ -58,6 +67,13 @@ export class VideoController {
         }
 
         this.show();
+    }
+
+    stopControlBarTimer() {
+        if (this.controlBarTimer) {
+            clearTimeout(this.controlBarTimer);
+            this.controlBarTimer = undefined;
+        }
     }
 
     stopVideo() {
@@ -94,7 +110,7 @@ export class VideoController {
         } else {
             video.pause();
         }
-        this.refresh();
+        this.show();
     }
 
     stepForward() {
@@ -109,12 +125,14 @@ export class VideoController {
         const video = this.video;
         this.seekTarget = video.currentTime + seconds;
         video.currentTime = this.seekTarget;
-        this.refresh();
+        this.show();
     }
 
     onVideoTimeUpdate() {
         this.seekTarget = undefined;
-        this.refresh();
+        if (this.isVisible) {
+            this.refresh();
+        }
     }
 
     refresh() {
