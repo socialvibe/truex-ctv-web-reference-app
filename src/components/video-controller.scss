@@ -37,22 +37,17 @@
   }
 
   .play-button {
-    // maintain 20x30 aspect ratio
     width: $playW;
     height: $playH;
   }
 
   .pause-button {
-    $pauseW: 16px;
-    $pauseH: ($pauseW * $playH) / $playW; // maintain 16x26 aspect ratio
-    $pauseLeftM: ($playW - $pauseW) / 2;
-    $pauseTopM: ($playH - $pauseH) / 2;
+    $pauseW: ($playH * 16px) / 26px; // maintain 16x26 aspect ratio
+    $pauseM: ($playW - $pauseW) / 2;
     width: $pauseW;
-    height: $pauseH;
-    margin-left: $pauseLeftM;
-    margin-right: $pauseLeftM;
-    margin-top: $pauseTopM;
-    margin-bottom: $pauseTopM;
+    height: $playH;
+    margin-left: $pauseM;
+    margin-right: $pauseM;
   }
 
   .timeline {
