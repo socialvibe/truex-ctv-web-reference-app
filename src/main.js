@@ -25,15 +25,6 @@ import { VideoController } from "./components/VideoController";
     const videoStreams = require('./data/video-streams.json');
     let currentVideoStream = videoStreams[0];
 
-    function removeAllChildrenFrom(parent) {
-        if (parent) {
-            const childNodes = parent.children;
-            for (let i = childNodes.length - 1; i >= 0; i--) {
-                parent.removeChild(childNodes[i]);
-            }
-        }
-    }
-
     function hidePage() {
         // Hide whatever page is currently shown.
         document.querySelectorAll('.app-content .page').forEach(page => {
@@ -154,7 +145,7 @@ import { VideoController } from "./components/VideoController";
         selectedTile.src = currentVideoStream.cover;
 
         setFocus('.play-content-button', () => {
-            videoController.lastVideoTime = 0; // restart the video
+            videoController.currVideoTime = 0; // restart the video
             showPage('playback-page')
         });
     }
@@ -254,8 +245,6 @@ user agent: ${window.navigator.userAgent}`);
             pushBackActionBlock(); // push a back action block
             pushBackActionBlock(); // push a 2nd that can be consumed, to land on the previous
             window.addEventListener("popstate", onBackAction);
-
-            console.log('did initialization');
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
             setTimeout(() => debugLog.show(), 0);
