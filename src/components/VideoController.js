@@ -130,6 +130,9 @@ export class VideoController {
 
     onVideoTimeUpdate() {
         this.seekTarget = undefined;
+        const currTime = Math.floor(this.video.currentTime);
+        if (currTime == this.lastVideoTime) return;
+        this.lastVideoTime = currTime;
         if (this.isVisible) {
             this.refresh();
         }
