@@ -133,6 +133,7 @@ export class VideoController {
         const video = this.video;
         const stepFrom = this.seekTarget >= 0 ? this.seekTarget : this.currVideoTime;
         const maxTarget = this.videoDuration || video.duration || 0;
+        if (maxTarget <= 0) return;
         this.seekTarget = Math.max(0, Math.min(stepFrom + seconds, maxTarget));
         video.currentTime = this.seekTarget;
         this.show();
