@@ -196,7 +196,8 @@ export class VideoController {
 
     getPlayingVideoTimeAt(rawVideoTime) {
         let result = rawVideoTime;
-        for(var adBlock in this.adPlaylist) {
+        for(var index in this.adPlaylist) {
+            const adBlock = this.adPlaylist[index];
             const adStart = adBlock.timeOffset;
             if (rawVideoTime < adStart) break; // future ads don't affect things
             const adEnd = adStart + adBlock.duration;
@@ -251,33 +252,33 @@ export class VideoController {
             this.pauseButton.classList.add('show');
         }
 
-        const duration = this.getPlayingVideoDurationAt(currTime);
+        const durationToDisplay = this.getPlayingVideoDurationAt(currTime);
 
         function percentage(time) {
-            const result = duration > 0 ? (time / duration) * 100 : 0;
+            const result = durationToDisplay > 0 ? (time / durationToDisplay) * 100 : 0;
             return `${result}%`;
         }
 
-        this.progressBar.style.width = percentage(currTime);
-        this.durationLabel.innerText = timeLabel(duration);
-
         const seekTarget = this.seekTarget;
-        let timeToDisplay = currTime;
+        let currTimeToDisplay = this.getPlayingVideoTimeAt(currTime);
+        let timeToDisplay = currTimeToDisplay;
         if (seekTarget >= 0) {
-            timeToDisplay = seekTarget;
-            this.seekBar.classList.add('show');
-
-            const seekTargetDiff = Math.abs(currTime - seekTarget);
+            timeToDisplay = this.getPlayingVideoTimeAt(seekTarget);
+            const seekTargetDiff = Math.abs(currTimeToDisplay - timeToDisplay);
             this.seekBar.style.width = percentage(seekTargetDiff);
-            if (currTime <= seekTarget) {
-                this.seekBar.style.left = percentage(currTime);
+            if (currTimeToDisplay <= timeToDisplay) {
+                this.seekBar.style.left = percentage(currTimeToDisplay);
             } else {
-                this.seekBar.style.left = percentage(currTime - seekTargetDiff);
+                this.seekBar.style.left = percentage(currTimeToDisplay - seekTargetDiff);
             }
+            this.seekBar.classList.add('show');
 
         } else {
             this.seekBar.classList.remove('show');
         }
+
+        this.progressBar.style.width = percentage(timeToDisplay);
+        this.durationLabel.innerText = timeLabel(durationToDisplay);
 
         this.timeLabel.innerText = timeLabel(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
