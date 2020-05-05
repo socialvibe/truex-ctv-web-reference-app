@@ -195,7 +195,7 @@ export class VideoController {
         this.timeLabel.style.left = percentage(timeToDisplay);
 
         function percentage(time) {
-            const result = duration ? (time / duration) * 100 : 0;
+            const result = duration > 0 ? (time / duration) * 100 : 0;
             return `${result}%`;
         }
     }
