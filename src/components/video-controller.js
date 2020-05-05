@@ -131,7 +131,9 @@ export class VideoController {
 
     stepVideoBy(seconds) {
         const video = this.video;
-        this.seekTarget = this.currVideoTime + seconds;
+        const stepFrom = this.seekTarget >= 0 ? this.seekTarget : this.currVideoTime;
+        const maxTarget = this.videoDuration || video.duration || 0;
+        this.seekTarget = Math.max(0, Math.min(stepFrom + seconds, maxTarget));
         video.currentTime = this.seekTarget;
         this.show();
     }
@@ -160,7 +162,7 @@ export class VideoController {
         }
 
         const duration = this.videoDuration || video.duration || 0;
-        if (this.videoDuration <= 0) {
+        if (this.videoDuration != duration) {
             this.videoDuration = duration;
             this.durationLabel.innerText = timeLabel(this.videoDuration);
         }
@@ -169,7 +171,9 @@ export class VideoController {
         this.progressBar.style.width = percentage(currTime);
 
         const seekTarget = this.seekTarget;
-        if (this.seekTarget >= 0) {
+        let timeToDisplay = currTime;
+        if (seekTarget >= 0) {
+            timeToDisplay = seekTarget;
             this.seekBar.classList.add('show');
 
             const seekTargetDiff = Math.abs(currTime - seekTarget);
@@ -184,8 +188,8 @@ export class VideoController {
             this.seekBar.classList.remove('show');
         }
 
-        this.timeLabel.innerText = timeLabel(currTime);
-        this.timeLabel.style.left = percentage(currTime);
+        this.timeLabel.innerText = timeLabel(timeToDisplay);
+        this.timeLabel.style.left = percentage(timeToDisplay);
 
         function percentage(time) {
             const result = duration ? (time / duration) * 100 : 0;
