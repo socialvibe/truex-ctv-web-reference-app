@@ -31,13 +31,13 @@ export class VideoController {
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
     }
 
-    show(forVideoTime) {
+    show(forceTimer) {
         this.controlBarDiv.classList.add('show');
         this.isVisible = true;
         this.refresh();
 
         this.stopControlBarTimer();
-        if (!this.video.paused) {
+        if (forceTimer || !this.video.paused) {
             this.controlBarTimer = setTimeout(() => this.hide(), 8 * 1000);
         }
     }
@@ -59,7 +59,7 @@ export class VideoController {
         console.log('starting playback at ' + initialVideoTime);
 
         this.videoStarted = true;
-        this.show();
+        this.show(this.videoStarted);
 
         video.currentTime = initialVideoTime;
         video.play();
