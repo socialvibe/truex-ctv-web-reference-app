@@ -11,6 +11,8 @@ export class VideoController {
         this.isVisible = false;
         this.videoStarted = false;
 
+        this.adIndicator = document.querySelector('.ad-indicator');
+
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
 
@@ -24,8 +26,10 @@ export class VideoController {
         this.durationLabel = this.controlBarDiv.querySelector('.duration');
 
         this.currVideoTime = 0;
-        this.videoDuration = 0;
+        this.rawVideoDuration = 0;
         this.seekTarget = undefined;
+
+        this.adPlaylist = [];
 
         this.platform = platform || new TXMPlatform();
 
@@ -55,11 +59,12 @@ export class VideoController {
         if (video.src != videoStream.url) {
             video.src = videoStream.url;
         }
+        this.setAdPlaylist(videoStream.vmap);
 
         const initialVideoTime = this.currVideoTime || 0;
-        console.log(`starting video ${videoStream.url}
-  for ${videoStream.title}
-  at ${timeLabel(initialVideoTime)}`);
+        console.log(`starting video: ${videoStream.title} 
+  src: ${videoStream.url}
+  at: ${timeLabel(initialVideoTime)}`);
 
         this.videoStarted = true;
         this.show(this.videoStarted);
@@ -132,9 +137,12 @@ export class VideoController {
     }
 
     stepVideoBy(seconds) {
+        const currTime = this.currVideoTime;
+        if (this.isPlayingAdAt(currTime)) return; // don't allow seeking during ad playback
+
         const video = this.video;
-        const stepFrom = this.seekTarget >= 0 ? this.seekTarget : this.currVideoTime;
-        const maxTarget = this.videoDuration || video.duration || 0;
+        const stepFrom = this.seekTarget >= 0 ? this.seekTarget : currTime;
+        const maxTarget = this.rawVideoDuration || video.duration || 0;
         if (maxTarget <= 0) return;
         this.seekTarget = Math.max(0, Math.min(stepFrom + seconds, maxTarget));
         video.currentTime = this.seekTarget;
@@ -146,13 +154,83 @@ export class VideoController {
         const newTime = Math.floor(this.video.currentTime);
         if (newTime == this.currVideoTime) return;
         this.currVideoTime = newTime;
-        if (this.isVisible) {
-            this.refresh();
+        this.refresh();
+    }
+
+    setAdPlaylist(vmap) {
+        this.adPlaylist = vmap.map(adBlock => {
+            return {
+                id: adBlock.breakId,
+                timeOffset: parseTimeLabel(adBlock.timeOffset),
+                duration: parseFloat(adBlock.videoAdDuration),
+                vastUrl: adBlock.vastUrl
+            }
+        });
+    }
+
+    // We assume ad videos are stiched into the main video.
+    isPlayingAdAt(rawVideoTime) {
+        const adBlock = this.getAdBlockAt(rawVideoTime);
+        return !!adBlock;
+    }
+
+    getAdBlockAt(rawVideoTime) {
+        if (rawVideoTime === undefined) rawVideoTime = this.currVideoTime;
+        for(var index in this.adPlaylist) {
+            const adBlock = this.adPlaylist[index];
+            if (adBlock.timeOffset <= rawVideoTime && rawVideoTime < adBlock.timeOffset + adBlock.duration) {
+                return adBlock;
+            }
         }
+        return undefined;
+    }
+
+    getPlayingVideoTimeAt(rawVideoTime) {
+        let result = rawVideoTime;
+        for(var adBlock in this.adPlaylist) {
+            const adStart = adBlock.timeOffset;
+            if (rawVideoTime < adStart) break; // future ads don't affect things
+            const adEnd = adStart + adBlock.duration;
+            if (adStart <= rawVideoTime && rawVideoTime < adEnd) {
+                // We are within the ad, show the ad time.
+                return rawVideoTime - adStart;
+            } else if (adEnd <= rawVideoTime) {
+                // Discount the ad duration.
+                result -= adBlock.duration;
+            }
+        }
+        return result;
+    }
+
+    getPlayingVideoDurationAt(rawVideoTime) {
+        const adBlock = this.getAdBlockAt(rawVideoTime);
+        if (adBlock) {
+            return adBlock.duration;
+        }
+        const duration = this.rawVideoDuration || this.video.duration || 0;
+        if (this.rawVideoDuration <= 0 && duration > 0) {
+            // Remember the now known main video duration.
+            this.rawVideoDuration = duration;
+        }
+        return this.getPlayingVideoTimeAt(duration);
     }
 
     refresh() {
         const video = this.video;
+
+        const currTime = this.currVideoTime;
+
+        const isPlayindAd = this.isPlayingAdAt(currTime);
+        if (isPlayindAd) {
+            this.adIndicator.classList.add('show');
+        } else {
+            this.adIndicator.classList.remove('show');
+        }
+
+        if (!this.isVisible) {
+            // other updates don't matter unless the control bar is visible
+            return;
+        }
 
         if (video.paused) {
             // Next play input action will resume playback
@@ -164,14 +242,15 @@ export class VideoController {
             this.pauseButton.classList.add('show');
         }
 
-        const duration = this.videoDuration || video.duration || 0;
-        if (this.videoDuration != duration) {
-            this.videoDuration = duration;
-            this.durationLabel.innerText = timeLabel(this.videoDuration);
+        const duration = this.getPlayingVideoDurationAt(currTime);
+
+        function percentage(time) {
+            const result = duration > 0 ? (time / duration) * 100 : 0;
+            return `${result}%`;
         }
 
-        const currTime = this.currVideoTime;
         this.progressBar.style.width = percentage(currTime);
+        this.durationLabel.innerText = timeLabel(duration);
 
         const seekTarget = this.seekTarget;
         let timeToDisplay = currTime;
@@ -193,12 +272,26 @@ export class VideoController {
 
         this.timeLabel.innerText = timeLabel(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
-
-        function percentage(time) {
-            const result = duration > 0 ? (time / duration) * 100 : 0;
-            return `${result}%`;
-        }
     }
+}
+
+function parseTimeLabel(label) {
+    if (!label) return 0;
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+    const parts = label.split(':');
+    if (parts.length >= 3) {
+        hours = parseFloat(parts[0]);
+        minutes = parseFloat(parts[1]);
+        seconds = parseFloat(parts[2]);
+    } else if (parts.length == 2) {
+        minutes = parseFloat(parts[0]);
+        seconds = parseFloat(parts[1]);
+    } else {
+        seconds = parseFloat(parts[0]);
+    }
+    return seconds + minutes*60 + hours*60*60;
 }
 
 function timeLabel(time) {

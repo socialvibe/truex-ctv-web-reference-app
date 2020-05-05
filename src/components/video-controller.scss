@@ -109,3 +109,18 @@
     line-height: $timelineH;
   }
 }
+
+.ad-indicator {
+  position: absolute;
+  padding: 12px;
+  left: 40px;
+  top: 40px;
+  color: white;
+  font-size: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: none;
+  &.show {
+    display: block;
+  }
+}
