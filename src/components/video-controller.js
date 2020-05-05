@@ -172,7 +172,8 @@ export class VideoController {
                 id: adBlock.breakId,
                 timeOffset: parseTimeLabel(adBlock.timeOffset),
                 duration: parseFloat(adBlock.videoAdDuration),
-                vastUrl: adBlock.vastUrl
+                vastUrl: adBlock.vastUrl,
+                completed: false
             }
         });
     }
@@ -210,6 +211,18 @@ export class VideoController {
             }
         }
         return result;
+    }
+
+    setCurrentVideoTime(newRawTime, oldRawTime) {
+        const adBlock = this.getAdBlockAt(newRawTime);
+        if (adBlock) {
+            if (adBlock.completed) {
+                // Ad already completed, skip over it.
+                newRawTime = (newRawTime < oldRawTime) ? adBlock.timeOffset : adBlock.timeOffset + adBlock.duration;
+            } else {
+                // Start playing the ad.
+            }
+        }
     }
 
     getPlayingVideoDurationAt(rawVideoTime) {
