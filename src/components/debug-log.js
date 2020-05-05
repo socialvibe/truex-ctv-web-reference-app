@@ -1,3 +1,4 @@
+import './debug-log.scss';
 import { inputActions } from 'truex-shared/focus_manager/txm_input_actions';
 
 /**

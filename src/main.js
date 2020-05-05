@@ -3,7 +3,7 @@ import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { DebugLog }        from './support/debug-log';
+import { DebugLog }        from './components/debug-log';
 import { LoadingSpinner }  from "./components/loading-spinner";
 import { VideoController } from "./components/video-controller";
 
