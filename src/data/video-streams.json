@@ -9,7 +9,6 @@
             {
                 "breakId" : "preroll",
                 "timeOffset" : "00:00:00.000",
-                "cardDuration" : "15",
                 "videoAdDuration" : "92",
                 "vastUrl" : "pkg:/res/demo-ad-payload.json",
                 "placementHash" : "74fca63c733f098340b0a70489035d683024440d"
@@ -17,7 +16,6 @@
             {
                 "breakId" : "midroll-1",
                 "timeOffset" : "00:09:52.000",
-                "cardDuration" : "15",
                 "videoAdDuration" : "92",
                 "vastUrl" : "pkg:/res/demo-ad-payload-2.json",
                 "placementHash" : "74fca63c733f098340b0a70489035d683024440d"

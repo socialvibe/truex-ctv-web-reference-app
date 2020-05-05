@@ -151,7 +151,7 @@ import { VideoController } from "./components/video-controller";
     }
 
     function renderPlaybackPage() {
-        videoController.startVideo(currentVideoStream.url);
+        videoController.startVideo(currentVideoStream);
 
         setFocus(videoController.video, null, action => {
             if (action == inputActions.select || action == inputActions.playPause) {

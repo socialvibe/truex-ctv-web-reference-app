@@ -49,15 +49,17 @@ export class VideoController {
         this.stopControlBarTimer();
     }
 
-    startVideo(src) {
+    startVideo(videoStream) {
         const video = this.video;
 
-        if (video.src != src) {
-            video.src = src;
+        if (video.src != videoStream.url) {
+            video.src = videoStream.url;
         }
 
         const initialVideoTime = this.currVideoTime || 0;
-        console.log('starting playback at ' + initialVideoTime);
+        console.log(`starting video ${videoStream.url}
+  for ${videoStream.title}
+  at ${timeLabel(initialVideoTime)}`);
 
         this.videoStarted = true;
         this.show(this.videoStarted);
@@ -196,22 +198,22 @@ export class VideoController {
             const result = duration ? (time / duration) * 100 : 0;
             return `${result}%`;
         }
-
-        function pad(value) {
-            value = Math.floor(value || 0);
-            return (value < 10) ? '0' + value : value.toString();
-        }
-
-        function timeLabel(time) {
-            const seconds = time % 60;
-            time /= 60;
-            const minutes = time % 60;
-            time /= 60;
-            const hours = time;
-
-            const result = pad(minutes) + ':' + pad(seconds);
-            if (hours >= 1) return pad(hours) + ':' + result;
-            return result;
-        }
     }
+}
+
+function timeLabel(time) {
+    const seconds = time % 60;
+    time /= 60;
+    const minutes = time % 60;
+    time /= 60;
+    const hours = time;
+
+    const result = pad(minutes) + ':' + pad(seconds);
+    if (hours >= 1) return pad(hours) + ':' + result;
+    return result;
+}
+
+function pad(value) {
+    value = Math.floor(value || 0);
+    return (value < 10) ? '0' + value : value.toString();
 }
