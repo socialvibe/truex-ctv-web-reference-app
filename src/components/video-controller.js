@@ -1,5 +1,6 @@
 import { TXMPlatform } from 'truex-shared/focus_manager/txm_platform';
 
+import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 

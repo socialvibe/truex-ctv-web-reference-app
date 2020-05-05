@@ -4,8 +4,8 @@ import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { DebugLog }        from './support/debug-log';
-import { LoadingSpinner }  from "./components/LoadingSpinner";
-import { VideoController } from "./components/VideoController";
+import { LoadingSpinner }  from "./components/loading-spinner";
+import { VideoController } from "./components/video-controller";
 
 
 (function () {
@@ -20,7 +20,7 @@ import { VideoController } from "./components/VideoController";
 
     const spinner = new LoadingSpinner();
 
-    const videoController = new VideoController("#playback-page video", "#playback-page .control-bar", platform);
+    const videoController = new VideoController("#playback-page video", "#playback-page .video-control-bar", platform);
 
     const videoStreams = require('./data/video-streams.json');
     let currentVideoStream = videoStreams[0];

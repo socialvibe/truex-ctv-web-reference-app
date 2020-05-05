@@ -1,0 +1,116 @@
+.video-control-bar {
+  $playW: 20px;
+  $playH: 30px;
+  $timelineW: 1300px;
+  $timelineH: 20px;
+  $padding: 6px;
+  $gap: 10px;
+  $durationW: 90px;
+  $controlBarW: $playW + $gap + $timelineW + $gap + $durationW;
+  $controlBarH: $timelineH + 2*$padding;
+
+  position: absolute;
+  width: $controlBarW;
+  bottom: 200px;
+  margin-left: auto;
+  margin-right: auto;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  $contentBarBackground: rgba(0, 0, 0, 0.7);
+  background-color: $contentBarBackground;
+  padding: $padding;
+
+  display: none;
+  &.show {
+    display: block;
+  }
+
+  .play-button, .pause-button {
+    vertical-align: middle;
+
+    display: none;
+    &.show {
+      display: inline-block;
+    }
+  }
+
+  .play-button {
+    // maintain 20x30 aspect ratio
+    width: $playW;
+    height: $playH;
+  }
+
+  .pause-button {
+    $pauseW: 16px;
+    $pauseH: ($pauseW * $playH) / $playW; // maintain 16x26 aspect ratio
+    $pauseLeftM: ($playW - $pauseW) / 2;
+    $pauseTopM: ($playH - $pauseH) / 2;
+    width: $pauseW;
+    height: $pauseH;
+    margin-left: $pauseLeftM;
+    margin-right: $pauseLeftM;
+    margin-top: $pauseTopM;
+    margin-bottom: $pauseTopM;
+  }
+
+  .timeline {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    margin-left: 10px;
+    width: $timelineW;
+    height: $timelineH;
+    background-color: #555555;
+  }
+
+  .timeline-progress, .timeline-seek {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: $timelineH;
+  }
+
+  .timeline-progress {
+    background-color: white;
+  }
+
+  .timeline-seek {
+    background-color: #888888;
+
+    display: none;
+    &.show {
+      display: block;
+    }
+  }
+
+  .current-time, .duration {
+    display: inline-block;
+    color: white;
+    font-size: 20px;
+  }
+
+  .current-time {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    bottom: -$gap;
+    transform: translateX(-50%);
+
+    background-color: $contentBarBackground;
+
+    width: auto;
+    padding: $padding;
+    height: 1.2em;
+    top: -34px;
+  }
+
+  .duration {
+    vertical-align: middle;
+    margin-left: $gap;
+    text-align: left;
+    height: $timelineH;
+    line-height: $timelineH;
+  }
+}
