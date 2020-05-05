@@ -143,8 +143,14 @@ export class VideoController {
         const seekTarget = this.seekTarget;
         if (this.seekTarget >= 0) {
             this.seekBar.classList.add('show');
-            this.seekBar.style.left = percentage((currTime < seekTarget) ? currTime : seekTarget);
-            this.seekBar.style.right = percentage(100 - ((currTime < seekTarget) ? seekTarget : currTime));
+
+            const seekTargetDiff = Math.abs(currTime - seekTarget);
+            this.seekBar.style.width = percentage(seekTargetDiff);
+            if (currTime <= seekTarget) {
+                this.seekBar.style.left = percentage(currTime);
+            } else {
+                this.seekBar.style.left = percentage(currTime - seekTargetDiff);
+            }
 
         } else {
             this.seekBar.classList.remove('show');
