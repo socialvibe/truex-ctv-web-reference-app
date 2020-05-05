@@ -73,13 +73,6 @@ export class VideoController {
         }
     }
 
-    stopControlBarTimer() {
-        if (this.controlBarTimer) {
-            clearTimeout(this.controlBarTimer);
-            this.controlBarTimer = undefined;
-        }
-    }
-
     stopVideo() {
         this.hide();
 
@@ -111,6 +104,13 @@ export class VideoController {
         this.videoStarted = false;
     }
 
+    stopControlBarTimer() {
+        if (this.controlBarTimer) {
+            clearTimeout(this.controlBarTimer);
+            this.controlBarTimer = undefined;
+        }
+    }
+
     togglePlayPause() {
         const video = this.video;
         if (video.paused) {
@@ -122,11 +122,11 @@ export class VideoController {
     }
 
     stepForward() {
-        this.stepVideoBy(10);
+        this.stepVideoBy(20);
     }
 
     stepBackward() {
-        this.stepVideoBy(-10);
+        this.stepVideoBy(-20);
     }
 
     stepVideoBy(seconds) {
