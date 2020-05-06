@@ -378,7 +378,7 @@ function timeLabel(time) {
     const hours = time;
 
     const result = pad(minutes) + ':' + pad(seconds);
-    if (hours >= 1) return pad(hours) + ':' + result;
+    if (hours >= 1) return Math.floor(hours) + ':' + result;
     return result;
 }
 
