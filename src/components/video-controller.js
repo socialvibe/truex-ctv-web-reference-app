@@ -216,11 +216,13 @@ export class VideoController {
         const adBlock = this.getAdBlockAt(newTime);
         if (adBlock) {
             if (adBlock.completed) {
-                // Skip over already completed ads.
-                this.seekTo(adBlock.endTime, this.isVisible);
-                return;
+                if (Math.abs(adBlock.startTime - newTime) <= 1) {
+                    // Skip over already completed ads if we run into their start times.
+                    this.seekTo(adBlock.endTime, this.isVisible);
+                    return;
+                }
 
-            } else if (Math.abs(adBlock.endTime - newTime) <= 2) {
+            } else if (Math.abs(adBlock.endTime - newTime) <= 1) {
                 // The user has viewed the whole ad.
                 adBlock.completed = true;
             }
