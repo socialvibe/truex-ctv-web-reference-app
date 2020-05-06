@@ -208,9 +208,10 @@ export class VideoController {
     }
 
     onVideoTimeUpdate() {
-        this.seekTarget = undefined;
         const newTime = Math.floor(this.video.currentTime);
         if (newTime == this.currVideoTime) return;
+
+        this.seekTarget = undefined;
 
         const adBlock = this.getAdBlockAt(newTime);
         if (adBlock) {
