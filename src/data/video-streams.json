@@ -1,25 +1,23 @@
 [
-    {
-        "title" : "The true[X] Employee Experience",
-        "description" : "Our mission is to provide the best advertising experience for consumers, the best monetization for premium publishers, and the best return for brand advertisers. Learn about our team and employee experience.",
-        "cover" : "https://stash.truex.com/reference-apps/scratch/truex_cover_placeholder_spaceneedle.png",
-        "preview" : "https://media.truex.com/video_assets/2017-03-06/a9fbc895-6987-440e-b940-eeef8a714338_large.mp4",
-        "url" : "http://ctv.truex.com/assets/reference-app-stream-no-cards-720p.mp4",
-        "vmap" : [
-            {
-                "breakId" : "preroll",
-                "timeOffset" : "00:00:00.000",
-                "videoAdDuration" : "92",
-                "vastUrl" : "pkg:/res/demo-ad-payload.json",
-                "placementHash" : "74fca63c733f098340b0a70489035d683024440d"
-            },
-            {
-                "breakId" : "midroll-1",
-                "timeOffset" : "00:08:05.000",
-                "videoAdDuration" : "92",
-                "vastUrl" : "pkg:/res/demo-ad-payload-2.json",
-                "placementHash" : "74fca63c733f098340b0a70489035d683024440d"
-            }
-        ]
-    }
+  {
+    "title": "The true[X] Employee Experience",
+    "description": "Our mission is to provide the best advertising experience for consumers, the best monetization for premium publishers, and the best return for brand advertisers. Learn about our team and employee experience.",
+    "cover": "https://stash.truex.com/reference-apps/scratch/truex_cover_placeholder_spaceneedle.png",
+    "preview": "https://media.truex.com/video_assets/2017-03-06/a9fbc895-6987-440e-b940-eeef8a714338_large.mp4",
+    "url": "http://ctv.truex.com/assets/reference-app-stream-no-cards-720p.mp4",
+    "vmap": [
+      {
+        "breakId": "preroll",
+        "timeOffset": "00:00:00.000",
+        "videoAdDuration": "92",
+        "vastUrl": "https://qa-get.truex.com/15c7f5269a09bd8c5007ba98263571dd80c458e5/vast/config?asnw=&cpx_url=&flag=%2Bamcb%2Bemcr%2Bslcb%2Bvicb%2Baeti-exvt&fw_key_values=&metr=0&network_user_id=test_html5_00005&prof=g_as3_truex&ptgt=a&pvrn=&resp=vmap1&slid=fw_truex&ssnw=&vdur=&vprn=&dimension_5=hilton"
+      },
+      {
+        "breakId": "midroll-1",
+        "timeOffset": "00:08:05.000",
+        "videoAdDuration": "92",
+        "vastUrl": "https://qa-get.truex.com/15c7f5269a09bd8c5007ba98263571dd80c458e5/vast/config?asnw=&cpx_url=&flag=%2Bamcb%2Bemcr%2Bslcb%2Bvicb%2Baeti-exvt&fw_key_values=&metr=0&network_user_id=test_html5_00005&prof=g_as3_truex&ptgt=a&pvrn=&resp=vmap1&slid=fw_truex&ssnw=&vdur=&vprn=&dimension_5=kfp"
+      }
+    ]
+  }
 ]

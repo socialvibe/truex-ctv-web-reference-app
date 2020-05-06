@@ -1,4 +1,6 @@
 import { TXMPlatform } from 'truex-shared/focus_manager/txm_platform';
+import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+import adEvents from 'truex-shared/events/txm_ad_events';
 
 import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
@@ -37,6 +39,8 @@ export class VideoController {
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
 
         this.debug = false; // set to true to enable more verbose video time logging.
+
+        this.closeVideoAction = function() {}; // override as needed
     }
 
     show(forceTimer) {
@@ -70,10 +74,19 @@ export class VideoController {
   at: ${timeLabel(initialVideoTime)}`);
 
         this.videoStarted = true;
-        this.show(this.videoStarted);
 
         video.currentTime = initialVideoTime;
-        video.play();
+
+        const firstAdBlock = this.adPlaylist[0];
+        if (firstAdBlock && firstAdBlock.startTime <= 0) {
+            // If we have a preroll, show it immediately, since otherwise it takes a while to load, there
+            // can be partial playback of the ad fallback video itself.
+            this.startAd(firstAdBlock);
+
+        } else {
+            this.show(this.videoStarted);
+            video.play();
+        }
 
         if (this.platform.isPS4) {
             // Using a timeupdate listener seems to hang playback on the PS4.
@@ -242,6 +255,90 @@ export class VideoController {
         adBlock.started = true;
         console.log(`ad started: ${adBlock.id} at:`
             + ` display: ${timeLabel(adBlock.displayTimeOffset)} raw: ${timeLabel(adBlock.startTime)}`);
+
+        // Start an interactive ad.
+        this.hide();
+
+        adBlock.isInteracting = true;
+
+        const video = this.video;
+        let adCompleted = false;
+        let adFreePod = false;
+        let adOverlay;
+        let tar;
+        try {
+            video.pause();
+
+            const options = {
+                supportsUserCancelStream: true,
+            };
+
+            tar = new TruexAdRenderer(adBlock.vastUrl, options);
+            tar.subscribe(handleAdEvent);
+
+            return tar.init()
+            .then(tar.start)
+            .then(newAdOverlay => {
+                adOverlay = newAdOverlay;
+            })
+            .catch(handleAdError);
+        } catch (err) {
+            handleAdError(err);
+        }
+
+        function handleAdEvent(event) {
+            if (event.type == adEvents.adError) {
+                handleAdError(event.errorMessage);
+                return;
+            }
+
+            switch (event.type) {
+                case adEvents.adFreePod:
+                    adFreePod = true; // the user did sufficient interaction.
+                    break;
+
+                case adEvents.userCancelStream:
+                    hideAdOverlay();
+                    this.closeVideoAction();
+                    break;
+
+                case adEvents.userCancel:
+                    // showing choice card again.
+                    break;
+
+                case adEvents.noAdsAvailable:
+                case adEvents.adCompleted:
+                    hideAdOverlay();
+                    resumePlayback();
+                    break;
+            }
+
+        }
+
+        function handleAdError(errOrMsg) {
+            const msg = typeof errOrMsg == 'string' ? errOrMsg : errOrMsg.toString();
+            console.error('ad error: ' + msg);
+            if (tar) {
+                // Ensure the ad is no longer blocking back events, etc.
+                tar.stop();
+            }
+            resumePlayback();
+        }
+
+        function hideAdOverlay() {
+            if (adOverlay) {
+                if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
+                adOverlay = null;
+            }
+            document.body.focus();
+        }
+
+        function resumePlayback() {
+            if (adCompleted) {
+                video.currentTime = adBlock.endTime; // skip over the ad video.
+                video.play();
+            }
+        }
     }
 
     onVideoTimeUpdate() {
@@ -286,6 +383,7 @@ export class VideoController {
                 duration: parseFloat(adBlock.videoAdDuration),
                 vastUrl: adBlock.vastUrl,
                 started: false,
+                isInteracting: false,
                 completed: false
             }
         });

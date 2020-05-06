@@ -2,7 +2,6 @@ import config              from './config';
 import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { DebugLog }        from './components/debug-log';
 import { LoadingSpinner }  from "./components/loading-spinner";
 import { VideoController } from "./components/video-controller";
@@ -21,6 +20,7 @@ import { VideoController } from "./components/video-controller";
     const spinner = new LoadingSpinner();
 
     const videoController = new VideoController("#playback-page video", "#playback-page .video-control-bar", platform);
+    videoController.closeVideoAction = returnToParentPage;
 
     const videoStreams = require('./data/video-streams.json');
     let currentVideoStream = videoStreams[0];
@@ -44,6 +44,9 @@ import { VideoController } from "./components/video-controller";
     }
 
     function showPage(pageId) {
+        if (currentPage == 'playback-page' && pageId != currentPage) {
+            var breakH = 1; // to catch unexpected keystrokes during ad displays
+        }
         lastPage = currentPage;
         currentPage = pageId;
         renderCurrentPage();
