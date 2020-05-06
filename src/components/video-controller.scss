@@ -76,16 +76,16 @@
   .current-time {
     text-align: center;
     position: absolute;
-    left: 0;
-    bottom: -$gap;
-    transform: translateX(-50%);
 
     background-color: $contentBarBackground;
 
     width: auto;
     padding: $padding;
     height: 1.2em;
+
     top: -34px;
+    left: 0;
+    transform: translateX(-50%);
   }
 
   .duration {
