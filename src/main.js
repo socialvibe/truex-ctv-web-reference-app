@@ -170,6 +170,12 @@ import { VideoController } from "./components/video-controller";
                 videoController.stepBackward();
                 return true; // handled
             }
+
+            if (action == inputActions.num2 || action == inputActions.rightStick) {
+                // QA helper to allow ads to be skipped.
+                videoController.skipAd();
+                return true; // handled
+            }
         });
     }
 

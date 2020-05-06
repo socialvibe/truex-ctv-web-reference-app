@@ -47,7 +47,7 @@
     background-color: #555555;
   }
 
-  .timeline-progress, .timeline-seek {
+  .timeline-progress, .timeline-seek, .ad-markers {
     position: absolute;
     top: 0;
     left: 0;
@@ -64,6 +64,22 @@
     display: none;
     &.show {
       display: block;
+    }
+  }
+
+  .ad-markers {
+    width: 100%;
+
+    display: none;
+    &.show {
+      display: block;
+    }
+
+    .ad-block {
+      position: absolute;
+      background-color: darkgoldenrod;
+      width: 4px;
+      height: 100%;
     }
   }
 
