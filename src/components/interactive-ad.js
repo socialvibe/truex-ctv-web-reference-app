@@ -13,7 +13,7 @@ export class InteractiveAd {
         let tar;
 
         self.start = () => {
-            adBlock.isInteracting = true;
+            adBlock.started = true;
 
             try {
                 video.pause();
@@ -89,13 +89,11 @@ export class InteractiveAd {
         }
 
         function closeAdOverlay() {
-            adBlock.isInteracting = false;
             adBlock.started = false;
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
-            // document.body.focus();
         }
 
         function resumePlayback() {

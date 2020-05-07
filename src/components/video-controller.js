@@ -4,6 +4,7 @@ import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 
+import { AdBlock}        from "./ad-block";
 import { InteractiveAd } from "./interactive-ad";
 
 export class VideoController {
@@ -329,16 +330,8 @@ export class VideoController {
             this.adMarkersDiv.removeChild(childNodes[i]);
         }
 
-        this.adPlaylist = vmap.map(adBlock => {
-            return {
-                id: adBlock.breakId,
-                displayTimeOffset: parseTimeLabel(adBlock.timeOffset),
-                duration: parseFloat(adBlock.videoAdDuration),
-                vastUrl: adBlock.vastUrl,
-                started: false,
-                isInteracting: false,
-                completed: false
-            }
+        this.adPlaylist = vmap.map(vmapJson => {
+            return new AdBlock(vmapJson);
         });
 
         // Correct ad display times into raw video times for the actual time in the overall video.
@@ -471,25 +464,6 @@ export class VideoController {
             this.adMarkersDiv.classList.add('show');
         }
     }
-}
-
-function parseTimeLabel(label) {
-    if (!label) return 0;
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    const parts = label.split(':');
-    if (parts.length >= 3) {
-        hours = parseFloat(parts[0]);
-        minutes = parseFloat(parts[1]);
-        seconds = parseFloat(parts[2]);
-    } else if (parts.length == 2) {
-        minutes = parseFloat(parts[0]);
-        seconds = parseFloat(parts[1]);
-    } else {
-        seconds = parseFloat(parts[0]);
-    }
-    return seconds + minutes*60 + hours*60*60;
 }
 
 function timeLabel(time) {
