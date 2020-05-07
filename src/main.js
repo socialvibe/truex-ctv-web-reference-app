@@ -195,16 +195,22 @@ import { VideoController } from "./components/video-controller";
         // backs out of the ad overlay.
         //
         // We do this by only recognizing a back action to this app's specific state.
-        const isForThisApp = event && event.state && event.state.app == config.name;
+        const state = event && event.state;
+        const isForThisApp = state && state.app == config.name && state.isBlock;
         if (!isForThisApp) return; // let the back action proceed, most likely from ad overlay processing.
 
-        pushBackActionBlock(); // ensure the next back action is blocked.
+        pushBackActionStub(); // ensure the next back action for this app is blocked.
 
         returnToParentPage();
     }
 
     function pushBackActionBlock() {
-        history.pushState({app: config.name}, null, null);
+        history.pushState({app: config.name, isBlock: true}, null, null);
+        pushBackActionStub(); // push a history state that can be consumed for this app's back action.
+    }
+
+    function pushBackActionStub() {
+        history.pushState({app: config.name, isStub: true}, null, null);
     }
 
     function returnToParentPage() {

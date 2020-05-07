@@ -1,6 +1,4 @@
 import { TXMPlatform } from 'truex-shared/focus_manager/txm_platform';
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import adEvents from 'truex-shared/events/txm_ad_events';
 
 import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
@@ -8,11 +6,8 @@ import pauseSvg from '../assets/pause-button.svg';
 
 import { InteractiveAd } from "./interactive-ad";
 
-'./video-controller.scss';
-
 export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
-        this.currentVideoStream = null;
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isVisible = false;
@@ -276,8 +271,6 @@ export class VideoController {
 
         // Start an interactive ad.
         this.hide();
-
-        adBlock.isInteracting = true;
 
         const ad = new InteractiveAd(adBlock, this);
         ad.start();

@@ -13,6 +13,8 @@ export class InteractiveAd {
         let tar;
 
         self.start = () => {
+            adBlock.isInteracting = true;
+
             try {
                 video.pause();
 
@@ -63,8 +65,11 @@ export class InteractiveAd {
                     // showing choice card again.
                     break;
 
-                case adEvents.noAdsAvailable:
                 case adEvents.adCompleted:
+                    adBlock.completed = true;
+                    // fall thru:
+
+                case adEvents.noAdsAvailable:
                     closeAdOverlay();
                     resumePlayback();
                     break;
@@ -85,6 +90,7 @@ export class InteractiveAd {
 
         function closeAdOverlay() {
             adBlock.isInteracting = false;
+            adBlock.started = false;
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
