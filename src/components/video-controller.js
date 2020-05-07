@@ -11,7 +11,7 @@ export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
-        this.isVisible = false;
+        this.isControlBarVisible = false;
         this.videoStarted = false;
         this.videoLoaded = false;
 
@@ -47,20 +47,20 @@ export class VideoController {
         this.closeVideoAction = function() {}; // override as needed
     }
 
-    show(forceTimer) {
+    showControlBar(forceTimer) {
         this.controlBarDiv.classList.add('show');
-        this.isVisible = true;
+        this.isControlBarVisible = true;
         this.refresh();
 
         this.stopControlBarTimer();
-        if (forceTimer || !this.video.paused) {
-            this.controlBarTimer = setTimeout(() => this.hide(), 8 * 1000);
+        if (forceTimer || !this.isPaused()) {
+            this.controlBarTimer = setTimeout(() => this.hideControlBar(), 8 * 1000);
         }
     }
 
-    hide() {
+    hideControlBar() {
         this.controlBarDiv.classList.remove('show');
-        this.isVisible = false;
+        this.isControlBarVisible = false;
         this.stopControlBarTimer();
     }
 
@@ -81,13 +81,14 @@ export class VideoController {
         this.initialVideoTime = initialVideoTime;
         console.log(`starting video: ${videoStream.title} 
   src: ${videoStream.url}
-  at time: display: ${timeLabel(this.getPlayingVideoTimeAt(initialVideoTime))} raw: ${timeLabel(initialVideoTime)}`);
+  at time: ${this.timeDebugDisplay(initialVideoTime)}`);
 
         video.src = videoStream.url;
         video.addEventListener('playing', this.onVideoPlaying);
 
         video.currentTime = initialVideoTime;
-        video.play();
+        this.play();
+        this.showControlBar(true);
 
         if (this.platform.isPS4) {
             // Using a timeupdate listener seems to hang playback on the PS4.
@@ -100,14 +101,11 @@ export class VideoController {
         if (firstAdBlock && firstAdBlock.startTime <= 0) {
             // If we have a preroll, show it immediately, since otherwise it takes a while for the video to load
             this.startAd(firstAdBlock);
-
-        } else {
-            this.show(true);
         }
     }
 
     stopVideo() {
-        this.hide();
+        this.hideControlBar();
 
         const video = this.video;
 
@@ -115,7 +113,7 @@ export class VideoController {
             this.currVideoTime = video.currentTime;
         }
 
-        video.pause();
+        this.pause();
 
         if (this.platform.isPS4) {
             if (this._videoTimeupdateInterval) {
@@ -149,21 +147,31 @@ export class VideoController {
     }
 
     togglePlayPause() {
-        const video = this.video;
-        if (video.paused) {
-            video.play();
-        } else {
-            video.pause();
-        }
-
+        const isPaused = this.isPaused();
         if (this.debug) {
-            const currTime = this.currVideoTime;
-            const displayTime = this.getPlayingVideoTimeAt(currTime, true);
-            const status = this.video.paused ? 'paused' : 'resumed';
-            console.log(`${status} at: display: ${timeLabel(displayTime)} raw: ${timeLabel(currTime)}`);
+            const newStatus= isPaused ? 'resumed from' : 'paused at';
+            console.log(`${newStatus}: ${this.timeDebugDisplay(this.currVideoTime)}`);
         }
 
-        this.show();
+        if (isPaused) {
+            this.play();
+        } else {
+            this.pause();
+        }
+
+        this.showControlBar();
+    }
+
+    isPaused() {
+        return this.video.paused;
+    }
+
+    play() {
+        this.video.play();
+    }
+
+    pause() {
+        this.video.pause();
     }
 
     stepForward() {
@@ -226,8 +234,7 @@ export class VideoController {
         }
 
         if (this.debug) {
-            const newTargetDisplay = this.getPlayingVideoTimeAt(newTarget, true);
-            console.log(`seek to: display: ${timeLabel(newTargetDisplay)} raw: ${timeLabel(newTarget)}`);
+            console.log(`seek to: ${this.timeDebugDisplay(newTarget)}`);
         }
 
         this.seekTo(newTarget);
@@ -250,28 +257,33 @@ export class VideoController {
         this.seekTarget = Math.max(minTarget, Math.min(newTarget, maxTarget));
         video.currentTime = this.seekTarget;
         if (showControlBar) {
-            this.show();
+            this.showControlBar();
         }
     }
 
-    skipAd() {
-        const currTime = this.currVideoTime;
-        const adBlock = this.getAdBlockAt(currTime);
+    skipAd(adBlock) {
+        if (!adBlock) {
+            adBlock = this.getAdBlockAt(this.currVideoTime);
+        }
         if (adBlock) {
             adBlock.completed = true;
-            console.log(`ad skipped: ${adBlock.id}`);
-            this.seekTo(adBlock.endTime);
+
+            if (this.debug) {
+                console.log(`ad skipped: ${adBlock.id} to: ${this.timeDebugDisplay(adBlock.endTime)}`);
+            }
+
+            // skip a little past the end to avoid a flash of the final ad frame
+            this.seekTo(adBlock.endTime+1, this.isControlBarVisible);
         }
     }
 
     startAd(adBlock) {
         if (adBlock.started || adBlock.completed) return;
         adBlock.started = true;
-        console.log(`ad started: ${adBlock.id} at:`
-            + ` display: ${timeLabel(adBlock.displayTimeOffset)} raw: ${timeLabel(adBlock.startTime)}`);
+        console.log(`ad started: ${adBlock.id} at: ${this.timeDebugDisplay(adBlock.startTime)}`);
 
         // Start an interactive ad.
-        this.hide();
+        this.hideControlBar();
 
         const ad = new InteractiveAd(adBlock, this);
         ad.start();
@@ -307,7 +319,7 @@ export class VideoController {
             if (adBlock.completed) {
                 if (Math.abs(adBlock.startTime - newTime) <= 1) {
                     // Skip over already completed ads if we run into their start times.
-                    this.seekTo(adBlock.endTime, this.isVisible);
+                    this.skipAd(adBlock);
                     return;
                 }
             } else if (!adBlock.started) {
@@ -389,6 +401,11 @@ export class VideoController {
         return this.getPlayingVideoTimeAt(duration);
     }
 
+    timeDebugDisplay(rawVideoTime) {
+        const displayTime = this.getPlayingVideoTimeAt(rawVideoTime, true);
+        return `${timeLabel(displayTime)} (raw: ${timeLabel(rawVideoTime)})`;
+    }
+
     refresh() {
         const video = this.video;
 
@@ -401,12 +418,12 @@ export class VideoController {
             this.adIndicators.classList.remove('show');
         }
 
-        if (!this.isVisible) {
+        if (!this.isControlBarVisible) {
             // other updates don't matter unless the control bar is visible
             return;
         }
 
-        if (video.paused) {
+        if (this.isPaused()) {
             // Next play input action will resume playback
             this.playButton.classList.add('show');
             this.pauseButton.classList.remove('show');

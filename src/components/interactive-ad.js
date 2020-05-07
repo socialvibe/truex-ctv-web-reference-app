@@ -7,7 +7,6 @@ export class InteractiveAd {
     constructor(adBlock, videoController) {
         const self = this;
 
-        const video = videoController.video;
         let adFreePod = false;
         let adOverlay;
         let tar;
@@ -16,7 +15,7 @@ export class InteractiveAd {
             adBlock.started = true;
 
             try {
-                video.pause();
+                videoController.pause();
 
                 const options = {
                     supportsUserCancelStream: true,
@@ -99,9 +98,9 @@ export class InteractiveAd {
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
-                videoController.seekTo(adBlock.endTime);
+                videoController.skipAd(adBlock);
             }
-            video.play();
+            videoController.play();
         }
     }
 }
