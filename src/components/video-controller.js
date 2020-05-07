@@ -8,12 +8,14 @@ import pauseSvg from '../assets/pause-button.svg';
 
 export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
+        this.currentVideoStream = null;
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isVisible = false;
         this.videoStarted = false;
+        this.videoLoaded = false;
 
-        this.adIndicator = document.querySelector('.ad-indicator');
+        this.adIndicators = document.querySelector('.ad-indicator');
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -61,21 +63,12 @@ export class VideoController {
     }
 
     startVideo(videoStream) {
-        const video = this.video;
-
-        if (video.src != videoStream.url) {
-            video.src = videoStream.url;
-        }
+        this.currentVideoStream = videoStream;
         this.setAdPlaylist(videoStream.vmap);
 
-        const initialVideoTime = this.currVideoTime || 0;
-        console.log(`starting video: ${videoStream.title} 
-  src: ${videoStream.url}
-  at: ${timeLabel(initialVideoTime)}`);
+        console.log(`starting video: ${videoStream.title}`);
 
         this.videoStarted = true;
-
-        video.currentTime = initialVideoTime;
 
         const firstAdBlock = this.adPlaylist[0];
         if (firstAdBlock && firstAdBlock.startTime <= 0) {
@@ -84,16 +77,35 @@ export class VideoController {
             this.startAd(firstAdBlock);
 
         } else {
-            this.show(this.videoStarted);
-            video.play();
+            this.loadVideo();
         }
+    }
+
+    loadVideo() {
+        const video = this.video;
+        const videoStream = this.currentVideoStream;
+
+        const initialVideoTime = this.currVideoTime || 0;
+        console.log(`loading video: ${videoStream.title} 
+  src: ${videoStream.url}
+  at: ${timeLabel(initialVideoTime)}`);
+
+        if (video.src != videoStream.url) {
+            video.src = videoStream.url;
+        }
+        this.show(true);
+
+        video.currentTime = initialVideoTime;
+        video.play();
 
         if (this.platform.isPS4) {
             // Using a timeupdate listener seems to hang playback on the PS4.
-            this._videoTimeupdateInterval = setInterval(this.onVideoTimeUpdate, 1000);
+            this._videoTimeupdateInterval = setInterval(this.onVideoTimeUpdate, 500);
         } else {
             video.addEventListener("timeupdate", this.onVideoTimeUpdate);
         }
+
+        this.videoLoaded = true;
     }
 
     stopVideo() {
@@ -109,7 +121,7 @@ export class VideoController {
 
         if (this.platform.isPS4) {
             if (this._videoTimeupdateInterval) {
-                clearInterval(videoTimeupdateInterval);
+                clearInterval(this._videoTimeupdateInterval);
                 this._videoTimeupdateInterval = null;
             }
         } else {
@@ -251,6 +263,8 @@ export class VideoController {
     }
 
     startAd(adBlock) {
+        const self = this;
+
         if (adBlock.started || adBlock.completed) return;
         adBlock.started = true;
         console.log(`ad started: ${adBlock.id} at:`
@@ -262,7 +276,6 @@ export class VideoController {
         adBlock.isInteracting = true;
 
         const video = this.video;
-        let adCompleted = false;
         let adFreePod = false;
         let adOverlay;
         let tar;
@@ -277,11 +290,11 @@ export class VideoController {
             tar.subscribe(handleAdEvent);
 
             return tar.init()
-            .then(tar.start)
-            .then(newAdOverlay => {
-                adOverlay = newAdOverlay;
-            })
-            .catch(handleAdError);
+                .then(tar.start)
+                .then(newAdOverlay => {
+                    adOverlay = newAdOverlay;
+                })
+                .catch(handleAdError);
         } catch (err) {
             handleAdError(err);
         }
@@ -298,8 +311,17 @@ export class VideoController {
                     break;
 
                 case adEvents.userCancelStream:
-                    hideAdOverlay();
+                    closeAdOverlay();
                     this.closeVideoAction();
+                    break;
+
+                case adEvents.optIn:
+                    // user started engagment experience
+                    break;
+
+                case adEvents.optOut:
+                    // user cancelled out of the choice card, either explicitly,
+                    // or implicitly via a timeout.
                     break;
 
                 case adEvents.userCancel:
@@ -308,7 +330,7 @@ export class VideoController {
 
                 case adEvents.noAdsAvailable:
                 case adEvents.adCompleted:
-                    hideAdOverlay();
+                    closeAdOverlay();
                     resumePlayback();
                     break;
             }
@@ -319,23 +341,31 @@ export class VideoController {
             const msg = typeof errOrMsg == 'string' ? errOrMsg : errOrMsg.toString();
             console.error('ad error: ' + msg);
             if (tar) {
-                // Ensure the ad is no longer blocking back events, etc.
+                // Ensure the ad is no longer blocking back or key events, etc.
                 tar.stop();
             }
+            closeAdOverlay();
             resumePlayback();
         }
 
-        function hideAdOverlay() {
+        function closeAdOverlay() {
+            adBlock.isInteracting = false;
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
             }
-            document.body.focus();
+            // document.body.focus();
         }
 
         function resumePlayback() {
-            if (adCompleted) {
-                video.currentTime = adBlock.endTime; // skip over the ad video.
+            if (adFreePod) {
+                // The user has the ad credit, skip over the ad video.
+                video.currentTime = self.currVideoTime = adBlock.endTime;
+            }
+            if (!self.videoLoaded) {
+                // Video not loaded yet (happens after the preroll).
+                self.loadVideo();
+            } else {
                 video.play();
             }
         }
@@ -450,9 +480,9 @@ export class VideoController {
 
         const isPlayindAd = this.isPlayingAdAt(currTime);
         if (isPlayindAd) {
-            this.adIndicator.classList.add('show');
+            this.adIndicators.classList.add('show');
         } else {
-            this.adIndicator.classList.remove('show');
+            this.adIndicators.classList.remove('show');
         }
 
         if (!this.isVisible) {
