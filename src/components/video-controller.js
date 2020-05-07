@@ -356,7 +356,6 @@ export class VideoController {
         });
     }
 
-    // We assume ad videos are stiched into the main video.
     isPlayingAdAt(rawVideoTime) {
         const adBlock = this.getAdBlockAt(rawVideoTime);
         return !!adBlock;
@@ -373,6 +372,7 @@ export class VideoController {
         return undefined;
     }
 
+    // We assume ad videos are stitched into the main video.
     getPlayingVideoTimeAt(rawVideoTime, skipAds) {
         let result = rawVideoTime;
         for(var index in this.adPlaylist) {

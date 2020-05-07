@@ -14,6 +14,8 @@ export class InteractiveAd {
         self.start = () => {
             adBlock.started = true;
 
+            videoController.showLoadingSpinner(true);
+
             try {
                 videoController.pause();
 
@@ -44,6 +46,7 @@ export class InteractiveAd {
             switch (event.type) {
                 case adEvents.adStarted:
                     // Engagement ad loaded and started.
+                    videoController.showLoadingSpinner(false);
                     break;
 
                 case adEvents.adFreePod:
@@ -89,6 +92,7 @@ export class InteractiveAd {
         }
 
         function closeAdOverlay() {
+            videoController.showLoadingSpinner(false);
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
