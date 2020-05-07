@@ -6,6 +6,10 @@ import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 
+import { InteractiveAd } from "./interactive-ad";
+
+'./video-controller.scss';
+
 export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
         this.currentVideoStream = null;
@@ -265,8 +269,6 @@ export class VideoController {
     }
 
     startAd(adBlock) {
-        const self = this;
-
         if (adBlock.started || adBlock.completed) return;
         adBlock.started = true;
         console.log(`ad started: ${adBlock.id} at:`
@@ -277,95 +279,8 @@ export class VideoController {
 
         adBlock.isInteracting = true;
 
-        const video = this.video;
-        let adFreePod = false;
-        let adOverlay;
-        let tar;
-        try {
-            video.pause();
-
-            const options = {
-                supportsUserCancelStream: true,
-            };
-
-            tar = new TruexAdRenderer(adBlock.vastUrl, options);
-            tar.subscribe(handleAdEvent);
-
-            return tar.init()
-                .then(tar.start)
-                .then(newAdOverlay => {
-                    adOverlay = newAdOverlay;
-                })
-                .catch(handleAdError);
-        } catch (err) {
-            handleAdError(err);
-        }
-
-        function handleAdEvent(event) {
-            if (event.type == adEvents.adError) {
-                handleAdError(event.errorMessage);
-                return;
-            }
-
-            switch (event.type) {
-                case adEvents.adFreePod:
-                    adFreePod = true; // the user did sufficient interaction.
-                    break;
-
-                case adEvents.userCancelStream:
-                    closeAdOverlay();
-                    this.closeVideoAction();
-                    break;
-
-                case adEvents.optIn:
-                    // user started engagment experience
-                    break;
-
-                case adEvents.optOut:
-                    // user cancelled out of the choice card, either explicitly,
-                    // or implicitly via a timeout.
-                    break;
-
-                case adEvents.userCancel:
-                    // showing choice card again.
-                    break;
-
-                case adEvents.noAdsAvailable:
-                case adEvents.adCompleted:
-                    closeAdOverlay();
-                    resumePlayback();
-                    break;
-            }
-
-        }
-
-        function handleAdError(errOrMsg) {
-            const msg = typeof errOrMsg == 'string' ? errOrMsg : errOrMsg.toString();
-            console.error('ad error: ' + msg);
-            if (tar) {
-                // Ensure the ad is no longer blocking back or key events, etc.
-                tar.stop();
-            }
-            closeAdOverlay();
-            resumePlayback();
-        }
-
-        function closeAdOverlay() {
-            adBlock.isInteracting = false;
-            if (adOverlay) {
-                if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
-                adOverlay = null;
-            }
-            // document.body.focus();
-        }
-
-        function resumePlayback() {
-            if (adFreePod) {
-                // The user has the ad credit, skip over the ad video.
-                self.seekTo(adBlock.endTime);
-            }
-            video.play();
-        }
+        const ad = new InteractiveAd(adBlock, this);
+        ad.start();
     }
 
     onVideoPlaying() {
