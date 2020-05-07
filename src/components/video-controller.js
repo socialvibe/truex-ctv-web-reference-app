@@ -45,6 +45,7 @@ export class VideoController {
         this.onVideoPlaying = this.onVideoPlaying.bind(this);
 
         this.closeVideoAction = function() {}; // override as needed
+        this.showLoadingSpinner = function(visible) {} // override as needed
     }
 
     showControlBar(forceTimer) {
@@ -67,11 +68,14 @@ export class VideoController {
     showVideo(visible) {
         this.video.style.visibility = visible ? 'visible' : 'hidden';
 
-        // TODO: hide the loading spinner if visible.
+        // If we are showing the video, we are loaded enough.
+        if (visible) this.showLoadingSpinner(false);
     }
 
     startVideo(videoStream) {
         this.videoStarted = true;
+
+        this.showLoadingSpinner(true);
 
         this.setAdPlaylist(videoStream.vmap);
 
@@ -114,6 +118,8 @@ export class VideoController {
         }
 
         this.pause();
+
+        this.showLoadingSpinner(false);
 
         if (this.platform.isPS4) {
             if (this._videoTimeupdateInterval) {
