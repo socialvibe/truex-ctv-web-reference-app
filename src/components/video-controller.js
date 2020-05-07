@@ -9,6 +9,8 @@ import { InteractiveAd } from "./interactive-ad";
 
 export class VideoController {
     constructor(videoSelector, controlBarSelector, platform) {
+        this.debug = false; // set to true to enable more verbose video time logging.
+
         this.video = document.querySelector(videoSelector);
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
@@ -41,8 +43,6 @@ export class VideoController {
 
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
         this.onVideoPlaying = this.onVideoPlaying.bind(this);
-
-        this.debug = false; // set to true to enable more verbose video time logging.
 
         this.closeVideoAction = function() {}; // override as needed
     }
@@ -147,13 +147,7 @@ export class VideoController {
     }
 
     togglePlayPause() {
-        const isPaused = this.isPaused();
-        if (this.debug) {
-            const newStatus= isPaused ? 'resumed from' : 'paused at';
-            console.log(`${newStatus}: ${this.timeDebugDisplay(this.currVideoTime)}`);
-        }
-
-        if (isPaused) {
+        if (this.isPaused()) {
             this.play();
         } else {
             this.pause();
@@ -167,10 +161,12 @@ export class VideoController {
     }
 
     play() {
+        if (this.debug) console.log(`play from: ${this.timeDebugDisplay(this.currVideoTime)}`);
         this.video.play();
     }
 
     pause() {
+        if (this.debug) console.log(`paused at: ${this.timeDebugDisplay(this.currVideoTime)}`);
         this.video.pause();
     }
 
@@ -233,10 +229,6 @@ export class VideoController {
             }
         }
 
-        if (this.debug) {
-            console.log(`seek to: ${this.timeDebugDisplay(newTarget)}`);
-        }
-
         this.seekTo(newTarget);
     }
 
@@ -255,7 +247,10 @@ export class VideoController {
         const minTarget = firstAdBlock && firstAdBlock.startTime <= 0 ? firstAdBlock.duration : 0;
 
         this.seekTarget = Math.max(minTarget, Math.min(newTarget, maxTarget));
+        if (this.debug) console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
+
         video.currentTime = this.seekTarget;
+
         if (showControlBar) {
             this.showControlBar();
         }

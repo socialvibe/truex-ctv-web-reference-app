@@ -42,8 +42,12 @@ export class InteractiveAd {
             }
 
             switch (event.type) {
+                case adEvents.adStarted:
+                    // Engagement ad loaded and started.
+                    break;
+
                 case adEvents.adFreePod:
-                    adFreePod = true; // the user did sufficient interaction.
+                    adFreePod = true; // the user did sufficient interaction for an ad credit
                     break;
 
                 case adEvents.userCancelStream:
@@ -65,9 +69,6 @@ export class InteractiveAd {
                     break;
 
                 case adEvents.adCompleted:
-                    adBlock.completed = true;
-                    // fall thru:
-
                 case adEvents.noAdsAvailable:
                     closeAdOverlay();
                     resumePlayback();
@@ -88,7 +89,6 @@ export class InteractiveAd {
         }
 
         function closeAdOverlay() {
-            adBlock.started = false;
             if (adOverlay) {
                 if (adOverlay.parentNode) adOverlay.parentNode.removeChild(adOverlay);
                 adOverlay = null;
@@ -98,6 +98,7 @@ export class InteractiveAd {
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
+                adBlock.completed = true;
                 videoController.skipAd(adBlock);
             }
             videoController.play();
