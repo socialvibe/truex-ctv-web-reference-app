@@ -30,6 +30,7 @@ export class VideoController {
         this.timeLabel = this.controlBarDiv.querySelector('.current-time');
         this.durationLabel = this.controlBarDiv.querySelector('.duration');
 
+        this.initialVideoTime = 0;
         this.currVideoTime = -1;
         this.rawVideoDuration = 0;
         this.seekTarget = undefined;
@@ -39,6 +40,7 @@ export class VideoController {
         this.platform = platform || new TXMPlatform();
 
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
+        this.onVideoPlaying = this.onVideoPlaying.bind(this);
 
         this.debug = false; // set to true to enable more verbose video time logging.
 
@@ -62,38 +64,27 @@ export class VideoController {
         this.stopControlBarTimer();
     }
 
-    startVideo(videoStream) {
-        this.currentVideoStream = videoStream;
-        this.setAdPlaylist(videoStream.vmap);
+    showVideo(visible) {
+        this.video.style.visibility = visible ? 'visible' : 'hidden';
 
-        console.log(`starting video: ${videoStream.title}`);
-
-        this.videoStarted = true;
-
-        const firstAdBlock = this.adPlaylist[0];
-        if (firstAdBlock && firstAdBlock.startTime <= 0) {
-            // If we have a preroll, show it immediately, since otherwise it takes a while to load, there
-            // can be partial playback of the ad fallback video itself.
-            this.startAd(firstAdBlock);
-
-        } else {
-            this.loadVideo();
-        }
+        // TODO: hide the loading spinner if visible.
     }
 
-    loadVideo() {
+    startVideo(videoStream) {
+        this.videoStarted = true;
+
+        this.setAdPlaylist(videoStream.vmap);
+
         const video = this.video;
-        const videoStream = this.currentVideoStream;
 
-        const initialVideoTime = this.currVideoTime || 0;
-        console.log(`loading video: ${videoStream.title} 
+        const initialVideoTime = this.currVideoTime || video.currentTime || 0;
+        this.initialVideoTime = initialVideoTime;
+        console.log(`starting video: ${videoStream.title} 
   src: ${videoStream.url}
-  at: ${timeLabel(initialVideoTime)}`);
+  at time: display: ${timeLabel(this.getPlayingVideoTimeAt(initialVideoTime))} raw: ${timeLabel(initialVideoTime)}`);
 
-        if (video.src != videoStream.url) {
-            video.src = videoStream.url;
-        }
-        this.show(true);
+        video.src = videoStream.url;
+        video.addEventListener('playing', this.onVideoPlaying);
 
         video.currentTime = initialVideoTime;
         video.play();
@@ -105,7 +96,14 @@ export class VideoController {
             video.addEventListener("timeupdate", this.onVideoTimeUpdate);
         }
 
-        this.videoLoaded = true;
+        const firstAdBlock = this.adPlaylist[0];
+        if (firstAdBlock && firstAdBlock.startTime <= 0) {
+            // If we have a preroll, show it immediately, since otherwise it takes a while for the video to load
+            this.startAd(firstAdBlock);
+
+        } else {
+            this.show(true);
+        }
     }
 
     stopVideo() {
@@ -127,6 +125,7 @@ export class VideoController {
         } else {
             video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
         }
+        video.removeEventListener('playing', this.onVideoPlaying);
 
         // Note: We need to actually clear the video source to allow video reuse on the PS4.
         // Otherwise the video hangs when it is shown again.
@@ -136,7 +135,10 @@ export class VideoController {
             console.warn('could not clear video src');
         }
 
+        this.showVideo(false);
+
         this.videoStarted = false;
+        this.videoLoaded = false;
     }
 
     stopControlBarTimer() {
@@ -360,14 +362,21 @@ export class VideoController {
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
-                video.currentTime = self.currVideoTime = adBlock.endTime;
+                self.seekTo(adBlock.endTime);
             }
-            if (!self.videoLoaded) {
-                // Video not loaded yet (happens after the preroll).
-                self.loadVideo();
-            } else {
-                video.play();
-            }
+            video.play();
+        }
+    }
+
+    onVideoPlaying() {
+        if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
+            // The initial seek did not supported, e.g. on the PS4. Do it now.
+            // Loading will be considered complete on the first time update that has progress.
+            this.seekTo(this.initialVideoTime);
+        } else {
+            // Video is now ready to be shown.
+            this.videoLoaded = true;
+            this.showVideo(true);
         }
     }
 
@@ -375,6 +384,12 @@ export class VideoController {
         const currTime = this.currVideoTime;
         const newTime = Math.floor(this.video.currentTime);
         if (newTime == currTime) return;
+
+        if (!this.videoLoaded) {
+            // We have playback progress, we can consider the video as loaded.
+            this.videoLoaded = true;
+            this.showVideo(true);
+        }
 
         this.seekTarget = undefined;
 

@@ -46,9 +46,7 @@ $contentM: 160px;
   &.show {
     display: block;
   }
-}
 
-.page {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -148,5 +146,8 @@ $contentM: 160px;
     left: 0;
     width: 100%;
     height: 100%;
+
+    // Keep the player hidden but still in the DOM until we know the video is loaded.
+    visibility: hidden;
   }
 }

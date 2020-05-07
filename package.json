@@ -36,7 +36,7 @@
     "dependencies": {
         "core-js": "^3.6.4",
         "@truex/ctv-ad-renderer": ">=0.0.0 <=1.0.0",
-        "truex-shared": "git+ssh://git@github.com:socialvibe/truex-shared-js.git#v1.0.59",
+        "truex-shared": "git+ssh://git@github.com:socialvibe/truex-shared-js.git#v1.0.60",
         "whatwg-fetch": "^3.0.0"
     }
 }
