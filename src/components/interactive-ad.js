@@ -27,9 +27,13 @@ export class InteractiveAd {
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
-                    .then(tar.start)
+                    .then(vastConfig => {
+                        tar.start(vastConfig);
+                    })
                     .then(newAdOverlay => {
                         adOverlay = newAdOverlay;
+
+                        videoController.showLoadingSpinner(false);
                     })
                     .catch(handleAdError);
             } catch (err) {
@@ -44,36 +48,37 @@ export class InteractiveAd {
             }
 
             switch (event.type) {
+                case adEvents.optIn:
+                    // User started engagement experience
+                    break;
+
                 case adEvents.adStarted:
                     // Engagement ad loaded and started.
-                    videoController.showLoadingSpinner(false);
                     break;
 
                 case adEvents.adFreePod:
                     adFreePod = true; // the user did sufficient interaction for an ad credit
                     break;
 
-                case adEvents.userCancelStream:
-                    // Backing out of the choice card means backing out of the entire video.
-                    closeAdOverlay();
-                    videoController.closeVideoAction();
-                    break;
-
-                case adEvents.optIn:
-                    // user started engagment experience
-                    break;
-
                 case adEvents.optOut:
-                    // user cancelled out of the choice card, either explicitly,
+                    // User cancelled out of the choice card, either explicitly,
                     // or implicitly via a timeout.
                     break;
 
                 case adEvents.userCancel:
-                    // showing choice card again.
+                    // User backed out of the ad, now showing the choice card again.
                     break;
 
-                case adEvents.adCompleted:
+                case adEvents.userCancelStream:
+                    // User backed out of the choice card, which means backing out of the entire video.
+                    closeAdOverlay();
+                    videoController.closeVideoAction();
+                    break;
+
                 case adEvents.noAdsAvailable:
+                case adEvents.adCompleted:
+                    // Ad is not available, or has completed. Depending on the adFreePod flag, either the main
+                    // video, or the ad fallback videos are resumed.
                     closeAdOverlay();
                     resumePlayback();
                     break;
