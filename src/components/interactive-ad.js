@@ -85,8 +85,7 @@ export class InteractiveAd {
         }
 
         function handleAdError(errOrMsg) {
-            const msg = typeof errOrMsg == 'string' ? errOrMsg : errOrMsg.toString();
-            console.error('ad error: ' + msg);
+            console.error('ad error: ' + errOrMsg);
             if (tar) {
                 // Ensure the ad is no longer blocking back or key events, etc.
                 tar.stop();
