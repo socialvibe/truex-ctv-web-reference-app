@@ -11,6 +11,21 @@ export class InteractiveAd {
         let adOverlay;
         let tar;
 
+        let vastConfigUrl = adBlock.vastUrl;
+        const dataPrefix = 'data:';
+        if (vastConfigUrl.startsWith(dataPrefix)) {
+            // We are loading a data stub included in the app.
+            let appPrefix = window.location.origin + window.location.pathname;
+            const indexSuffix = 'index.html';
+            if (appPrefix.endsWith('index.html')) {
+                appPrefix = appPrefix.substring(0, appPrefix.length - indexSuffix.length);
+            }
+            // Ensure we are not caching the data, as well as ensuring we can tolerate the extra & args
+            // that TAR appends to the actual query.
+            const cacheBuster = '?ts=' + Date.now();
+            vastConfigUrl = appPrefix + 'data/' + vastConfigUrl.substring(dataPrefix.length) + cacheBuster;
+        }
+
         self.start = () => {
             adBlock.started = true;
 
@@ -23,7 +38,7 @@ export class InteractiveAd {
                     supportsUserCancelStream: true,
                 };
 
-                tar = new TruexAdRenderer(adBlock.vastUrl, options);
+                tar = new TruexAdRenderer(vastConfigUrl, options);
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()

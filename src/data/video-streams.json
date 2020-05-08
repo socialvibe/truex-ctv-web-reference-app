@@ -10,13 +10,13 @@
         "breakId": "preroll",
         "timeOffset": "00:00:00.000",
         "videoAdDuration": "92",
-        "vastUrl": "https://qa-get.truex.com/15c7f5269a09bd8c5007ba98263571dd80c458e5/vast/config?asnw=&cpx_url=&flag=%2Bamcb%2Bemcr%2Bslcb%2Bvicb%2Baeti-exvt&fw_key_values=&metr=0&network_user_id=test_html6_00005&prof=g_as3_truex&ptgt=a&pvrn=&resp=vmap1&slid=fw_truex&ssnw=&vdur=&vprn=&dimension_5=hilton"
+        "vastUrl": "data:preroll.json"
       },
       {
         "breakId": "midroll-1",
         "timeOffset": "00:08:05.000",
         "videoAdDuration": "92",
-        "vastUrl": "https://qa-get.truex.com/15c7f5269a09bd8c5007ba98263571dd80c458e5/vast/config?asnw=&cpx_url=&flag=%2Bamcb%2Bemcr%2Bslcb%2Bvicb%2Baeti-exvt&fw_key_values=&metr=0&network_user_id=test_html6_00005&prof=g_as3_truex&ptgt=a&pvrn=&resp=vmap1&slid=fw_truex&ssnw=&vdur=&vprn=&dimension_5=kfp"
+        "vastUrl": "data:midroll-1.json"
       }
     ]
   }

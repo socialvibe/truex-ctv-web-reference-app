@@ -1,0 +1,117 @@
+{
+  "tag_type": "choice_card",
+  "user": {
+    "id": "test_html6_00005"
+  },
+  "partner_dimensions": {
+    "dimension_1": null,
+    "dimension_2": null,
+    "dimension_3": null,
+    "dimension_4": null,
+    "dimension_5": "hilton"
+  },
+  "placement": {
+    "id": "1259",
+    "partner_id": "709",
+    "identifier_hash": "15c7f5269a09bd8c5007ba98263571dd80c458e5"
+  },
+  "ads": [
+    {
+      "id": 8150,
+      "campaign_id": 4349,
+      "name": "HTML5 TAR Hilton",
+      "image_url": "https://s3.amazonaws.com/media.socialvi.be/assets/17190/gen-124x124.jpg?1362613767",
+      "display_text": null,
+      "window_url": "https://qa-media.truex.com/container/3.x/current/desktop.html#campaign_id%3D4349%26creative_id%3D8150%26ctv%3D1%26currency_amount%3D1%26env%255B%255D%3Dflash%26env%255B%255D%3Dhtml%26flag%3D%252Bamcb%252Bemcr%252Bslcb%252Bvicb%252Baeti-exvt%26impression_signature%3Dd59dc1fc7e1cfaa98567af522d6b63ef99cb13110a5410bf8a7a52fdfaadf418%26impression_timestamp%3D1588957788.328425%26initials%3D4%26internal_referring_source%3DFk-6QNRTQ_2DhtoYCpSRSQ%26ip%3D172.218.11.127%26metr%3D0%26multivariate%255BFAP-460%255D%3DoldTT%26multivariate%255Bdv_cohort%255D%3D4%26multivariate%255Btruex_first_experiment%255D%3Dtreatment%26multivariate%255BtvosUnifyUIExperiment%255D%3DT0%26network_user_id%3Dtest_html6_00005%26optimized%3Dtrue%26placement_hash%3D15c7f5269a09bd8c5007ba98263571dd80c458e5%26prof%3Dg_as3_truex%26ptgt%3Da%26resp%3Dvmap1%26session_id%3DOvvQVfe6R1ypcDkjDoWcuQ%26slid%3Dfw_truex%26timezone_offset%3D8.0%26user_agent%3DMozilla%252F5.0%2520%2528Macintosh%253B%2520Intel%2520Mac%2520OS%2520X%252010_14_6%2529%2520AppleWebKit%252F537.36%2520%2528KHTML%252C%2520like%2520Gecko%2529%2520Chrome%252F81.0.4044.138%2520Safari%252F537.36%26vault%3D0-bz1pXcdNzw5-e451P1Qy7nqqAQq5i8xQTivJFCE49bnGiVDAeGqEYRfAgpd7kth13PQCCuEaKCJZvZqATQoi4VfZfUgZzrNjJc4yaHxYVNRs4wqi7iDVq2X9oqTZKHJMCKHzCejikgUmKBgvpLcu25PWX7TzC9wXMGWi2oZAf8UDacgr2GKvGHx4mf3%26bid_info%3D0-JizBVViTdzv-3Fg4XsER9uc7tfux7PoA2a2fdv6CEuMKqxCCiNXxiyt7SqTzZcGsDtmSraGjkfD6FXpbUWxtYBhMtpRZf9agQruSuY9RLZowyGy9q66i1dUEvmqrdoxbSCY5av3Z3PygRmbtesJQin7qLJR4nnRNytv66cd8NGZVVRQfVyXWwZeVmPc57MAQoQMXyepo7gFJwC2PBKJyqUbEPVDLvB9Uta3ZcFud7P1Qi4RAZmKDqJ8C1mjfq",
+      "window_width": 1920,
+      "window_height": 1080,
+      "currency_amount": 1,
+      "revenue_amount": "0.0",
+      "partner_id": 709,
+      "variations": {
+        "truex_first_experiment": "treatment",
+        "FAP-460": "oldTT",
+        "dv_cohort": "4",
+        "tvosUnifyUIExperiment": "T0"
+      },
+      "choice_card_images": [],
+      "asset_url": "[studio].js",
+      "asset_type": "interactive",
+      "pending_true_targeting_requirements": [],
+      "service_url": "qa-measure.truex.com",
+      "service_params": "internal_referring_source=Fk-6QNRTQ_2DhtoYCpSRSQ&network_user_id=test_html6_00005&placement_hash=15c7f5269a09bd8c5007ba98263571dd80c458e5"
+    },
+    {
+      "id": 7633,
+      "campaign_id": 3802,
+      "name": "Kung Fu Panda QA (Android TV & Fire TV - Desktop)",
+      "image_url": "https://s3.amazonaws.com/media.socialvi.be/assets/17190/gen-124x124.jpg?1362613767",
+      "display_text": null,
+      "window_url": "https://qa-media.truex.com/container/3.x/current/desktop.html#campaign_id%3D3802%26creative_id%3D7633%26currency_amount%3D1%26env%255B%255D%3Dflash%26env%255B%255D%3Dhtml%26flag%3D%252Bamcb%252Bemcr%252Bslcb%252Bvicb%252Baeti-exvt%26impression_signature%3Dfb50cd1e8936cf70f4bdde0694747bf9f4ebf2f1ab455f317dceeb7d3e36b429%26impression_timestamp%3D1588957788.3318832%26initials%3D0%26internal_referring_source%3DFk-6QNRTQ_2DhtoYCpSRSQ%26ip%3D172.218.11.127%26metr%3D0%26multivariate%255BFAP-460%255D%3DoldTT%26multivariate%255Bdv_cohort%255D%3D4%26multivariate%255Btruex_first_experiment%255D%3Dtreatment%26multivariate%255BtvosUnifyUIExperiment%255D%3DT0%26network_user_id%3Dtest_html6_00005%26optimized%3Dtrue%26placement_hash%3D15c7f5269a09bd8c5007ba98263571dd80c458e5%26prof%3Dg_as3_truex%26ptgt%3Da%26resp%3Dvmap1%26session_id%3Dj0ZIrXuATD6eiHhr5wRvjw%26slid%3Dfw_truex%26timezone_offset%3D8.0%26user_agent%3DMozilla%252F5.0%2520%2528Macintosh%253B%2520Intel%2520Mac%2520OS%2520X%252010_14_6%2529%2520AppleWebKit%252F537.36%2520%2528KHTML%252C%2520like%2520Gecko%2529%2520Chrome%252F81.0.4044.138%2520Safari%252F537.36%26vault%3D0-zhePxQNvWod-kyoTDgYeGMMh6xjGoQKWwF9twHhwQ6wpVTSAqb79Tnx6G4sSjmsDHWLaxm11FM1J6fZ9qxKDrWFWwq192cEpSpRFG75QhQLULWJoYs19Z25VRgVP3cjWckKPeUYsmrkmyFfzphuesFiLUrg3iK3ug25e1cVxCNub79sGkAuu5HxHHS8%26bid_info%3D0-EMeBx2SpoeU-4titrYX3RpvMc5dTTu46Pez9niDVj9dVEyhLdfCjkHe5tzkormXubYUQHLkemtFyAW4yXpVQh5dd4cXt4tBLbN8M6ytKq9oDin6nzTuk6t75d494ubsiVyJmvv92dpxSqeG97p6YqXwqaqzLgL1XTxMVsj1APGsbHxrv1D5AgGMyXLVdAcnwDGzLux6WzcqGJZyo6WP7m39t82QQWFnivFJ6KAiPQvcdFevCaAM35JYAYQR2k",
+      "window_width": 960,
+      "window_height": 500,
+      "currency_amount": 1,
+      "revenue_amount": "0.0",
+      "partner_id": 709,
+      "variations": {
+        "truex_first_experiment": "treatment",
+        "FAP-460": "oldTT",
+        "dv_cohort": "4",
+        "tvosUnifyUIExperiment": "T0"
+      },
+      "choice_card_images": [],
+      "asset_url": "[studio].js",
+      "asset_type": "interactive",
+      "pending_true_targeting_requirements": [],
+      "service_url": "qa-measure.truex.com",
+      "service_params": "internal_referring_source=Fk-6QNRTQ_2DhtoYCpSRSQ&network_user_id=test_html6_00005&placement_hash=15c7f5269a09bd8c5007ba98263571dd80c458e5"
+    }
+  ],
+  "vast_session_id": "bqvr4W7lS6SZFapBWVCwEA",
+  "ad_free_creative_url": "https://qa-media.truex.com/integration/ctv/choicecard-ctv.js",
+  "card_creative_url": "https://qa-media.truex.com/integration/ctv/choicecard-ctv.js",
+  "card_creative_args": {
+    "branded_skip_image_type": "HERO skip desktop/mobile",
+    "resizeToViewport": true
+  },
+  "card_configurations": [
+    {
+      "name": "generic_choice_card",
+      "background_color": "#000000",
+      "background_image": {
+        "image_url": "//media.truex.com/file_assets/2018-05-17/c7ae47cb-9b0c-4316-99c2-869484b0a0f0.png"
+      },
+      "watch_button": {
+        "width": 1236,
+        "height": 159,
+        "x": 599,
+        "y": 752,
+        "image_url": "//media.truex.com/image_assets/2017-06-22/f8b11269-04ca-44f8-9bf9-1fbb5ae1f02c.png",
+        "hover_image_url": "//media.truex.com/image_assets/2017-06-22/f073eed0-889d-4b40-9849-bbaa1c9e5960.png"
+      },
+      "interact_button": {
+        "width": 1236,
+        "height": 537,
+        "x": 600,
+        "y": 177,
+        "image_url": "//media.truex.com/file_assets/2017-06-22/d4dfbfa0-3725-477a-bdba-ab9d7265325b.png",
+        "hover_image_url": "//media.truex.com/file_assets/2017-06-22/61ff0702-4f40-42b5-9ace-a07ea5b5a533.png"
+      },
+      "voiceover": "https://media.truex.com/audio_assets/2017-06-22/48012872-8b8a-4b8a-b6e5-1c30f13b1a3f.mp3",
+      "timer_text": {
+        "text": "Normal break with multiple commercials in :[countdown]",
+        "width": 730,
+        "height": 50,
+        "x": 670,
+        "y": 810,
+        "color": "#DDDDDD",
+        "family": "Arial, sans-serif",
+        "size": 33
+      },
+      "timer_seconds": 30
+    }
+  ],
+  "choice_card_images": [],
+  "passback_tags": [],
+  "validation_pixels": []
+}
