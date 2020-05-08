@@ -28,7 +28,7 @@ export class InteractiveAd {
 
                 return tar.init()
                     .then(vastConfig => {
-                        tar.start(vastConfig);
+                        return tar.start(vastConfig);
                     })
                     .then(newAdOverlay => {
                         adOverlay = newAdOverlay;
