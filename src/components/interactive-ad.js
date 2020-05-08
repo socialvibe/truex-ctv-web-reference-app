@@ -32,8 +32,6 @@ export class InteractiveAd {
                     })
                     .then(newAdOverlay => {
                         adOverlay = newAdOverlay;
-
-                        videoController.showLoadingSpinner(false);
                     })
                     .catch(handleAdError);
             } catch (err) {
@@ -48,16 +46,17 @@ export class InteractiveAd {
             }
 
             switch (event.type) {
+                case adEvents.adStarted:
+                    // Choice card loaded and displayed.
+                    videoController.showLoadingSpinner(false);
+                    break;
+
                 case adEvents.optIn:
                     // User started the engagement experience
                     break;
 
                 case adEvents.optOut:
                     // User cancelled out of the choice card, either explicitly, or implicitly via a timeout.
-                    break;
-
-                case adEvents.adStarted:
-                    // Engagement ad loaded and started.
                     break;
 
                 case adEvents.adFreePod:
