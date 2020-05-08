@@ -49,7 +49,11 @@ export class InteractiveAd {
 
             switch (event.type) {
                 case adEvents.optIn:
-                    // User started engagement experience
+                    // User started the engagement experience
+                    break;
+
+                case adEvents.optOut:
+                    // User cancelled out of the choice card, either explicitly, or implicitly via a timeout.
                     break;
 
                 case adEvents.adStarted:
@@ -58,11 +62,6 @@ export class InteractiveAd {
 
                 case adEvents.adFreePod:
                     adFreePod = true; // the user did sufficient interaction for an ad credit
-                    break;
-
-                case adEvents.optOut:
-                    // User cancelled out of the choice card, either explicitly,
-                    // or implicitly via a timeout.
                     break;
 
                 case adEvents.userCancel:
@@ -78,7 +77,7 @@ export class InteractiveAd {
                 case adEvents.noAdsAvailable:
                 case adEvents.adCompleted:
                     // Ad is not available, or has completed. Depending on the adFreePod flag, either the main
-                    // video, or the ad fallback videos are resumed.
+                    // video or the ad fallback videos are resumed.
                     closeAdOverlay();
                     resumePlayback();
                     break;
