@@ -54,6 +54,7 @@ export class InteractiveAd {
                     break;
 
                 case adEvents.userCancelStream:
+                    // Backing out of the choice card means backing out of the entire video.
                     closeAdOverlay();
                     videoController.closeVideoAction();
                     break;
