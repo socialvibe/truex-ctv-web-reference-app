@@ -41,11 +41,12 @@ export class VideoController {
 
         this.platform = platform || new TXMPlatform();
 
+        this.loadingSpinner = null;
+
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
         this.onVideoPlaying = this.onVideoPlaying.bind(this);
 
         this.closeVideoAction = function() {}; // override as needed
-        this.showLoadingSpinner = function(visible) {} // override as needed
     }
 
     showControlBar(forceTimer) {
@@ -70,6 +71,13 @@ export class VideoController {
 
         // If we are showing the video, we are loaded enough.
         if (visible) this.showLoadingSpinner(false);
+    }
+
+    showLoadingSpinner(visible) {
+        const spinner = this.loadingSpinner;
+        if (!spinner) return;
+        if (visible) spinner.show();
+        else spinner.hide();
     }
 
     startVideo(videoStream) {

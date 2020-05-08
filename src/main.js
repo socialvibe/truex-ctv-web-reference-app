@@ -20,13 +20,8 @@ import { VideoController } from "./components/video-controller";
     const spinner = new LoadingSpinner();
 
     const videoController = new VideoController("#playback-page video", "#playback-page .video-control-bar", platform);
-
+    videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
-
-    videoController.showLoadingSpinner = (visible) => {
-        if (visible) spinner.show();
-        else spinner.hide();
-    };
 
     const videoStreams = require('./data/video-streams.json');
     let currentVideoStream = videoStreams[0];
