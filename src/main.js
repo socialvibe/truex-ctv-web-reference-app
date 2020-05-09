@@ -45,9 +45,6 @@ import { VideoController } from "./components/video-controller";
     }
 
     function showPage(pageId) {
-        if (currentPage == 'playback-page' && pageId != currentPage) {
-            var breakH = 1; // to catch unexpected keystrokes during ad displays
-        }
         lastPage = currentPage;
         currentPage = pageId;
         renderCurrentPage();
