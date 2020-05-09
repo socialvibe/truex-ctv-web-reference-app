@@ -92,8 +92,8 @@ export class VideoController {
         const initialVideoTime = this.currVideoTime || video.currentTime || 0;
         this.initialVideoTime = initialVideoTime;
         console.log(`starting video: ${videoStream.title} 
-  src: ${videoStream.url}
-  at time: ${this.timeDebugDisplay(initialVideoTime)}`);
+    src: ${videoStream.url}
+    at time: ${this.timeDebugDisplay(initialVideoTime)}`);
 
         video.src = videoStream.url;
         video.addEventListener('playing', this.onVideoPlaying);
