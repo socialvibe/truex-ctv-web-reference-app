@@ -89,7 +89,7 @@ export class VideoController {
 
         const video = this.video;
 
-        const initialVideoTime = this.currVideoTime || video.currentTime || 0;
+        const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
         this.initialVideoTime = initialVideoTime;
         console.log(`starting video: ${videoStream.title} 
     src: ${videoStream.url}
