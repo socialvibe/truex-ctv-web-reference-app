@@ -54,13 +54,11 @@ export class InteractiveAd {
 
         function handleAdEvent(event) {
             const adEvents = tar.adEvents;
-
-            if (event.type == adEvents.adError) {
-                handleAdError(event.errorMessage);
-                return;
-            }
-
             switch (event.type) {
+                case adEvents.adError:
+                    handleAdError(event.errorMessage);
+                    break;
+
                 case adEvents.adStarted:
                     // Choice card loaded and displayed.
                     videoController.showLoadingSpinner(false);
