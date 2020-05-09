@@ -416,8 +416,6 @@ export class VideoController {
     }
 
     refresh() {
-        const video = this.video;
-
         const currTime = this.currVideoTime;
 
         const isPlayindAd = this.isPlayingAdAt(currTime);
