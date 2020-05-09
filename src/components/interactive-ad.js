@@ -1,6 +1,4 @@
-import { TXMPlatform } from 'truex-shared/focus_manager/txm_platform';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import adEvents from 'truex-shared/events/txm_ad_events';
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
@@ -20,7 +18,7 @@ export class InteractiveAd {
             if (appPrefix.endsWith('index.html')) {
                 appPrefix = appPrefix.substring(0, appPrefix.length - indexSuffix.length);
             }
-            // Ensure we are not caching the data, as well as ensuring we can tolerate the extra & args
+            // Ensure we are not caching the data, as well as ensuring we can tolerate the extra '&' query args
             // that TAR appends to the actual query.
             const cacheBuster = '?ts=' + Date.now();
             vastConfigUrl = appPrefix + 'data/' + vastConfigUrl.substring(dataPrefix.length) + cacheBuster;
@@ -55,6 +53,8 @@ export class InteractiveAd {
         };
 
         function handleAdEvent(event) {
+            const adEvents = tar.adEvents;
+
             if (event.type == adEvents.adError) {
                 handleAdError(event.errorMessage);
                 return;
