@@ -23,7 +23,7 @@ export class InteractiveAd {
             try {
                 videoController.pause();
 
-                let vastConfigUrl = adBlock.vastUrl.replace('\${IDFA}', advertisingId);
+                const vastConfigUrl = adBlock.vastUrl.replace('\${IDFA}', advertisingId);
 
                 tar = new TruexAdRenderer(vastConfigUrl, {supportsUserCancelStream: true});
                 tar.subscribe(handleAdEvent);
