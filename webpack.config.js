@@ -1,4 +1,3 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
@@ -67,11 +66,7 @@ module.exports = function(env) {
                 filename: 'index.html',
                 template: './src/index.html',
                 chunks: ['main'],
-            }),
-            // Ensure data files are queryable at runtime.
-            new CopyWebpackPlugin([
-                { from: './src/data', to: 'data' }
-            ])
+            })
         ],
         devtool: 'cheap-module-source-map'
     };
