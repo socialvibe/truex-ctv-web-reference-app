@@ -222,12 +222,12 @@ import { VideoController } from "./components/video-controller";
 
     function initializeApplication() {
         try {
-            const tar = new TruexAdRenderer({});
+            const tempTar = new TruexAdRenderer({});
             console.log(`running ${config.name} ${config.version} ${config.buildDate}
   host: ${window.location.href}
   platform: ${platform.name} model: ${platform.model} version: ${platform.version}
   user agent: ${window.navigator.userAgent}
-  using TAR: ${tar.version}`);
+  using TAR: ${tempTar.version}`);
 
             const baseOnInputAction = focusManager.onInputAction;
 
