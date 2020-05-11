@@ -17,7 +17,7 @@ export class VideoController {
         this.videoStarted = false;
         this.videoLoaded = false;
 
-        this.adIndicators = document.querySelector('.ad-indicator');
+        this.adIndicator = document.querySelector('.ad-indicator');
 
         this.playButton = this.controlBarDiv.querySelector('.play-button');
         this.playButton.innerHTML = playSvg;
@@ -426,9 +426,9 @@ export class VideoController {
 
         const isPlayindAd = this.isPlayingAdAt(currTime);
         if (isPlayindAd) {
-            this.adIndicators.classList.add('show');
+            this.adIndicator.classList.add('show');
         } else {
-            this.adIndicators.classList.remove('show');
+            this.adIndicator.classList.remove('show');
         }
 
         if (!this.isControlBarVisible) {
