@@ -2,6 +2,7 @@ import config              from './config';
 import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
+import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 import { DebugLog }        from './components/debug-log';
 import { LoadingSpinner }  from "./components/loading-spinner";
 import { VideoController } from "./components/video-controller";
@@ -221,10 +222,12 @@ import { VideoController } from "./components/video-controller";
 
     function initializeApplication() {
         try {
+            const tar = new TruexAdRenderer({});
             console.log(`running ${config.name} ${config.version} ${config.buildDate}
   host: ${window.location.href}
   platform: ${platform.name} model: ${platform.model} version: ${platform.version}
-  user agent: ${window.navigator.userAgent}`);
+  user agent: ${window.navigator.userAgent}
+  using TAR: ${tar.version}`);
 
             const baseOnInputAction = focusManager.onInputAction;
 
