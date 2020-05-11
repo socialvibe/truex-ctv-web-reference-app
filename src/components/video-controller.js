@@ -4,7 +4,7 @@ import './video-controller.scss';
 import playSvg from '../assets/play-button.svg';
 import pauseSvg from '../assets/pause-button.svg';
 
-import { AdBlock}        from "./ad-block";
+import { AdBreak}        from "./ad-break";
 import { InteractiveAd } from "./interactive-ad";
 
 export class VideoController {
@@ -212,32 +212,32 @@ export class VideoController {
         if (currTime < newTarget) {
             // Seeking forward
             for(var i in this.adPlaylist) {
-                const adBlock = this.adPlaylist[i];
-                if (newTarget < adBlock.startTime) break; // ignore future ads after the seek target
-                if (adBlock.endTime <= currTime) continue; // ignore past ads
+                const adBreak = this.adPlaylist[i];
+                if (newTarget < adBreak.startTime) break; // ignore future ads after the seek target
+                if (adBreak.endTime <= currTime) continue; // ignore past ads
 
-                if (adBlock.completed) {
+                if (adBreak.completed) {
                     // Skip over the completed ad.
-                    newTarget += adBlock.duration;
+                    newTarget += adBreak.duration;
                 } else {
                     // Stop on the ad to play it.
-                    newTarget = adBlock.startTime;
+                    newTarget = adBreak.startTime;
                     break;
                 }
             }
         } else {
             // Seeking backwards
             for(var i = this.adPlaylist.length-1; i >= 0; i--) {
-                const adBlock = this.adPlaylist[i];
-                if (currTime <= adBlock.startTime) continue; // ignore unplayed future ads
-                if (adBlock.endTime < newTarget) break; // ignore ads before the seek target
+                const adBreak = this.adPlaylist[i];
+                if (currTime <= adBreak.startTime) continue; // ignore unplayed future ads
+                if (adBreak.endTime < newTarget) break; // ignore ads before the seek target
 
-                if (adBlock.completed) {
+                if (adBreak.completed) {
                     // Skip over the completed ad.
-                    newTarget -= adBlock.duration;
+                    newTarget -= adBreak.duration;
                 } else {
                     // Stop on the ad to play it.
-                    newTarget = adBlock.startTime;
+                    newTarget = adBreak.startTime;
                     break;
                 }
             }
@@ -270,31 +270,31 @@ export class VideoController {
         }
     }
 
-    skipAd(adBlock) {
-        if (!adBlock) {
-            adBlock = this.getAdBlockAt(this.currVideoTime);
+    skipAd(adBreak) {
+        if (!adBreak) {
+            adBreak = this.getAdBreakAt(this.currVideoTime);
         }
-        if (adBlock) {
-            adBlock.completed = true;
+        if (adBreak) {
+            adBreak.completed = true;
 
             if (this.debug) {
-                console.log(`ad skipped: ${adBlock.id} to: ${this.timeDebugDisplay(adBlock.endTime)}`);
+                console.log(`ad break skipped: ${adBreak.id} to: ${this.timeDebugDisplay(adBreak.endTime)}`);
             }
 
             // skip a little past the end to avoid a flash of the final ad frame
-            this.seekTo(adBlock.endTime+1, this.isControlBarVisible);
+            this.seekTo(adBreak.endTime+1, this.isControlBarVisible);
         }
     }
 
-    startAd(adBlock) {
-        if (adBlock.started || adBlock.completed) return;
-        adBlock.started = true;
-        console.log(`ad started: ${adBlock.id} at: ${this.timeDebugDisplay(adBlock.startTime)}`);
+    startAd(adBreak) {
+        if (adBreak.started || adBreak.completed) return;
+        adBreak.started = true;
+        console.log(`ad started: ${adBreak.id} at: ${this.timeDebugDisplay(adBreak.startTime)}`);
 
         // Start an interactive ad.
         this.hideControlBar();
 
-        const ad = new InteractiveAd(adBlock, this);
+        const ad = new InteractiveAd(adBreak, this);
         ad.start();
     }
 
@@ -323,20 +323,20 @@ export class VideoController {
 
         this.seekTarget = undefined;
 
-        const adBlock = this.getAdBlockAt(newTime);
-        if (adBlock) {
-            if (adBlock.completed) {
-                if (Math.abs(adBlock.startTime - newTime) <= 1) {
+        const adBreak = this.getAdBreakAt(newTime);
+        if (adBreak) {
+            if (adBreak.completed) {
+                if (Math.abs(adBreak.startTime - newTime) <= 1) {
                     // Skip over already completed ads if we run into their start times.
-                    this.skipAd(adBlock);
+                    this.skipAd(adBreak);
                     return;
                 }
-            } else if (!adBlock.started) {
-                this.startAd(adBlock);
+            } else if (!adBreak.started) {
+                this.startAd(adBreak);
 
-            } else if (Math.abs(adBlock.endTime - newTime) <= 1) {
+            } else if (Math.abs(adBreak.endTime - newTime) <= 1) {
                 // The user has viewed the whole ad.
-                adBlock.completed = true;
+                adBreak.completed = true;
             }
         }
 
@@ -352,29 +352,29 @@ export class VideoController {
         }
 
         this.adPlaylist = vmap.map(vmapJson => {
-            return new AdBlock(vmapJson);
+            return new AdBreak(vmapJson);
         });
 
         // Correct ad display times into raw video times for the actual time in the overall video.
         let totalAdsDuration = 0;
-        this.adPlaylist.forEach(adBlock => {
-            adBlock.startTime = adBlock.displayTimeOffset + totalAdsDuration;
-            adBlock.endTime = adBlock.startTime + adBlock.duration;
-            totalAdsDuration += adBlock.duration;
+        this.adPlaylist.forEach(adBreak => {
+            adBreak.startTime = adBreak.displayTimeOffset + totalAdsDuration;
+            adBreak.endTime = adBreak.startTime + adBreak.duration;
+            totalAdsDuration += adBreak.duration;
         });
     }
 
     isPlayingAdAt(rawVideoTime) {
-        const adBlock = this.getAdBlockAt(rawVideoTime);
-        return !!adBlock;
+        const adBreak = this.getAdBreakAt(rawVideoTime);
+        return !!adBreak;
     }
 
-    getAdBlockAt(rawVideoTime) {
+    getAdBreakAt(rawVideoTime) {
         if (rawVideoTime === undefined) rawVideoTime = this.currVideoTime;
         for(var index in this.adPlaylist) {
-            const adBlock = this.adPlaylist[index];
-            if (adBlock.startTime <= rawVideoTime && rawVideoTime < adBlock.endTime) {
-                return adBlock;
+            const adBreak = this.adPlaylist[index];
+            if (adBreak.startTime <= rawVideoTime && rawVideoTime < adBreak.endTime) {
+                return adBreak;
             }
         }
         return undefined;
@@ -384,23 +384,23 @@ export class VideoController {
     getPlayingVideoTimeAt(rawVideoTime, skipAds) {
         let result = rawVideoTime;
         for(var index in this.adPlaylist) {
-            const adBlock = this.adPlaylist[index];
-            if (rawVideoTime < adBlock.startTime) break; // future ads don't affect things
-            if (!skipAds && adBlock.startTime <= rawVideoTime && rawVideoTime < adBlock.endTime) {
+            const adBreak = this.adPlaylist[index];
+            if (rawVideoTime < adBreak.startTime) break; // future ads don't affect things
+            if (!skipAds && adBreak.startTime <= rawVideoTime && rawVideoTime < adBreak.endTime) {
                 // We are within the ad, show the ad time.
-                return rawVideoTime - adBlock.startTime;
-            } else if (adBlock.endTime <= rawVideoTime) {
+                return rawVideoTime - adBreak.startTime;
+            } else if (adBreak.endTime <= rawVideoTime) {
                 // Discount the ad duration.
-                result -= adBlock.duration;
+                result -= adBreak.duration;
             }
         }
         return result;
     }
 
     getPlayingVideoDurationAt(rawVideoTime) {
-        const adBlock = this.getAdBlockAt(rawVideoTime);
-        if (adBlock) {
-            return adBlock.duration;
+        const adBreak = this.getAdBreakAt(rawVideoTime);
+        if (adBreak) {
+            return adBreak.duration;
         }
         const duration = this.rawVideoDuration || this.video.duration || 0;
         if (this.rawVideoDuration <= 0 && duration > 0) {
@@ -476,11 +476,11 @@ export class VideoController {
         } else {
             if (this.refreshAdMarkers && durationToDisplay > 0) {
                 this.refreshAdMarkers = false;
-                this.adPlaylist.forEach(adBlock => {
+                this.adPlaylist.forEach(adBreak => {
                     const marker = document.createElement('div');
-                    marker.classList.add('ad-block');
+                    marker.classList.add('ad-break');
                     const skipAds = true;
-                    const adPlaytime = this.getPlayingVideoTimeAt(adBlock.startTime, skipAds);
+                    const adPlaytime = this.getPlayingVideoTimeAt(adBreak.startTime, skipAds);
                     marker.style.left = percentage(adPlaytime);
                     this.adMarkersDiv.appendChild(marker);
                 });

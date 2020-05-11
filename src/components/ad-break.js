@@ -1,9 +1,9 @@
 /**
- * Describes a single ad block that maps to 1 or more fallback ad videos in the main video
+ * Describes a single ad break that maps to 1 or more fallback ad videos in the main video
  * (ads are assumed to be sitched in), that furthermore describes a true[X] interactive ad to show
- * over top of the main video when the ad block is encountered during playback.
+ * over top of the main video when the ad break is encountered during playback.
  */
-export class AdBlock {
+export class AdBreak {
     constructor(vmapJson) {
         this.id = vmapJson.breakId;
         this.displayTimeOffset = parseTimeLabel(vmapJson.timeOffset);

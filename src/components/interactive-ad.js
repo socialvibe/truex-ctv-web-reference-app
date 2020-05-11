@@ -6,7 +6,7 @@ const optOutAdvertisingId = uuid.v4();
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
-    constructor(adBlock, videoController) {
+    constructor(adBreak, videoController) {
         const self = this;
 
         let adFreePod = false;
@@ -14,7 +14,7 @@ export class InteractiveAd {
         let tar;
 
         self.start = async () => {
-            adBlock.started = true;
+            adBreak.started = true;
 
             videoController.showLoadingSpinner(true);
 
@@ -23,7 +23,7 @@ export class InteractiveAd {
             try {
                 videoController.pause();
 
-                const vastConfigUrl = adBlock.vastUrl.replace('\${IDFA}', advertisingId);
+                const vastConfigUrl = adBreak.vastUrl.replace('\${IDFA}', advertisingId);
 
                 tar = new TruexAdRenderer(vastConfigUrl, {supportsUserCancelStream: true});
                 tar.subscribe(handleAdEvent);
@@ -113,8 +113,8 @@ export class InteractiveAd {
         function resumePlayback() {
             if (adFreePod) {
                 // The user has the ad credit, skip over the ad video.
-                adBlock.completed = true;
-                videoController.skipAd(adBlock);
+                adBreak.completed = true;
+                videoController.skipAd(adBreak);
             }
             videoController.play();
         }
