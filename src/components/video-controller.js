@@ -194,7 +194,13 @@ export class VideoController {
 
     stepVideo(forward) {
         const currTime = this.currVideoTime;
-        if (this.isPlayingAdAt(currTime)) return; // don't allow user seeking during ad playback
+
+        if (this.isPlayingAdAt(currTime)) {
+            // Don't allow user seeking during ad playback
+            // Just show the control bar so the user can see the timeline.
+            this.showControlBar();
+            return;
+        }
 
         let seekStep = 10; // default seek step seconds
         const seekChunks = 80; // otherwise, divide up videos in this many chunks for seek steps
