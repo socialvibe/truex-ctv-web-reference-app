@@ -1,4 +1,8 @@
+import uuid from 'uuid';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+
+// Use a random UUID for the "opt out of tracking" advertising id that is stable for a session.
+const optOutAdvertisingId = uuid.v4();
 
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
@@ -9,34 +13,19 @@ export class InteractiveAd {
         let adOverlay;
         let tar;
 
-        let vastConfigUrl = adBlock.vastUrl;
-        const dataPrefix = 'data:';
-        if (vastConfigUrl.startsWith(dataPrefix)) {
-            // We are loading a data stub included in the app.
-            let appPrefix = window.location.origin + window.location.pathname;
-            const indexSuffix = 'index.html';
-            if (appPrefix.endsWith('index.html')) {
-                appPrefix = appPrefix.substring(0, appPrefix.length - indexSuffix.length);
-            }
-            // Ensure we are not caching the data, as well as ensuring we can tolerate the extra '&' query args
-            // that TAR appends to the actual query.
-            const cacheBuster = '?ts=' + Date.now();
-            vastConfigUrl = appPrefix + 'data/' + vastConfigUrl.substring(dataPrefix.length) + cacheBuster;
-        }
-
-        self.start = () => {
+        self.start = async () => {
             adBlock.started = true;
 
             videoController.showLoadingSpinner(true);
 
+            const advertisingId = await getPlatformAdvertisingId();
+
             try {
                 videoController.pause();
 
-                const options = {
-                    supportsUserCancelStream: true,
-                };
+                let vastConfigUrl = adBlock.vastUrl.replace('\${IDFA}', advertisingId);
 
-                tar = new TruexAdRenderer(vastConfigUrl, options);
+                tar = new TruexAdRenderer(vastConfigUrl, {supportsUserCancelStream: true});
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
@@ -95,6 +84,12 @@ export class InteractiveAd {
                     break;
             }
 
+        }
+
+        async function getPlatformAdvertisingId() {
+            // TODO: use true platform specific advertising id.
+            //return videoController.platform.getPlatformAdvertisingId();
+            return optOutAdvertisingId;
         }
 
         function handleAdError(errOrMsg) {
