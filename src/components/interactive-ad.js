@@ -7,13 +7,11 @@ const optOutAdvertisingId = uuid.v4();
 // Exercises the True[X] Ad Renderer for interactive ads.
 export class InteractiveAd {
     constructor(adBreak, videoController) {
-        const self = this;
-
         let adFreePod = false;
         let adOverlay;
         let tar;
 
-        self.start = async () => {
+        this.start = async () => {
             adBreak.started = true;
 
             videoController.showLoadingSpinner(true);
