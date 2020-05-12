@@ -1,0 +1,28 @@
+coverage/
+stats.json
+/dist/
+/deploy/build
+/deploy/netrc
+html_exports/
+/tmp
+/node_modules/
+.DS_Store
+
+/src/config.js
+
+/.sass-cache/
+
+# IntelliJ project files
+/.idea/
+*.iml
+
+# Xbox build, user artifacts
+/platforms/XboxOne/RefApp/RefApp.csproj.user
+/platforms/XboxOne/.vs/
+/platforms/XboxOne/RefApp/bin/
+/platforms/SkylineXboxOne/RefApp/obj/
+/platforms/SkylineXboxOne/RefApp/AppPackages/
+/platforms/SkylineXboxOne/RefApp/BundleArtifacts/
+
+# PS4 build artifacts
+/US0007*/

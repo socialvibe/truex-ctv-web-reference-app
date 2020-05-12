@@ -1,0 +1,153 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font: normal 20px 'Open Sans', Arial, Helvetica, sans-serif;
+  color: white;
+  background-color: black;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+h1, h3 {
+  font-size: 32px;
+}
+
+$appW: 1920px;
+$appH: 1080px;
+$contentM: 160px;
+
+// Intended to be at design size of 1920x1080, scaled to fit to the window, centered.
+.app-content {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page {
+  display: none;
+
+  &.show {
+    display: block;
+  }
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.truex-vision-logo {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  $logoImageW: 566px;
+  $logoImageH: 121px;
+  $logoW: 300px;
+  width: $logoW;
+  height: ($logoW * $logoImageH) / $logoImageW;
+  background-image: url("./assets/true-vision-logo.png");
+  background-size: cover;
+}
+
+#home-page {
+  background-image: url("assets/home-page-background.png");
+  background-size: cover;
+
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(bottom, rgba(16, 16, 16, 1), rgba(0, 0, 0, 0));
+    background: -webkit-linear-gradient(bottom, rgba(16, 16, 16, 1), rgba(0, 0, 0, 0));
+  }
+
+  .content-area {
+    position: absolute;
+    top: 146px;
+    left: $contentM;
+  }
+
+  .title {
+    font-size: 60px;
+    font-weight: bold;
+  }
+
+  .description {
+    font-size: 30px;
+    line-height: 1.8em;
+    width: 55em;
+    margin-top: 10px;
+  }
+
+  .play-content-button {
+    margin-top: 20px;
+    width: 354px;
+    height: 94px;
+    background-image: url("./assets/play-content-button.png");
+    background-size: cover;
+    background-color: transparent;
+  }
+}
+
+.tray {
+  $trayH: 526px;
+
+  margin-top: 60px;
+  width: $appW - $contentM;
+  height: $trayH;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .tile, .selected-tile {
+    display: inline-block;
+    background-color: #6B6B6B;
+    vertical-align: top;
+  }
+
+  .selected-tile {
+    width: 375px;
+    height: $trayH;
+    margin-right: 60px;
+  }
+
+  .tile {
+    margin-left: 50px;
+    width: 220px;
+    height: 331px;
+  }
+}
+
+#playback-page {
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    // Keep the player hidden but still in the DOM until we know the video is loaded.
+    visibility: hidden;
+  }
+}
