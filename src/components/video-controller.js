@@ -424,8 +424,8 @@ export class VideoController {
     refresh() {
         const currTime = this.currVideoTime;
 
-        const isPlayindAd = this.isPlayingAdAt(currTime);
-        if (isPlayindAd) {
+        const isPlayingAd = this.isPlayingAdAt(currTime);
+        if (isPlayingAd) {
             this.adIndicator.classList.add('show');
         } else {
             this.adIndicator.classList.remove('show');
@@ -477,7 +477,7 @@ export class VideoController {
         this.timeLabel.innerText = timeLabel(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
 
-        if (isPlayindAd) {
+        if (isPlayingAd) {
             this.adMarkersDiv.classList.remove('show');
         } else {
             if (this.refreshAdMarkers && durationToDisplay > 0) {
