@@ -1,0 +1,47 @@
+.debug-log {
+  position: fixed;
+  box-sizing: content-box;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2D2D32;
+
+  overflow-y: hidden;
+  text-align: left;
+
+  margin: 0;
+  padding: 0em;
+
+  .msgs {
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-left: 2em; // don't get too close to TV screen edges
+    padding-right: 2em;
+
+    pre {
+      word-break: break-all; // webkit
+      word-wrap: break-word;
+      white-space: pre;
+      white-space: -moz-pre-wrap;
+      white-space: pre-wrap;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+      overflow-wrap: break-word;
+
+      color: antiquewhite;
+
+      &.warn {
+        color: yellow;
+      }
+
+      &.error {
+        color: salmon;
+      }
+    }
+  }
+
+}
