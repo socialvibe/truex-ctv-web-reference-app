@@ -36,7 +36,11 @@ For platform deployments using your local build, you will need to refer to your 
 
 The instructions for deploy to specific device platforms are available in the platform specific READMEs under the `./platforms` directory:
 * [Fire TV](./platforms/FireTV/README.md)
-* [Vizio Smartcast](./platforms/VizioSmartCast/README.md)
+* [Vizio](./platforms/Vizio/README.md)
+* [LG](./platforms/PS4/README.md)
+* [Tizen](./platforms/PS4/README.md)
+* [PS4](./platforms/PS4/README.md)
+* [XboxOne](./platforms/XboxOne/README.md)
 
 ## History.back blocking
 

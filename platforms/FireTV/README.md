@@ -1,4 +1,3 @@
-# Skyline on Android TV / Fire TV
+# Fire TV / Android TV Deployment
 
-### Progress
-Ready for development
+TODO

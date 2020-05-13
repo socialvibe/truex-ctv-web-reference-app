@@ -1,8 +1,8 @@
-# Deploying to Vizio Smartcast TVs
+# Vizio Smartcast Deployment
 
 ## Dev and Debug
 
-In the instructions below the app url refers to the officially hosted one (e.g. https://ctv.truex.com/web/ref-app/master/index.html), or else your current dev machines locally hosted one, as per the `npm start` command (e.g. http://192/168.1.72:8080).
+In the instructions below the app url refers to the officially hosted one (e.g. https://ctv.truex.com/web/ref-app/master/index.html), or else your current dev machines locally hosted one, as per the `npm start` command (e.g. http://192.168.1.72:8080).
 
 ### To launch a web app (SmartCast 3)
 For basic execution on market (retail) TV models as well as development enabled models you can cast the app to the TV as follows:
