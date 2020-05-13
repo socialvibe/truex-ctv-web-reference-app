@@ -1,9 +1,5 @@
-*.iml
-.gradle
-/local.properties
-/.idea/
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
+/app/.idea/
+/app/build/
+/app/local.properties
+/app/.idea/libraries/Gradle__androidx_test_espresso_espresso_core_3_2_0_aar.xml

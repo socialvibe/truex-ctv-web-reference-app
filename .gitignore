@@ -15,14 +15,3 @@ html_exports/
 # IntelliJ project files
 /.idea/
 *.iml
-
-# Xbox build, user artifacts
-/platforms/XboxOne/RefApp/RefApp.csproj.user
-/platforms/XboxOne/.vs/
-/platforms/XboxOne/RefApp/bin/
-/platforms/SkylineXboxOne/RefApp/obj/
-/platforms/SkylineXboxOne/RefApp/AppPackages/
-/platforms/SkylineXboxOne/RefApp/BundleArtifacts/
-
-# PS4 build artifacts
-/US0007*/

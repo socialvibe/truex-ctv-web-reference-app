@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        webView.loadUrl("https://ctv.truex.com/web/ref-app/master/index.html")
+
+        val appUrl = getString(R.string.app_url);
+        webView.loadUrl(appUrl)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
