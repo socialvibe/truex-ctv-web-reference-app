@@ -53,7 +53,7 @@ In particular, on the Fire TV, the back action key event cannot be reliably over
 process `history.back()` actions instead via the `popstate` event handler.
 
 The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice 
-whereby the only field back actions that are applicable only to their own application code. Please refer to this 
+whereby they only field back actions that are applicable only to their own application code. Please refer to this 
 code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` 
 and `pushBackActionStub` methods.
 ```
