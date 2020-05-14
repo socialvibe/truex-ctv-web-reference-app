@@ -1,9 +1,11 @@
 # Overview
 
-This project contains sample source code that demonstrates how to integrate true[X]'s CTV Web ad renderer. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) as 
+For an initial introduction on how to integrate the true[X] SDK into a web application, please refer to the [Getting Started](./GETTING_STARTED.md) guide.
+
+This project contains sample source code that demonstrates an example integration of true[X]'s CTV Web ad renderer. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) as 
 fully stitched into the video stream. 
 
-For a more detailed integration guide, please refer to the []CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
+For a more detailed integration guide, please refer to the [CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
 
 # Implementation Details
 
@@ -22,7 +24,25 @@ The `tar` integration flow is described in the `start` method, with the key resp
 
 # Build/Develop/Deploy
 
-TODO, refer to platform folders for device specific deployment
+To begin development, run the standard `npm install` to bring download a the project dependencies.
+
+To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url.
+
+The hosted copy of this reference app is currently hosted [here](https://ctv.truex.com/web/ref-app/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
+
+To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
+
+For platform deployments using your local build, you will need to refer to your PC's IP address as the launcher url, e.g. `http://1912.168.1.72:8080`, using instead your real IP on the local Wifi network, of course. 
+
+## Platform Deployments
+
+The instructions for deploy to specific device platforms are available in the platform specific READMEs under the `./platforms` directory:
+* [Fire TV / Android TV](./platforms/FireTV/README.md)
+* [Vizio](./platforms/Vizio/README.md)
+* [LG](./platforms/LG/README.md)
+* [Tizen](./platforms/Tizen/README.md)
+* [PS4](./platforms/PS4/README.md)
+* [XboxOne](./platforms/XboxOne/README.md)
 
 ## History.back blocking
 
