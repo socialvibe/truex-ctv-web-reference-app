@@ -96,7 +96,7 @@ function handleAdError(errOrMsg) {
 
 ## Integration Example
 
-Here is a [reference application example](./) that uses the `TruexAdRenderer`, demonstrating its use from a main video, as well as including several platform launcher projects that demonstrate how to sideload the reference application to various devices.
+Here is a [reference application example](.) that uses the `TruexAdRenderer`, demonstrating its use from a main video, as well as including several platform launcher projects that demonstrate how to sideload the reference application to various devices.
 
 ## Supported Platforms
 
