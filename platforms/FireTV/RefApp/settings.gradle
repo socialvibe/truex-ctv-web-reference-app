@@ -1,0 +1,2 @@
+rootProject.name='CTV Web Ref App'
+include ':app'

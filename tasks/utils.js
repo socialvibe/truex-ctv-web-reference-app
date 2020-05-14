@@ -8,6 +8,8 @@ const child_process = require('child_process');
  * Presents helpful build time utility functions.
  */
 module.exports = {
+    appUrl: "https://ctv.truex.com/web/ref-app/master/index.html",
+
     fatalError: fatalError,
 
     getEnv: getEnv,
