@@ -10,13 +10,12 @@ this will add an entry in the `"dependencies"` section in the `package.json` fil
 ```json
     "dependencies": {
         "@truex/ctv-ad-renderer": "1.0.0",
-        ...
 ```
 One then builds and runs their web app like usual, e.g. invoking `npm start` for webpack-based projects.
 
 One typically develops web apps in a local browser like Chrome, e.g. referring to the locally running app via something like `http://localhost:8080`. Running on a particular device platform is a matter of installing or sideloading a launcher app that refers to the hosted web app, whether that is an officially hosted site or one's local dev machine like `http://192.168.1.72:8080`.
 
-To actually integrate the true[X] ad renderer, one has to create and invoke it during you app's video playback when the time of an ad break is reached. The pattern will look something like:
+To actually integrate the true[X] ad renderer, one has to create and invoke it during your app's video playback when the time of an ad break is reached. The pattern will look something like:
 ```javascript
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 
