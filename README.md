@@ -1,9 +1,11 @@
 # Overview
 
-This project contains sample source code that demonstrates how to integrate true[X]'s CTV Web ad renderer. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) as 
+For an initial introduction on how to integrate the true[X] SDK into a web application, please refer to the [Getting Started](./GETTING_STARTED.md) guide.
+
+This project contains sample source code that demonstrates an example integration of true[X]'s CTV Web ad renderer. This further exemplifies the needed logic to manage true[X] opt-in flows (choice cards) as 
 fully stitched into the video stream. 
 
-For a more detailed integration guide, please refer to the []CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
+For a more detailed integration guide, please refer to the [CTV Web Integration documentation](https://github.com/socialvibe/truex-ctv-web-integration) on github.com.
 
 # Implementation Details
 
@@ -35,10 +37,10 @@ For platform deployments using your local build, you will need to refer to your 
 ## Platform Deployments
 
 The instructions for deploy to specific device platforms are available in the platform specific READMEs under the `./platforms` directory:
-* [Fire TV](./platforms/FireTV/README.md)
+* [Fire TV / Android TV](./platforms/FireTV/README.md)
 * [Vizio](./platforms/Vizio/README.md)
-* [LG](./platforms/PS4/README.md)
-* [Tizen](./platforms/PS4/README.md)
+* [LG](./platforms/LG/README.md)
+* [Tizen](./platforms/Tizen/README.md)
 * [PS4](./platforms/PS4/README.md)
 * [XboxOne](./platforms/XboxOne/README.md)
 
