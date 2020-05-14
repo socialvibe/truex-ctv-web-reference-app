@@ -29,8 +29,8 @@ pipeline {
                     def latestPath = "${basePath}/latest"
                     def versionPath = "${basePath}/${refAppVersion}"
                     def options = "--recursive --exclude \"*.js.map\" --acl public-read"
-                    sh "aws s3 cp dist s3://s3.amazonaws.com/${latestPath}/ ${options}"
-                    sh "aws s3 cp dist s3://s3.amazonaws.com/${versionPath}/ ${options}"
+                    sh "aws s3 cp dist s3://${latestPath}/ ${options}"
+                    sh "aws s3 cp dist s3://${versionPath}/ ${options}"
                     echo "Updated 'latest': https://${latestPath}/index.html"
                     echo "Updated '${refAppVersion}': https://${versionPath}/index.html"
                 }
