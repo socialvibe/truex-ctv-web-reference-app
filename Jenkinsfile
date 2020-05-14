@@ -21,17 +21,10 @@ pipeline {
             steps {
                 echo 'Beginning deploy stage.'
                 script {
-                    def packageJson = readJSON file: 'package.json'
-                    def refAppVersion = packageJson.version
-                    echo "Using branch '${BRANCH_NAME}', version ${refAppVersion}."
-                    def basePath = "ctv.truex.com/web/ref-app/${BRANCH_NAME}"
-                    def latestPath = "${basePath}/latest"
-                    def versionPath = "${basePath}/${refAppVersion}"
-                    def options = "--recursive --exclude \"*.js.map\" --acl public-read"
-                    sh "aws s3 cp dist s3://${latestPath}/ ${options}"
-                    sh "aws s3 cp dist s3://${versionPath}/ ${options}"
-                    echo "Updated 'latest': https://${latestPath}/index.html"
-                    echo "Updated '${refAppVersion}': https://${versionPath}/index.html"
+                    echo "Using branch '${BRANCH_NAME}'."
+                    def path = "ctv.truex.com/web/ref-app/${BRANCH_NAME}"
+                    sh "aws s3 cp dist s3://${path}/ --recursive --exclude \"*.js.map\" --acl public-read"
+                    echo "Updated: https://${path}/index.html"
                 }
                 echo 'Finished deploy stage.'
             }
