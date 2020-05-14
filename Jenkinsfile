@@ -16,7 +16,6 @@ pipeline {
                     branch 'master'
                     branch pattern: 'release/*'
                     branch 'develop'
-                    branch 'feature/CTV-1937/host-ref-app'
                 }
             }
             steps {
