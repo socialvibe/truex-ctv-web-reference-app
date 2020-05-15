@@ -3,12 +3,12 @@ const path = require("path");
 const propertiesReader = require("properties-reader");
 
 module.exports = {
-    buildLauncher: buildLauncher
+    build: build
 };
 
 const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 
-function buildLauncher(serverUrl) {
+function build(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
     const distInstaller = `${pkg.name}_firetv_${pkg.version}.apk`;
