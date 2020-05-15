@@ -77,28 +77,12 @@ class MainActivity : Activity() {
         evalJS("history.back()")
     }
 
-    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             evalJS("focusManager.inject('menu')")
             return true
         }
-        return super.onKeyUp(keyCode, event)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            event.startTracking() // Required tracking to enable long press
-            return true
-        }
         return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            evalJS("focusManager.inject('extra')")
-            return true
-        }
-        return super.onKeyLongPress(keyCode, event)
     }
 
 }
