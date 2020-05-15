@@ -15,7 +15,7 @@ function build(serverUrl) {
     console.log(`building ${distInstaller}
   for ${serverUrl}`);
 
-    const appDir = path.resolve(__dirname, "RefApp");
+    const appDir = getAppDir();
 
     const stringsFile = path.resolve(appDir, "app/src/main/res/values/strings.xml");
     utils.replacePatterns(stringsFile, [
@@ -28,10 +28,18 @@ function build(serverUrl) {
 
     const buildApk = path.resolve(appDir, "app/build/outputs/apk/debug/app-debug.apk");
 
-    const gradlew = process.platform == "win32" ? "gradlew.bat" : "gradlew";
-    utils.spawn(path.resolve(appDir, gradlew), ['build']);
+    utils.spawn(getGradleScript(), ['build']);
     const distDir = path.resolve(__dirname, '../../dist');
     utils.mkDir(distDir);
     utils.copyFile(buildApk, path.resolve(distDir, distInstaller));
     console.log(`created ${distInstaller}`);
+}
+
+function getAppDir() {
+    return path.resolve(__dirname, "RefApp");
+}
+
+function getGradleScript() {
+    const gradlew = process.platform == "win32" ? "gradlew.bat" : "gradlew";
+    return path.resolve(getAppDir(), gradlew);
 }
