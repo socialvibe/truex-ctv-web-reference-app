@@ -11,31 +11,27 @@ const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 function buildLauncher(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
-    const destPkgName = `${pkg.name}_firetv_${pkg.version}.apk`;
-    console.log(`building ${destPkgName}`);
+    const distInstaller = `${pkg.name}_firetv_${pkg.version}.apk`;
+    console.log(`building ${distInstaller}
+  for ${serverUrl}`);
 
-    const launcherDir = path.resolve(__dirname, "launcher-app");
+    const appDir = path.resolve(__dirname, "RefApp");
 
-    const webMafSettings = path.resolve(launcherDir, "webmaf_settings.ini");
-    utils.replacePatterns(webMafSettings, [
+    const stringsFile = path.resolve(appDir, "app/src/main/res/values/strings.xml");
+    utils.replacePatterns(stringsFile, [
         {
             // Update the url to the hosted web server
-            match: /ServiceStartUri=.*/,
-            replacement: "ServiceStartUri=" + serverUrl
+            match: /(<string name="app_url">).*</,
+            replacement: "$1" + serverUrl + "<"
         },
     ]);
 
-    const appConfig = path.resolve(launcherDir, "app.config");
+    const buildApk = path.resolve(appDir, "app/build/outputs/apk/debug/app-debug.apk");
 
-    const properties = propertiesReader(appConfig);
-    const serviceContentId = properties.getRaw("SERVICE_CONTENT_ID");
-    const servicePackageVersion = properties.getRaw("SERVICE_PKG_VERSION");
-    const srcPkgPath = path.resolve(serviceContentId, servicePackageVersion, serviceContentId + ".pkg");
-
-    utils.spawn(path.resolve(ps4_pkg_gen_location, "create_pkg.bat"), [appConfig]);
+    const gradlew = process.platform == "win32" ? "gradlew.bat" : "gradlew";
+    utils.spawn(path.resolve(appDir, gradlew), ['build']);
     const distDir = path.resolve(__dirname, '../../dist');
-    const destPkgPath = path.resolve(distDir, destPkgName);
     utils.mkDir(distDir);
-    utils.copyFile(srcPkgPath, destPkgPath);
-    console.log(`created ${destPkgPath}`);
+    utils.copyFile(buildApk, path.resolve(distDir, distInstaller));
+    console.log(`created ${distInstaller}`);
 }
