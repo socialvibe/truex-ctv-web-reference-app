@@ -74,7 +74,7 @@ class MainActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        evalJS("focusManager.inject('back')")
+        evalJS("history.back()")
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
