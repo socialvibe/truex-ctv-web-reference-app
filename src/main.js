@@ -12,6 +12,9 @@ import { VideoController } from "./components/video-controller";
     const focusManager = new TXMFocusManager();
     const platform = focusManager.platform;
 
+    // Expose to allow input injections from FireTV native code.
+    window.focusManager = focusManager;
+
     let currentPage = 'home-page';
     let lastPage;
 

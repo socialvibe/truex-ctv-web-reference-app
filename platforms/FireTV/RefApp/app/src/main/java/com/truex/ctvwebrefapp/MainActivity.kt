@@ -1,9 +1,11 @@
 package com.truex.ctvwebrefapp
 
-import android.app.Activity
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.KeyEvent
+import android.view.View
 import android.view.Window
 import android.view.WindowManager.LayoutParams
 import android.webkit.WebSettings
@@ -48,13 +50,55 @@ class MainActivity : Activity() {
         webSettings.javaScriptCanOpenWindowsAutomatically = false
         webSettings.mediaPlaybackRequiresUserGesture = false
 
-        if (BuildConfig.DEBUG) {
-            // Enable chrome://inspect debugging in debug builds
-            WebView.setWebContentsDebuggingEnabled(true)
+        webSettings.setSupportZoom(true)
+        webSettings.displayZoomControls = false
+        webSettings.builtInZoomControls = false
+        webSettings.setSupportMultipleWindows(false)
+        webSettings.mediaPlaybackRequiresUserGesture = false
 
-            // Disable caching
-            webSettings.setAppCacheEnabled(false)
-            webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
-        }
+        webView.setInitialScale(100)
+
+        webView.scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
+        webView.isScrollbarFadingEnabled = false
+
+        // Enable chrome://inspect debugging in debug builds
+        WebView.setWebContentsDebuggingEnabled(true)
+
+        // Disable caching
+        webSettings.setAppCacheEnabled(false)
+        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
     }
+
+    fun evalJS(js: String) {
+        webView.evaluateJavascript(js, null)
+    }
+
+    override fun onBackPressed() {
+        evalJS("focusManager.inject('back')")
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            evalJS("focusManager.inject('menu')")
+            return true
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            event.startTracking() // Required tracking to enable long press
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            evalJS("focusManager.inject('extra')")
+            return true
+        }
+        return super.onKeyLongPress(keyCode, event)
+    }
+
 }
