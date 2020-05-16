@@ -16,7 +16,7 @@ The ref app launcher is a native Android TV application that wraps a web view th
 
 To run: 
 * Open the project in Android Studio, and build and run it in the usual manner.
-* You can chooser to run on your attached Fire TV device, or in the emulator.
+* You can choose to run on your attached Fire TV device, or in the emulator.
 * Edit the `app_url` entry in `strings.xml` to change which url to load at runtime.
 * Note the explicit overrides of `onBackPressed` and `onKeyDown` in `MainAcitvity`, so as to inject the back and menu remote control actions into the web view.
 
