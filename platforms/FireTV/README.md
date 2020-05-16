@@ -26,7 +26,7 @@ You can also build the app launcher via the command line, e.g.
 
 ## History.back blocking
 
-To reiterate again, the Fire TV / Android requires back actions from the remote control are fielded as `history.back()` actions. As such, custom `popstate` event handling will be required to allow your app to cooperate with true[X]'s own back action blocking needed to control a user's prematurely exiting from an ad.
+To reiterate again, the Fire TV / Android has back actions from the remote control fielded as `history.back()` actions. As such, custom `popstate` event handling will be required to allow your app to cooperate with true[X]'s own back action blocking needed to control a user's prematurely exiting from an ad.
 
 In particular, on the Fire TV, the back action key event cannot be reliably overridden, and one must 
 process `history.back()` actions instead via the `popstate` event handler.
