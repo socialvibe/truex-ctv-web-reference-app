@@ -1,6 +1,5 @@
 const utils = require('../../tasks/utils');
 const path = require("path");
-const propertiesReader = require("properties-reader");
 
 module.exports = {
     build: build
