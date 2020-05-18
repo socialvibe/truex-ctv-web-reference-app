@@ -24,7 +24,7 @@ The `tar` integration flow is described in the `start` method, with the key resp
 
 # Build/Develop/Deploy
 
-To begin development, run the standard `npm install` to ownload the project's dependencies.
+To begin development, run the standard `npm install` to download the project's dependencies.
 
 To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url.
 
