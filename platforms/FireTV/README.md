@@ -8,7 +8,7 @@ The Amazon Web App Tester can be used readily to exercise an HTML web applicatio
 
 To run:
 * Install and run the Amazon Web App Tester from the Amazon store on the Fire TV.
-* Enter the url of either the [hosted version](https://ctv.truex.com/web/ref-app/master/index.html), for your locally running version (e.g. http://192.168.1.72:8080).
+* Enter the url of either the [hosted version](https://ctv.truex.com/web/ref-app/master/index.html), or your locally running version (e.g. http://192.168.1.72:8080).
 
 ## Native Reference App Launcher
 
