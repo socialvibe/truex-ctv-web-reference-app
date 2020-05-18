@@ -12,7 +12,7 @@ To run:
 
 ## Native Reference App Launcher
 
-The ref app launcher is a native Android TV application that wraps a web view that displays the reference application HTML/JS code from the [main source tree](../../src). It is located in in the [RefApp directory](./RefApp).
+The ref app launcher is a native Android TV application that wraps a web view that displays the reference application HTML/JS code from the [main source tree](../../src). It is located in the [RefApp directory](./RefApp).
 
 To run: 
 * Open the project in Android Studio, and build and run it in the usual manner.
