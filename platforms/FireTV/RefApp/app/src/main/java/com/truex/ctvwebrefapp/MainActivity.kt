@@ -54,7 +54,6 @@ class MainActivity : Activity() {
         webSettings.displayZoomControls = false
         webSettings.builtInZoomControls = false
         webSettings.setSupportMultipleWindows(false)
-        webSettings.mediaPlaybackRequiresUserGesture = false
 
         webView.setInitialScale(100)
 
