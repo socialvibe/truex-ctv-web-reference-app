@@ -46,16 +46,12 @@ The instructions for deploy to specific device platforms are available in the pl
 
 ## History.back blocking
 
-If you choose to field and process history.back() actions, custom `popstate` event handling will be required to allow your app
-to cooperate with true[X]'s own back action blocking needed to control a user's prematurely exiting from an ad.
+If you choose to field and process history.back() actions, custom `popstate` event handling will be required to allow your app to cooperate with true[X]'s own back action blocking needed to control a user's prematurely exiting from an ad.
 
 In particular, on the Fire TV, the back action key event cannot be reliably overridden, and one must 
 process `history.back()` actions instead via the `popstate` event handler.
 
-The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice 
-whereby they only field back actions that are applicable only to their own application code. Please refer to this 
-code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` 
-and `pushBackActionStub` methods.
+The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice whereby they only field back actions that are applicable only to their own application code. Please refer to this code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` and `pushBackActionStub` methods.
 ```
 window.addEventListener("popstate", onBackAction);
 ```
