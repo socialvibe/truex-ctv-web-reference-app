@@ -3,14 +3,14 @@ const path = require("path");
 const propertiesReader = require("properties-reader");
 
 module.exports = {
-    buildLauncher: buildLauncher
+    build: build
 };
 
 const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 
 const ps4_pkg_gen_location = "C:/PS4/pkg_generator_ps4";
 
-function buildLauncher(serverUrl) {
+function build(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
     const destPkgName = `${pkg.name}_ps4_${pkg.version}.pkg`;
