@@ -22,8 +22,8 @@ export class InteractiveAd {
                 videoController.pause();
 
                 const options = {
-                    userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query
-                    fallbackAdvertisingId: optOutAdvertisingId, // random fallback to user otherwise
+                    userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query if present
+                    fallbackAdvertisingId: optOutAdvertisingId, // random fallback to use if no user ad id is available
                     supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
                 };
 
