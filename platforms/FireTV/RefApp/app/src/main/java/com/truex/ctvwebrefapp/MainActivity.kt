@@ -2,12 +2,15 @@ package com.truex.ctvwebrefapp
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.Settings.Secure
 import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager.LayoutParams
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 
@@ -59,6 +62,7 @@ class MainActivity : Activity() {
 
         webView.scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isScrollbarFadingEnabled = false
+        webView.addJavascriptInterface(this, "fireTvApp");
 
         // Enable chrome://inspect debugging in debug builds
         WebView.setWebContentsDebuggingEnabled(true)
@@ -66,6 +70,29 @@ class MainActivity : Activity() {
         // Disable caching
         webSettings.setAppCacheEnabled(false)
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
+    }
+
+    @JavascriptInterface
+    fun getAdvertisingId() {
+        getFireTVAdvertisingId()
+    }
+
+    private fun getFireTVAdvertisingId() {
+        try {
+            val cr = contentResolver
+            val advertisingID = Secure.getString(cr, "advertising_id")
+            runOnUiThread {
+                evalJS(
+                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"$advertisingID\")"
+                )
+            }
+        } catch (ex: java.lang.Exception) {
+            runOnUiThread {
+                evalJS(
+                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady()"
+                )
+            }
+        }
     }
 
     fun evalJS(js: String) {

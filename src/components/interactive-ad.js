@@ -89,6 +89,22 @@ export class InteractiveAd {
         }
 
         async function getNativePlatformAdvertisingId() {
+            if (window.fireTvApp) {
+                if (!window.webApp) {
+                    window.webApp = {};
+                }
+
+                return new Promise(function(resolve, reject) {
+                    window.webApp.onAdvertisingIdReady = function(advertisingId, isLimitAdTrackingEnabled) {
+                        resolve(arguments.length == 0 ? null: advertisingId);
+                    }
+
+                    window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
+                });
+            } else {
+                return Promise.resolve(undefined);
+            }
+
             // TODO: use true platform specific advertising id, e.g. bridge call to native side for FireTV
             return undefined;
         }
