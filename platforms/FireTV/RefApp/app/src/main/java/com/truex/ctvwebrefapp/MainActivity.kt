@@ -13,6 +13,8 @@ import android.view.WindowManager.LayoutParams
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
+
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
@@ -74,22 +76,28 @@ class MainActivity : Activity() {
 
     @JavascriptInterface
     fun getAdvertisingId() {
-        getFireTVAdvertisingId()
-    }
-
-    private fun getFireTVAdvertisingId() {
-        try {
-            val cr = contentResolver
-            val advertisingID = Secure.getString(cr, "advertising_id")
-            runOnUiThread {
-                evalJS(
-                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"$advertisingID\")"
-                )
+        AsyncTask.execute {
+            var adId: String?
+            var limitAdTracking: Boolean
+            try {
+                val adInfo: AdvertisingIdClient.Info =
+                    AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
+                adId = adInfo.getId()
+                limitAdTracking = adInfo.isLimitAdTrackingEnabled()
+            } catch (e: Exception) {
+                val cr = contentResolver
+                adId = Secure.getString(cr, "advertising_id")
+                limitAdTracking = Secure.getInt(cr, "limit_ad_tracking") != 0
             }
-        } catch (ex: java.lang.Exception) {
+
+            if (limitAdTracking) {
+                // Prevent ad id from being used
+                adId = null
+            }
+
             runOnUiThread {
                 evalJS(
-                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady()"
+                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"" + adId + "\")"
                 )
             }
         }

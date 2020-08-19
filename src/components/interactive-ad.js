@@ -95,8 +95,10 @@ export class InteractiveAd {
                 }
 
                 return new Promise(function(resolve, reject) {
-                    window.webApp.onAdvertisingIdReady = function(advertisingId, isLimitAdTrackingEnabled) {
-                        resolve(arguments.length == 0 ? null: advertisingId);
+                    window.webApp.onAdvertisingIdReady = function(advertisingId) {
+                        // consume the callback
+                        window.webApp.onAdvertisingIdReady = null;
+                        resolve(advertisingId);
                     }
 
                     window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
