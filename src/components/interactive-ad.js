@@ -89,8 +89,19 @@ export class InteractiveAd {
         }
 
         async function getNativePlatformAdvertisingId() {
-            // TODO: use true platform specific advertising id, e.g. bridge call to native side for FireTV
-            return undefined;
+            if (window.webApp && window.fireTvApp) {
+                return new Promise(function(resolve, reject) {
+                    window.webApp.onAdvertisingIdReady = function(advertisingId) {
+                        // consume the callback
+                        window.webApp.onAdvertisingIdReady = null;
+                        resolve(advertisingId);
+                    }
+
+                    window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
+                });
+            }
+
+            return Promise.resolve(undefined);
         }
 
         function handleAdError(errOrMsg) {

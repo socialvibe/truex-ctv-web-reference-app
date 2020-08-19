@@ -14,6 +14,7 @@ import { VideoController } from "./components/video-controller";
 
     // Expose to allow input injections from FireTV native code.
     window.focusManager = focusManager;
+    window.webApp = {};
 
     let currentPage = 'home-page';
     let lastPage;
