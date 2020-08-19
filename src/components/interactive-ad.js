@@ -99,9 +99,9 @@ export class InteractiveAd {
 
                     window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
                 });
-            } else {
-                return Promise.resolve(undefined);
             }
+
+            return Promise.resolve(undefined);
         }
 
         function handleAdError(errOrMsg) {
