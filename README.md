@@ -28,10 +28,7 @@ To begin development, run the standard `npm install` to download the project's d
 
 To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. On then ensures the various platform installer configurations refer to that url.
 
-The hosted copy of this reference app is currently hosted [here](https://ctv.truex.com/web/ref-app/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
-```
-https://ctv.truex.com/web/ref-app/master/index.html
-```
+The hosted copy of this reference app is currently hosted at [https://ctv.truex.com/web/ref-app/master/index.html](https://ctv.truex.com/web/ref-app/master/index.html), which can be viewed directly in Chrome to review and debug the reference app generically.
 
 To run a local build, run the `npm start` command to run a local webpack instance. You can use `http://localhost:8080` or `http://0.0.0.0:8080` to review and debug in Chrome.
 
