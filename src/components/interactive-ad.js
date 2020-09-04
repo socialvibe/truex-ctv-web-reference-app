@@ -1,7 +1,7 @@
 import uuid from 'uuid';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
 
-// Use a random UUID for the "opt out of tracking" advertising id that is stable for a session.
+// Use a random UUID for the "opt out of tracking" advertising id that is stable for all ads in an app session.
 const optOutAdvertisingId = uuid.v4();
 
 // Exercises the True[X] Ad Renderer for interactive ads.
@@ -16,14 +16,18 @@ export class InteractiveAd {
 
             videoController.showLoadingSpinner(true);
 
-            const advertisingId = await getPlatformAdvertisingId();
+            const nativeAdvertisingId = await getNativePlatformAdvertisingId();
 
             try {
                 videoController.pause();
 
-                const vastConfigUrl = adBreak.vastUrl.replace('\${IDFA}', advertisingId);
+                const options = {
+                    userAdvertisingId: nativeAdvertisingId, // i.e. override from native side query if present
+                    fallbackAdvertisingId: optOutAdvertisingId, // random fallback to use if no user ad id is available
+                    supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
+                };
 
-                tar = new TruexAdRenderer(vastConfigUrl, {supportsUserCancelStream: true});
+                tar = new TruexAdRenderer(adBreak.vastUrl, options);
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
@@ -84,10 +88,20 @@ export class InteractiveAd {
 
         }
 
-        async function getPlatformAdvertisingId() {
-            // TODO: use true platform specific advertising id.
-            //return videoController.platform.getPlatformAdvertisingId();
-            return optOutAdvertisingId;
+        async function getNativePlatformAdvertisingId() {
+            if (window.webApp && window.fireTvApp) {
+                return new Promise(function(resolve, reject) {
+                    window.webApp.onAdvertisingIdReady = function(advertisingId) {
+                        // consume the callback
+                        window.webApp.onAdvertisingIdReady = null;
+                        resolve(advertisingId);
+                    }
+
+                    window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
+                });
+            }
+
+            return Promise.resolve(undefined);
         }
 
         function handleAdError(errOrMsg) {
