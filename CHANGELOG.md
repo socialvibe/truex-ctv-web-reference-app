@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.0.2
+* Use production version of TAR.
+
 ## v1.0.1
 * Default user advertising id processing now done by TAR instead.
 
