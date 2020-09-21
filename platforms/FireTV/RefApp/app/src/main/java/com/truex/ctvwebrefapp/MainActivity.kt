@@ -21,16 +21,16 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // remove title bar, make Activity fullscreen, and set the layout
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(LayoutParams.FLAG_FULLSCREEN, LayoutParams.FLAG_FULLSCREEN)
-        setContentView(R.layout.activity_main)
         initWebView()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
+        // remove title bar, make Activity fullscreen, and set the layout
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(LayoutParams.FLAG_FULLSCREEN, LayoutParams.FLAG_FULLSCREEN)
+        setContentView(R.layout.activity_main)
+
         webView = findViewById(R.id.appWebView)
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
@@ -55,6 +55,9 @@ class MainActivity : Activity() {
         // Disable caching
         webSettings.setAppCacheEnabled(false)
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        val appUrl = getString(R.string.app_url);
+        webView.loadUrl(appUrl)
     }
 
     @JavascriptInterface
