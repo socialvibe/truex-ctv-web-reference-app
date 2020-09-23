@@ -8,6 +8,10 @@
         android:name="android.software.leanback"
         android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/app_icon"
@@ -19,8 +23,10 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTask"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

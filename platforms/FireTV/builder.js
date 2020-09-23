@@ -27,7 +27,9 @@ function build(serverUrl) {
 
     const buildApk = path.resolve(appDir, "app/build/outputs/apk/debug/app-debug.apk");
 
-    utils.spawn(getGradleScript(), ['build']);
+    const gradlew = process.platform == "win32" ? ".\\gradlew.bat" : "./gradlew";
+    utils.spawn(gradlew, ['clean', 'build'], getAppDir());
+
     const distDir = path.resolve(__dirname, '../../dist');
     utils.mkDir(distDir);
     utils.copyFile(buildApk, path.resolve(distDir, distInstaller));
@@ -36,9 +38,4 @@ function build(serverUrl) {
 
 function getAppDir() {
     return path.resolve(__dirname, "RefApp");
-}
-
-function getGradleScript() {
-    const gradlew = process.platform == "win32" ? "gradlew.bat" : "gradlew";
-    return path.resolve(getAppDir(), gradlew);
 }
