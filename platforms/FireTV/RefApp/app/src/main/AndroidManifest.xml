@@ -8,6 +8,10 @@
         android:name="android.software.leanback"
         android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/app_icon"
