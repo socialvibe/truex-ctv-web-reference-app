@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.0.4
+* Use the latest version of TAR (1.0.9).
+
 ## v1.0.3
 * Use the latest version of TAR (1.0.7).
 
