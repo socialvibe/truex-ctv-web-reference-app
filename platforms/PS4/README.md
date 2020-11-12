@@ -19,3 +19,6 @@ Follow these steps to build the CTV reference application PS4 Launcher:
     - copy the .pkg file to the root directory of a USB drive
     - take the USB drive and insert to your PlayStation
     - Select `Game > Install Package Files` from main screen and follow the instructions
+    
+2. To debug the the app running on the PS4, go to `http://<IP of device>:1900` in Chrome.
+    - e.g. `http://192.168.1.82:1900`
