@@ -24,7 +24,7 @@ import { VideoController } from "./components/video-controller";
 
     const spinner = new LoadingSpinner();
 
-    const videoController = new VideoController("#playback-page video", "#playback-page .video-control-bar", platform);
+    const videoController = new VideoController("#playback-page", "#playback-page .video-control-bar", platform);
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
 

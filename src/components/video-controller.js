@@ -8,10 +8,15 @@ import { AdBreak}        from "./ad-break";
 import { InteractiveAd } from "./interactive-ad";
 
 export class VideoController {
-    constructor(videoSelector, controlBarSelector, platform) {
+    constructor(videoOwner, controlBarSelector, platform) {
         this.debug = false; // set to true to enable more verbose video time logging.
 
-        this.video = document.querySelector(videoSelector);
+        this.videoOwner = document.querySelector(videoOwner);
+        if (!this.videoOwner) {
+            throw new Error('video owner not found: ' + videoOwner);
+        }
+        this.video = null;
+
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
         this.videoStarted = false;
@@ -67,7 +72,18 @@ export class VideoController {
     }
 
     showVideo(visible) {
-        this.video.style.visibility = visible ? 'visible' : 'hidden';
+        if (visible) {
+            if (!this.video) {
+                // Put the video underneath any control overlays.
+                this.video = document.createElement('video');
+                this.videoOwner.insertBefore(this.video, this.videoOwner.firstChild);
+            }
+        } else if (this.video) {
+            // We get better performance on platforms like the PS4 if we remove the video entirely when not showing it
+            // PS4 really only likes to have one playing video at a time.
+            this.video.parentNode.removeChild(this.video);
+            this.video = null;
+        }
 
         // If we are showing the video, we are loaded enough.
         if (visible) this.showLoadingSpinner(false);
@@ -87,6 +103,7 @@ export class VideoController {
 
         this.setAdPlaylist(videoStream.vmap);
 
+        this.showVideo(true);
         const video = this.video;
 
         const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
@@ -119,15 +136,16 @@ export class VideoController {
     stopVideo() {
         this.hideControlBar();
 
+        this.showLoadingSpinner(false);
+
         const video = this.video;
+        if (!video) return;
 
         if (this.videoStarted) {
             this.currVideoTime = video.currentTime;
         }
 
         this.pause();
-
-        this.showLoadingSpinner(false);
 
         if (this.platform.isPS4) {
             if (this._videoTimeupdateInterval) {
@@ -138,14 +156,6 @@ export class VideoController {
             video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
         }
         video.removeEventListener('playing', this.onVideoPlaying);
-
-        // Note: We need to actually clear the video source to allow video reuse on the PS4.
-        // Otherwise the video hangs when it is shown again.
-        try {
-            video.src = "";
-        } catch (err) {
-            console.warn('could not clear video src');
-        }
 
         this.showVideo(false);
 
@@ -306,7 +316,7 @@ export class VideoController {
 
     onVideoPlaying() {
         if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
-            // The initial seek did not supported, e.g. on the PS4. Do it now.
+            // The initial seek is not supported, e.g. on the PS4. Do it now.
             // Loading will be considered complete on the first time update that has progress.
             this.seekTo(this.initialVideoTime);
         } else {
