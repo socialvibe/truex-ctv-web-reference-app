@@ -288,7 +288,7 @@ export class VideoController {
         const minTarget = firstAdBlock && firstAdBlock.startTime <= 0 ? firstAdBlock.duration : 0;
 
         this.seekTarget = Math.max(minTarget, Math.min(newTarget, maxTarget));
-        if (this.debug) console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
+        console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
 
         if (video) {
             video.currentTime = this.seekTarget;
