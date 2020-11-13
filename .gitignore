@@ -16,3 +16,11 @@ html_exports/
 # IntelliJ project files
 /.idea/
 *.iml
+
+# PS4 build artifacts
+/US0007*/
+LauncherApp/app/libs/
+
+# Fire TV / Android build artifacts
+/.gradle/
+/platforms/FireTV/.gradle/
