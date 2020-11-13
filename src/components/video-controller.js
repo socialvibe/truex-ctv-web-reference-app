@@ -16,11 +16,11 @@ export class VideoController {
             throw new Error('video owner not found: ' + videoOwner);
         }
         this.video = null;
+        this.videoStream = null;
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
         this.videoStarted = false;
-        this.videoLoaded = false;
 
         this.adIndicator = document.querySelector('.ad-indicator');
 
@@ -71,24 +71,6 @@ export class VideoController {
         this.stopControlBarTimer();
     }
 
-    showVideo(visible) {
-        if (visible) {
-            if (!this.video) {
-                // Put the video underneath any control overlays.
-                this.video = document.createElement('video');
-                this.videoOwner.insertBefore(this.video, this.videoOwner.firstChild);
-            }
-        } else if (this.video) {
-            // We get better performance on platforms like the PS4 if we remove the video entirely when not showing it
-            // PS4 really only likes to have one playing video at a time.
-            this.video.parentNode.removeChild(this.video);
-            this.video = null;
-        }
-
-        // If we are showing the video, we are loaded enough.
-        if (visible) this.showLoadingSpinner(false);
-    }
-
     showLoadingSpinner(visible) {
         const spinner = this.loadingSpinner;
         if (!spinner) return;
@@ -97,27 +79,46 @@ export class VideoController {
     }
 
     startVideo(videoStream) {
+        if (this.video && videoStream) {
+            if (this.videoStream === videoStream) {
+                return; // already playing.
+            } else {
+                // Stop the existing video. (Creating a new video instance is more reliable across
+                // platforms than just changing the video.src)
+                this.stopVideo();
+            }
+        }
+
+        const isFirstStart = !!videoStream;
+        if (videoStream) {
+            this.videoStream = videoStream;
+        } else {
+            videoStream = this.videoStream;
+        }
+        if (!videoStream) return;
+
         this.videoStarted = true;
+
+        if (isFirstStart) {
+            this.setAdPlaylist(videoStream.vmap);
+        }
+
+        const firstAdBlock = this.adPlaylist[0];
+        if (firstAdBlock && firstAdBlock.startTime <= 0) {
+            // If we have a preroll, show it immediately, since otherwise it takes a while for the video to load
+            const started = this.startAd(firstAdBlock);
+            if (started) return;
+        }
 
         this.showLoadingSpinner(true);
 
-        this.setAdPlaylist(videoStream.vmap);
-
-        this.showVideo(true);
-        const video = this.video;
-
-        const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
-        this.initialVideoTime = initialVideoTime;
-        console.log(`starting video: ${videoStream.title} 
-    src: ${videoStream.url}
-    at time: ${this.timeDebugDisplay(initialVideoTime)}`);
+        // Put the video underneath any control overlays.
+        const video = document.createElement('video');
+        this.video = video;
+        this.videoOwner.insertBefore(this.video, this.videoOwner.firstChild);
 
         video.src = videoStream.url;
         video.addEventListener('playing', this.onVideoPlaying);
-
-        video.currentTime = initialVideoTime;
-        this.play();
-        this.showControlBar(true);
 
         if (this.platform.isPS4) {
             // Using a timeupdate listener seems to hang playback on the PS4.
@@ -126,11 +127,15 @@ export class VideoController {
             video.addEventListener("timeupdate", this.onVideoTimeUpdate);
         }
 
-        const firstAdBlock = this.adPlaylist[0];
-        if (firstAdBlock && firstAdBlock.startTime <= 0) {
-            // If we have a preroll, show it immediately, since otherwise it takes a while for the video to load
-            this.startAd(firstAdBlock);
-        }
+        const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
+        this.initialVideoTime = initialVideoTime;
+        console.log(`starting video: ${videoStream.title} 
+    src: ${videoStream.url}
+    at time: ${this.timeDebugDisplay(initialVideoTime)}`);
+
+        video.currentTime = initialVideoTime;
+        this.play();
+        this.showControlBar(true);
     }
 
     stopVideo() {
@@ -157,10 +162,9 @@ export class VideoController {
         }
         video.removeEventListener('playing', this.onVideoPlaying);
 
-        this.showVideo(false);
-
+        video.parentNode.removeChild(video); // remove from the DOM
+        this.video = null;
         this.videoStarted = false;
-        this.videoLoaded = false;
     }
 
     stopControlBarTimer() {
@@ -185,11 +189,17 @@ export class VideoController {
     }
 
     play() {
+        if (!this.video) return;
         if (this.debug) console.log(`play from: ${this.timeDebugDisplay(this.currVideoTime)}`);
-        this.video.play();
+        // Work around PS4 hangs by starting playback in a separate thread.
+        setTimeout( () => {
+            if (!this.video) return; // video has been closed
+            this.video.play();
+        }, 10);
     }
 
     pause() {
+        if (!this.video) return;
         if (this.debug) console.log(`paused at: ${this.timeDebugDisplay(this.currVideoTime)}`);
         this.video.pause();
     }
@@ -269,7 +279,8 @@ export class VideoController {
         if (currTime == newTarget) return; // already at the target
 
         const video = this.video;
-        const maxTarget = this.rawVideoDuration || video.duration || 0;
+
+        const maxTarget = this.rawVideoDuration || video && video.duration || 0;
         if (maxTarget <= 0) return; // nothing to seek to yet
 
         // Don't allow seeking back to the preroll.
@@ -279,7 +290,13 @@ export class VideoController {
         this.seekTarget = Math.max(minTarget, Math.min(newTarget, maxTarget));
         if (this.debug) console.log(`seek to: ${this.timeDebugDisplay(this.seekTarget)}`);
 
-        video.currentTime = this.seekTarget;
+        if (video) {
+            video.currentTime = this.seekTarget;
+
+        } else {
+            // No video present yet, just record the desired current time.
+            this.currVideoTime = newTarget;
+        }
 
         if (showControlBar) {
             this.showControlBar();
@@ -303,39 +320,39 @@ export class VideoController {
     }
 
     startAd(adBreak) {
-        if (adBreak.started || adBreak.completed) return;
+        if (adBreak.started || adBreak.completed) return false;
         adBreak.started = true;
         console.log(`ad started: ${adBreak.id} at: ${this.timeDebugDisplay(adBreak.startTime)}`);
 
         // Start an interactive ad.
         this.hideControlBar();
 
+        this.stopVideo(); // avoid multiple videos, e.g. for platforms like the PS4
+
         const ad = new InteractiveAd(adBreak, this);
         ad.start();
+
+        return true; // ad started
     }
 
     onVideoPlaying() {
+        if (!this.video) return;
+
         if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
             // The initial seek is not supported, e.g. on the PS4. Do it now.
             // Loading will be considered complete on the first time update that has progress.
             this.seekTo(this.initialVideoTime);
-        } else {
-            // Video is now ready to be shown.
-            this.videoLoaded = true;
-            this.showVideo(true);
         }
     }
 
     onVideoTimeUpdate() {
+        if (!this.video) return;
+
+        this.showLoadingSpinner(false);
+
         const currTime = this.currVideoTime;
         const newTime = Math.floor(this.video.currentTime);
         if (newTime == currTime) return;
-
-        if (!this.videoLoaded) {
-            // We have playback progress, we can consider the video as loaded.
-            this.videoLoaded = true;
-            this.showVideo(true);
-        }
 
         this.seekTarget = undefined;
 
@@ -418,7 +435,7 @@ export class VideoController {
         if (adBreak) {
             return adBreak.duration;
         }
-        const duration = this.rawVideoDuration || this.video.duration || 0;
+        const duration = this.rawVideoDuration || this.video && this.video.duration || 0;
         if (this.rawVideoDuration <= 0 && duration > 0) {
             // Remember the now known main video duration.
             this.rawVideoDuration = duration;

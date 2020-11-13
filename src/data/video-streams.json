@@ -16,7 +16,7 @@
         "breakId": "midroll-1",
         "timeOffset": "00:08:05.000",
         "videoAdDuration": "92",
-        "vastUrl": "https://qa-get.truex.com/22105de992284775a56f28ca6dac16c667e73cd0/vast/config?dimension_1=sample-video&dimension_2=#{slot.position}&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=5678"
+        "vastUrl": "https://qa-get.truex.com/22105de992284775a56f28ca6dac16c667e73cd0/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=5678"
       }
     ]
   }
