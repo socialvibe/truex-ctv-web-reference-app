@@ -368,7 +368,6 @@ export class VideoController {
     }
 
     setAdPlaylist(vmap) {
-        vmap = [];
         this.refreshAdMarkers = true;
         const childNodes = this.adMarkersDiv.children;
         for (let i = childNodes.length - 1; i >= 0; i--) {
