@@ -32,13 +32,13 @@ import { VideoController } from "./components/video-controller";
     let currentVideoStream = videoStreams[0];
 
     function hidePage() {
+        // Ensure no videos are playing
+        videoController.stopVideo();
+
         // Hide whatever page is currently shown.
         document.querySelectorAll('.app-content .page').forEach(page => {
             page.classList.remove('show');
         });
-
-        // Ensure no videos are playing
-        videoController.stopVideo();
 
         // Ensure no outstanding loading spinner.
         spinner.hide();
@@ -58,22 +58,25 @@ import { VideoController } from "./components/video-controller";
     function renderCurrentPage() {
         hidePage();
 
-        const pageSelector = '#' + currentPage;
-        enableStyle(pageSelector, 'show', true);
+        // Show new page "later" to work around PS4 issues.
+        setTimeout(() => {
+            const pageSelector = '#' + currentPage;
+            enableStyle(pageSelector, 'show', true);
 
-        if (currentPage == "home-page") {
-            renderHomePage();
+            if (currentPage == "home-page") {
+                renderHomePage();
 
-        } else if (currentPage == "playback-page") {
-            renderPlaybackPage();
+            } else if (currentPage == "playback-page") {
+                renderPlaybackPage();
 
-        } else if (currentPage == "debug-log") {
-            debugLog.show();
-            setFocus(pageSelector, null, debugLog.onInputAction);
+            } else if (currentPage == "debug-log") {
+                debugLog.show();
+                setFocus(pageSelector, null, debugLog.onInputAction);
 
-        } else if (currentPage == "test-page") {
-            spinner.show();
-        }
+            } else if (currentPage == "test-page") {
+                spinner.show();
+            }
+        }, 0);
     }
 
     let resizeTimer;
@@ -159,7 +162,14 @@ import { VideoController } from "./components/video-controller";
     function renderPlaybackPage() {
         videoController.startVideo(currentVideoStream);
 
-        setFocus(videoController.video, null, action => {
+        const pageDiv = document.getElementById('playback-page');
+        setFocus(pageDiv, null, action => {
+            if (!videoController.video) return false;
+            if (action == inputActions.back) {
+                videoController.stopVideo();
+                return true; // handled
+            }
+
             if (action == inputActions.select || action == inputActions.playPause) {
                 videoController.togglePlayPause();
                 return true; // handled
@@ -243,12 +253,13 @@ import { VideoController } from "./components/video-controller";
                     return true; // handled
                 }
 
+                const handled = baseOnInputAction(action);
+                if (handled) return true;
+
                 if (action == inputActions.back) {
                     returnToParentPage();
                     return true; // handled
                 }
-
-                return baseOnInputAction(action);
             };
 
             scaleAppSize();
