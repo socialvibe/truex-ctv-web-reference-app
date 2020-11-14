@@ -162,14 +162,10 @@ import { VideoController } from "./components/video-controller";
     function renderPlaybackPage() {
         videoController.startVideo(currentVideoStream);
 
+        // The entire page is the focus.
         const pageDiv = document.getElementById('playback-page');
-        setFocus(pageDiv, null, action => {
-            if (!videoController.video) return false;
-            if (action == inputActions.back) {
-                videoController.stopVideo();
-                return true; // handled
-            }
 
+        setFocus(pageDiv, null, action => {
             if (action == inputActions.select || action == inputActions.playPause) {
                 videoController.togglePlayPause();
                 return true; // handled
