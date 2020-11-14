@@ -119,13 +119,7 @@ export class VideoController {
 
         video.src = videoStream.url;
         video.addEventListener('playing', this.onVideoPlaying);
-
-        if (this.platform.isPS4) {
-            // Using a timeupdate listener seems to hang playback on the PS4.
-            this._videoTimeupdateInterval = setInterval(this.onVideoTimeUpdate, 500);
-        } else {
-            video.addEventListener("timeupdate", this.onVideoTimeUpdate);
-        }
+        video.addEventListener("timeupdate", this.onVideoTimeUpdate);
 
         const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
         this.initialVideoTime = initialVideoTime;
@@ -152,17 +146,13 @@ export class VideoController {
 
         this.pause();
 
-        if (this.platform.isPS4) {
-            if (this._videoTimeupdateInterval) {
-                clearInterval(this._videoTimeupdateInterval);
-                this._videoTimeupdateInterval = null;
-            }
-        } else {
-            video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
-        }
+        video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
         video.removeEventListener('playing', this.onVideoPlaying);
 
+        video.src = ''; // ensure actual video is unloaded (needed for PS4).
+
         video.parentNode.removeChild(video); // remove from the DOM
+
         this.video = null;
         this.videoStarted = false;
     }
