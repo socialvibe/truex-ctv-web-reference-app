@@ -58,11 +58,11 @@ import { VideoController } from "./components/video-controller";
     function renderCurrentPage() {
         hidePage();
 
+        const pageSelector = '#' + currentPage;
+        enableStyle(pageSelector, 'show', true);
+
         // Show new page "later" to work around PS4 issues.
         setTimeout(() => {
-            const pageSelector = '#' + currentPage;
-            enableStyle(pageSelector, 'show', true);
-
             if (currentPage == "home-page") {
                 renderHomePage();
 
