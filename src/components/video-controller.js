@@ -20,7 +20,6 @@ export class VideoController {
 
         this.controlBarDiv = document.querySelector(controlBarSelector);
         this.isControlBarVisible = false;
-        this.videoStarted = false;
 
         this.adIndicator = document.querySelector('.ad-indicator');
 
@@ -95,8 +94,6 @@ export class VideoController {
         }
         if (!videoStream) return;
 
-        this.videoStarted = true;
-
         if (isFirstStart) {
             this.setAdPlaylist(videoStream.vmap);
         }
@@ -150,10 +147,6 @@ export class VideoController {
         const video = this.video;
         if (!video) return;
 
-        if (this.videoStarted) {
-            this.currVideoTime = video.currentTime;
-        }
-
         this.pause();
 
         video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
@@ -164,7 +157,7 @@ export class VideoController {
         video.parentNode.removeChild(video); // remove from the DOM
 
         this.video = null;
-        this.videoStarted = false;
+        this.seekTarget = undefined;
     }
 
     stopControlBarTimer() {
@@ -215,7 +208,7 @@ export class VideoController {
     stepVideo(forward) {
         const currTime = this.currVideoTime;
 
-        if (this.isPlayingAdAt(currTime)) {
+        if (this.hasAdBreakAt(currTime)) {
             // Don't allow user seeking during ad playback
             // Just show the control bar so the user can see the timeline.
             this.showControlBar();
@@ -246,9 +239,9 @@ export class VideoController {
                     // Skip over the completed ad.
                     newTarget += adBreak.duration;
                 } else {
-                    // Stop on the ad to play it.
-                    newTarget = adBreak.startTime;
-                    break;
+                    // Play the ad instead of stepping over it.
+                    this.startAd(adBreak);
+                    return;
                 }
             }
         } else {
@@ -262,9 +255,9 @@ export class VideoController {
                     // Skip over the completed ad.
                     newTarget -= adBreak.duration;
                 } else {
-                    // Stop on the ad to play it.
-                    newTarget = adBreak.startTime;
-                    break;
+                    // Play the ad instead of stepping over it.
+                    this.startAd(adBreak);
+                    return;
                 }
             }
         }
@@ -310,9 +303,7 @@ export class VideoController {
         if (adBreak) {
             adBreak.completed = true;
 
-            if (this.debug) {
-                console.log(`ad break skipped: ${adBreak.id} to: ${this.timeDebugDisplay(adBreak.endTime)}`);
-            }
+            console.log(`ad break skipped: ${adBreak.id} to: ${this.timeDebugDisplay(adBreak.endTime)}`);
 
             // skip a little past the end to avoid a flash of the final ad frame
             this.seekTo(adBreak.endTime+1, this.isControlBarVisible);
@@ -329,8 +320,11 @@ export class VideoController {
 
         this.stopVideo(); // avoid multiple videos, e.g. for platforms like the PS4
 
+        // ensure main video is logically at the ad start for when it resumes
+        this.currVideoTime = adBreak.startTime;
+
         const ad = new InteractiveAd(adBreak, this);
-        ad.start();
+        setTimeout(() => ad.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
 
         return true; // ad started
     }
@@ -354,8 +348,6 @@ export class VideoController {
         const newTime = Math.floor(this.video.currentTime);
         if (newTime == currTime) return;
 
-        this.seekTarget = undefined;
-
         const adBreak = this.getAdBreakAt(newTime);
         if (adBreak) {
             if (adBreak.completed) {
@@ -374,6 +366,7 @@ export class VideoController {
         }
 
         this.currVideoTime = newTime;
+        this.seekTarget = undefined;
         this.refresh();
     }
 
@@ -397,7 +390,7 @@ export class VideoController {
         });
     }
 
-    isPlayingAdAt(rawVideoTime) {
+    hasAdBreakAt(rawVideoTime) {
         const adBreak = this.getAdBreakAt(rawVideoTime);
         return !!adBreak;
     }
@@ -451,8 +444,8 @@ export class VideoController {
     refresh() {
         const currTime = this.currVideoTime;
 
-        const isPlayingAd = this.isPlayingAdAt(currTime);
-        if (isPlayingAd) {
+        const isAtAd = this.hasAdBreakAt(currTime);
+        if (isAtAd) {
             this.adIndicator.classList.add('show');
         } else {
             this.adIndicator.classList.remove('show');
@@ -504,7 +497,7 @@ export class VideoController {
         this.timeLabel.innerText = timeLabel(timeToDisplay);
         this.timeLabel.style.left = percentage(timeToDisplay);
 
-        if (isPlayingAd) {
+        if (isAtAd) {
             this.adMarkersDiv.classList.remove('show');
         } else {
             if (this.refreshAdMarkers && durationToDisplay > 0) {
