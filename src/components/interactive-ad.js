@@ -128,7 +128,8 @@ export class InteractiveAd {
                 adBreak.completed = true;
                 videoController.skipAd(adBreak);
             }
-            videoController.startVideo();
+
+            videoController.startVideoLater();
         }
     }
 }

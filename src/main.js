@@ -61,8 +61,8 @@ import { VideoController } from "./components/video-controller";
         const pageSelector = '#' + currentPage;
         enableStyle(pageSelector, 'show', true);
 
-        // Show new page "later" to work around PS4 issues.
-        setTimeout(() => {
+        // // Show new page "later" to work around PS4 issues.
+        // setTimeout(() => {
             if (currentPage == "home-page") {
                 renderHomePage();
 
@@ -76,7 +76,7 @@ import { VideoController } from "./components/video-controller";
             } else if (currentPage == "test-page") {
                 spinner.show();
             }
-        }, 0);
+        // }, 0);
     }
 
     let resizeTimer;
@@ -160,7 +160,7 @@ import { VideoController } from "./components/video-controller";
     }
 
     function renderPlaybackPage() {
-        videoController.startVideo(currentVideoStream);
+        videoController.startVideoLater(currentVideoStream);
 
         // The entire page is the focus.
         const pageDiv = document.getElementById('playback-page');

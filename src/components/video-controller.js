@@ -78,16 +78,14 @@ export class VideoController {
         else spinner.hide();
     }
 
+    // Create the video element "later" to work around some hangs and crashes, e.g. on the PS4
+    startVideoLater(videoStream) {
+        this.stopOldVideo(videoStream);
+        setTimeout(() => this.startVideo(videoStream), 1);
+    }
+
     startVideo(videoStream) {
-        if (this.video && videoStream) {
-            if (this.videoStream === videoStream) {
-                return; // already playing.
-            } else {
-                // Stop the existing video. (Creating a new video instance is more reliable across
-                // platforms than just changing the video.src)
-                this.stopVideo();
-            }
-        }
+        this.stopOldVideo(videoStream);
 
         const isFirstStart = !!videoStream;
         if (videoStream) {
@@ -130,6 +128,18 @@ export class VideoController {
         video.currentTime = initialVideoTime;
         this.play();
         this.showControlBar(true);
+    }
+
+    stopOldVideo(newVideoStream) {
+        if (this.video && newVideoStream) {
+            if (this.videoStream === newVideoStream) {
+                return; // already playing.
+            } else {
+                // Stop the existing video. (Creating a new video instance is more reliable across
+                // platforms than just changing the video.src)
+                this.stopVideo();
+            }
+        }
     }
 
     stopVideo() {
