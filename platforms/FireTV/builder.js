@@ -11,8 +11,7 @@ function build(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
     const distInstaller = `${pkg.name}_firetv_${pkg.version}.apk`;
-    console.log(`building ${distInstaller}
-  for ${serverUrl}`);
+    console.log(`building ${distInstaller} for ${serverUrl}`);
 
     const appDir = getAppDir();
 
