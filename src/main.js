@@ -160,7 +160,8 @@ import { VideoController } from "./components/video-controller";
     }
 
     function renderPlaybackPage() {
-        videoController.startVideoLater(currentVideoStream);
+        const showControlBar = true;
+        videoController.startVideoLater(currentVideoStream, showControlBar);
 
         // The entire page is the focus.
         const pageDiv = document.getElementById('playback-page');

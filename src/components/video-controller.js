@@ -78,12 +78,12 @@ export class VideoController {
     }
 
     // Create the video element "later" to work around some hangs and crashes, e.g. on the PS4
-    startVideoLater(videoStream) {
+    startVideoLater(videoStream, showControlBar) {
         this.stopOldVideo(videoStream);
-        setTimeout(() => this.startVideo(videoStream), 1);
+        setTimeout(() => this.startVideo(videoStream, showControlBar), 1);
     }
 
-    startVideo(videoStream) {
+    startVideo(videoStream, showControlBar) {
         this.stopOldVideo(videoStream);
 
         const isFirstStart = !!videoStream;
@@ -126,7 +126,13 @@ export class VideoController {
         this.currVideoTime = initialVideoTime; // will be updated as video progresses
         video.currentTime = initialVideoTime;
         this.play();
-        this.showControlBar(true);
+
+        if (showControlBar) {
+            const forceTimer = true;
+            this.showControlBar(forceTimer);
+        } else {
+            this.hideControlBar();
+        }
     }
 
     stopOldVideo(newVideoStream) {
@@ -170,6 +176,11 @@ export class VideoController {
     }
 
     togglePlayPause() {
+        if (!this.video) {
+            const showControlBar = true;
+            this.startVideoLater(null, showControlBar);
+            return;
+        }
         if (this.isPaused()) {
             this.play();
         } else {
