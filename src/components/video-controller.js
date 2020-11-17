@@ -36,9 +36,9 @@ export class VideoController {
         this.timeLabel = this.controlBarDiv.querySelector('.current-time');
         this.durationLabel = this.controlBarDiv.querySelector('.duration');
 
+        this.videoStarted = false;
         this.initialVideoTime = 0;
         this.currVideoTime = -1;
-        this.rawVideoDuration = 0;
         this.seekTarget = undefined;
 
         this.adPlaylist = [];
@@ -48,7 +48,7 @@ export class VideoController {
         this.loadingSpinner = null;
 
         this.onVideoTimeUpdate = this.onVideoTimeUpdate.bind(this);
-        this.onVideoPlaying = this.onVideoPlaying.bind(this);
+        this.onVideoStarted = this.onVideoStarted.bind(this);
 
         this.closeVideoAction = function() {}; // override as needed
     }
@@ -113,15 +113,17 @@ export class VideoController {
         this.videoOwner.insertBefore(this.video, this.videoOwner.firstChild);
 
         video.src = videoStream.url;
-        video.addEventListener('playing', this.onVideoPlaying);
+        video.addEventListener('playing', this.onVideoStarted);
         video.addEventListener("timeupdate", this.onVideoTimeUpdate);
 
-        const initialVideoTime = Math.max(0, this.currVideoTime || video.currentTime || 0);
+        const initialVideoTime = Math.max(0, this.initialVideoTime || 0);
         this.initialVideoTime = initialVideoTime;
         console.log(`starting video: ${videoStream.title} 
     src: ${videoStream.url}
     at time: ${this.timeDebugDisplay(initialVideoTime)}`);
 
+        this.videoStarted = false; // set to true on the first playing event
+        this.currVideoTime = initialVideoTime; // will be updated as video progresses
         video.currentTime = initialVideoTime;
         this.play();
         this.showControlBar(true);
@@ -150,7 +152,7 @@ export class VideoController {
         this.pause();
 
         video.removeEventListener('timeupdate', this.onVideoTimeUpdate);
-        video.removeEventListener('playing', this.onVideoPlaying);
+        video.removeEventListener('playing', this.onVideoStarted);
 
         video.src = ''; // ensure actual video is unloaded (needed for PS4).
 
@@ -178,7 +180,7 @@ export class VideoController {
     }
 
     isPaused() {
-        return this.video.paused;
+        return !this.video || this.video.paused;
     }
 
     play() {
@@ -273,8 +275,9 @@ export class VideoController {
 
         const video = this.video;
 
-        const maxTarget = this.rawVideoDuration || video && video.duration || 0;
-        if (maxTarget <= 0) return; // nothing to seek to yet
+        // We only have a max target if the video duration is known.
+        const duration = video && video.duration;
+        const maxTarget = duration > 0 ? duration : newTarget;
 
         // Don't allow seeking back to the preroll.
         const firstAdBlock = this.adPlaylist[0];
@@ -287,8 +290,8 @@ export class VideoController {
             video.currentTime = this.seekTarget;
 
         } else {
-            // No video present yet, just record the desired current time.
-            this.currVideoTime = newTarget;
+            // No video present yet, just record the desired current time for when it resumes.
+            this.initialVideoTime = newTarget;
         }
 
         if (showControlBar) {
@@ -321,7 +324,7 @@ export class VideoController {
         this.stopVideo(); // avoid multiple videos, e.g. for platforms like the PS4
 
         // ensure main video is logically at the ad start for when it resumes
-        this.currVideoTime = adBreak.startTime;
+        this.initialVideoTime = adBreak.startTime;
 
         const ad = new InteractiveAd(adBreak, this);
         setTimeout(() => ad.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
@@ -329,24 +332,30 @@ export class VideoController {
         return true; // ad started
     }
 
-    onVideoPlaying() {
+    onVideoStarted() {
         if (!this.video) return;
+        if (this.videoStarted) return;
+        this.videoStarted = true;
 
         if (!this.platform.supportsInitialVideoSeek && this.initialVideoTime > 0) {
             // The initial seek is not supported, e.g. on the PS4. Do it now.
-            // Loading will be considered complete on the first time update that has progress.
+            this.currVideoTime = 0;
             this.seekTo(this.initialVideoTime);
+        } else {
+            this.showLoadingSpinner(false);
+            this.refresh();
         }
     }
 
     onVideoTimeUpdate() {
         if (!this.video) return;
 
-        this.showLoadingSpinner(false);
-
-        const currTime = this.currVideoTime;
         const newTime = Math.floor(this.video.currentTime);
+        const currTime = this.currVideoTime;
         if (newTime == currTime) return;
+        this.currVideoTime = newTime;
+
+        this.showLoadingSpinner(false);
 
         const adBreak = this.getAdBreakAt(newTime);
         if (adBreak) {
@@ -365,7 +374,6 @@ export class VideoController {
             }
         }
 
-        this.currVideoTime = newTime;
         this.seekTarget = undefined;
         this.refresh();
     }
@@ -428,11 +436,7 @@ export class VideoController {
         if (adBreak) {
             return adBreak.duration;
         }
-        const duration = this.rawVideoDuration || this.video && this.video.duration || 0;
-        if (this.rawVideoDuration <= 0 && duration > 0) {
-            // Remember the now known main video duration.
-            this.rawVideoDuration = duration;
-        }
+        const duration = this.video && this.video.duration || 0;
         return this.getPlayingVideoTimeAt(duration);
     }
 
