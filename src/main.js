@@ -160,9 +160,9 @@ import { VideoController } from "./components/video-controller";
         const showControlBar = true;
         videoController.startVideoLater(currentVideoStream, showControlBar);
 
-        // The entire page is the focus.
         const pageDiv = document.getElementById('playback-page');
 
+        // The entire page is the focus.
         setFocus(pageDiv, null, action => {
             if (action == inputActions.select || action == inputActions.playPause) {
                 videoController.togglePlayPause();
