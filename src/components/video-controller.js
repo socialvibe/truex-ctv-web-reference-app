@@ -219,6 +219,8 @@ export class VideoController {
     }
 
     stepVideo(forward) {
+        if (!this.video) return; // user stepping should only happen on an active video
+
         const currTime = this.currVideoTime;
 
         if (this.hasAdBreakAt(currTime)) {
