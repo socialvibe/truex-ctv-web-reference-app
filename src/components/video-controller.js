@@ -338,7 +338,7 @@ export class VideoController {
         this.initialVideoTime = adBreak.startTime;
 
         const ad = new InteractiveAd(adBreak, this);
-        ad.start();
+        setTimeout(() => ad.start(), 1); // show the ad "later" to work around hangs/crashes on the PS4
 
         return true; // ad started
     }
