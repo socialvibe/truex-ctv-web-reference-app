@@ -61,22 +61,19 @@ import { VideoController } from "./components/video-controller";
         const pageSelector = '#' + currentPage;
         enableStyle(pageSelector, 'show', true);
 
-        // // Show new page "later" to work around PS4 issues.
-        // setTimeout(() => {
-            if (currentPage == "home-page") {
-                renderHomePage();
+        if (currentPage == "home-page") {
+            renderHomePage();
 
-            } else if (currentPage == "playback-page") {
-                renderPlaybackPage();
+        } else if (currentPage == "playback-page") {
+            renderPlaybackPage();
 
-            } else if (currentPage == "debug-log") {
-                debugLog.show();
-                setFocus(pageSelector, null, debugLog.onInputAction);
+        } else if (currentPage == "debug-log") {
+            debugLog.show();
+            setFocus(pageSelector, null, debugLog.onInputAction);
 
-            } else if (currentPage == "test-page") {
-                spinner.show();
-            }
-        // }, 0);
+        } else if (currentPage == "test-page") {
+            spinner.show();
+        }
     }
 
     let resizeTimer;
