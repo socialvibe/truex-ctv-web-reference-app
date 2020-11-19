@@ -254,6 +254,8 @@ import { VideoController } from "./components/video-controller";
                     returnToParentPage();
                     return true; // handled
                 }
+
+                return false;
             };
 
             scaleAppSize();
