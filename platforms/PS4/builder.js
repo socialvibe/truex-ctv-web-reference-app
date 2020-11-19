@@ -14,7 +14,7 @@ function build(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
     const destPkgName = `${pkg.name}_ps4_${pkg.version}.pkg`;
-    console.log(`building ${destPkgName}`);
+    console.log(`building ${destPkgName} for ${serverUrl}`);
 
     if (process.platform != "win32") {
         utils.fatalError("PS4 builds can only be done on a Windows 10 machine.");

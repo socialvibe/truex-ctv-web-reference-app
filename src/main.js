@@ -24,7 +24,7 @@ import { VideoController } from "./components/video-controller";
 
     const spinner = new LoadingSpinner();
 
-    const videoController = new VideoController("#playback-page video", "#playback-page .video-control-bar", platform);
+    const videoController = new VideoController("#playback-page", "#playback-page .video-control-bar", platform);
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
 
@@ -32,13 +32,13 @@ import { VideoController } from "./components/video-controller";
     let currentVideoStream = videoStreams[0];
 
     function hidePage() {
+        // Ensure no videos are playing
+        videoController.stopVideo();
+
         // Hide whatever page is currently shown.
         document.querySelectorAll('.app-content .page').forEach(page => {
             page.classList.remove('show');
         });
-
-        // Ensure no videos are playing
-        videoController.stopVideo();
 
         // Ensure no outstanding loading spinner.
         spinner.hide();
@@ -157,9 +157,13 @@ import { VideoController } from "./components/video-controller";
     }
 
     function renderPlaybackPage() {
-        videoController.startVideo(currentVideoStream);
+        const showControlBar = true;
+        videoController.startVideoLater(currentVideoStream, showControlBar);
 
-        setFocus(videoController.video, null, action => {
+        const pageDiv = document.getElementById('playback-page');
+
+        // The entire page is the focus.
+        setFocus(pageDiv, null, action => {
             if (action == inputActions.select || action == inputActions.playPause) {
                 videoController.togglePlayPause();
                 return true; // handled
@@ -243,12 +247,15 @@ import { VideoController } from "./components/video-controller";
                     return true; // handled
                 }
 
+                const handled = baseOnInputAction(action);
+                if (handled) return true;
+
                 if (action == inputActions.back) {
                     returnToParentPage();
                     return true; // handled
                 }
 
-                return baseOnInputAction(action);
+                return false;
             };
 
             scaleAppSize();
