@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.0.9
+* Use persistent fallback advertising id.
+
 ## v1.0.8
 * PS4 video playback fixes.
 
