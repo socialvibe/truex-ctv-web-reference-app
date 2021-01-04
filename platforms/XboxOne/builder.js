@@ -31,8 +31,7 @@ function build(env, serverUrl) {
         "/p:DebugSymbols=false"];
 
     // Path to MSBuild may change developer to developer
-    // const msBuildExe = path.resolve('C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
-    const msBuildExe = path.resolve('D:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
+    const msBuildExe = path.resolve('C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
     
     utils.spawn(msBuildExe, msBuildArgs);
 }
