@@ -9,7 +9,8 @@
         "start": "webpack-serve --host 0.0.0.0 --port 8080",
         "build": "npm run clean && webpack",
         "build-firetv": "run-func ./platforms/FireTV/builder build",
-        "build-ps4": "run-func ./platforms/PS4/builder build"
+        "build-ps4": "run-func ./platforms/PS4/builder build",
+        "build-xboxone": "run-func ./platforms/XboxOne/builder build"
     },
     "devDependencies": {
         "@babel/code-frame": "^7.8.3",
