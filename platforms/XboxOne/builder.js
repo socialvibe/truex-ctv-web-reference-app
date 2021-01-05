@@ -21,6 +21,22 @@ function build(env, serverUrl) {
     const windowsAppName = 'RefApp';
     const configDir = path.resolve('platforms/XboxOne', windowsAppName);
     const configPath = path.resolve(configDir, windowsAppName + ".csproj");
+
+    const propertiesDir = path.resolve(configDir, "Properties");
+
+    const assemblyInfo = path.resolve(propertiesDir, "AssemblyInfo.cs");
+    utils.replacePatterns(assemblyInfo, [
+        // Update the version for XboxOne
+        {
+            match: /\[assembly: AssemblyVersion.*/,
+            replacement: '[assembly: AssemblyVersion("' + pkg.version + '")]'
+        },
+        {
+            match: /\[assembly: AssemblyFileVersion.*/,
+            replacement: '[assembly: AssemblyFileVersion("' + pkg.version + '")]'
+        },
+    ]);
+
     const msBuildArgs = [configPath,
         "/p:Platform=x64",
         "/p:PlatformTarget=x64",
