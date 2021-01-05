@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require("path");
 const child_process = require('child_process');
+const AdmZip = require('adm-zip');
 
 /**
  * Presents helpful build time utility functions.
@@ -30,6 +31,8 @@ module.exports = {
     copyFile: copyFile,
     copyFileToDir: copyFileToDir,
     copyDir: copyDir,
+    
+    zipDir: zipDir,
 
     mkDir: mkDir,
 
@@ -106,6 +109,14 @@ function copyFileToDir(srcPath, dstDir) {
 
 function copyDir(srcPath, dstPath) {
     if (isDir(srcPath)) fs.copySync(srcPath, dstPath);
+}
+
+function zipDir(srcPath, dstPath) {
+    if (isDir(srcPath)) {
+        var zip = new AdmZip();
+        zip.addLocalFolder(srcPath);
+        zip.writeZip(dstPath);
+    }
 }
 
 /**

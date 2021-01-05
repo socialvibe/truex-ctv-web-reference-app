@@ -38,6 +38,7 @@
     },
     "dependencies": {
         "@truex/ctv-ad-renderer": "1.0.24",
+        "adm-zip": "^0.5.1",
         "core-js": "^3.6.4",
         "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#v1.0.82",
         "uuid": "^3.4.0",
