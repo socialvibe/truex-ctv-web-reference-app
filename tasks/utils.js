@@ -120,10 +120,11 @@ function copyFile(srcPath, dstPath) {
     if (isFile(srcPath)) fs.copyFileSync(srcPath, dstPath);
 }
 
-function copyFileToDir(srcPath, dstDir) {
-    var lastSlash = srcPath.lastIndexOf("/");
+function copyFileToDir(srcPath, dstDir, useSlash = true) {
+    var slash = useSlash ? "/" : "\\"
+    var lastSlash = srcPath.lastIndexOf(slash);
     var srcFileName = lastSlash >= 0 ? srcPath.substring(lastSlash + 1, srcPath.length) : srcPath;
-    copyFile(srcPath, dstDir + "/" + srcFileName);
+    copyFile(srcPath, dstDir + slash + srcFileName);
 }
 
 function copyDir(srcPath, dstPath) {

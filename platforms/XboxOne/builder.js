@@ -66,12 +66,12 @@ function build(env, serverUrl) {
     utils.spawn(msBuildExe, msBuildArgs);
     
     const appPackagesDir = path.resolve(configDir, "AppPackages");
-    const appZipPath = path.resolve(distDir, appName + ".zip");
+    const bundleDistPath = path.resolve(distDir, appName + ".zip");
     const bundleDirPath = path.resolve(appPackagesDir, `${windowsAppName}_${version}_Test`);
     const bundlePath = path.resolve(bundleDirPath, `${windowsAppName}_${version}_x64.msixbundle`);
 
-    utils.zipFile(bundlePath, appZipPath);
+    utils.copyFileToDir(bundlePath, distDir, false);
 
     // When building for submission, you will need everything in the folder not just the msixbundle
-    // utils.zipDir(appPackagesDir, appZipPath);
+    // utils.zipDir(appPackagesDir, bundleDistPath);
 }
