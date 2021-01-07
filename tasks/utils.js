@@ -15,6 +15,8 @@ module.exports = {
 
     getEnv: getEnv,
 
+    ensureVersion: ensureVersion,
+
     isFile: isFile,
     ensureFile: ensureFile,
 
@@ -32,6 +34,7 @@ module.exports = {
     copyFileToDir: copyFileToDir,
     copyDir: copyDir,
     
+    zipFile: zipFile,
     zipDir: zipDir,
 
     mkDir: mkDir,
@@ -44,6 +47,22 @@ module.exports = {
 
     spawn: spawn,
 };
+
+function ensureVersion(version, versionDigits) {
+    var totalDigits = version.split(".");
+    var newVersion = [];
+
+    for(var i = 0; i < versionDigits; i++) {
+        var number = '0';
+        if (totalDigits[i]) {
+            number = totalDigits[i];
+        }
+
+        newVersion.push(number);
+    }
+
+    return newVersion.join(".");
+}
 
 function fatalError(msg) {
     if (msg && msg.message) msg = msg.message; // Tolerate error objects as well.
@@ -116,6 +135,18 @@ function zipDir(srcPath, dstPath) {
         var zip = new AdmZip();
         zip.addLocalFolder(srcPath);
         zip.writeZip(dstPath);
+    } else {
+        fatalError("directory not found: " + srcPath);
+    }
+}
+
+function zipFile(srcPath, dstPath) {
+    if (isFile(srcPath)) {
+        var zip = new AdmZip();
+        zip.addLocalFile(srcPath);
+        zip.writeZip(dstPath);
+    } else {
+        fatalError("file not found: " + srcPath);
     }
 }
 

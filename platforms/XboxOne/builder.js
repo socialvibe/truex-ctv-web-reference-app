@@ -11,8 +11,10 @@ function build(env, serverUrl) {
     if (!env) env = 'dev';
     if (!serverUrl) serverUrl = utils.appUrl;
 
-    const appZipName = `${pkg.name}_xboxone_${env}_${pkg.version}.zip`;
-    console.log(`building ${appZipName}`);
+    const version = utils.ensureVersion(pkg.version, 4);
+
+    const appName = `${pkg.name}_xboxone_${env}_${version}`;
+    console.log(`building ${appName}`);
 
     if (process.platform != "win32") {
         utils.fatalError("XboxOne builds can only be done on a Windows 10 machine.");
@@ -22,18 +24,27 @@ function build(env, serverUrl) {
     const configDir = path.resolve('platforms/XboxOne', windowsAppName);
     const configPath = path.resolve(configDir, windowsAppName + ".csproj");
 
+    
+    // Update the version for XboxOne
+    const packageManifest = path.resolve(configDir, "Package.appxmanifest");
+    utils.replacePatterns(packageManifest, [
+        {
+            match: /Version=".*/,
+            replacement: 'Version="' + version + '" />'
+        },
+    ]);
+
     const propertiesDir = path.resolve(configDir, "Properties");
 
     const assemblyInfo = path.resolve(propertiesDir, "AssemblyInfo.cs");
     utils.replacePatterns(assemblyInfo, [
-        // Update the version for XboxOne
         {
             match: /\[assembly: AssemblyVersion.*/,
-            replacement: '[assembly: AssemblyVersion("' + pkg.version + '")]'
+            replacement: '[assembly: AssemblyVersion("' + version + '")]'
         },
         {
             match: /\[assembly: AssemblyFileVersion.*/,
-            replacement: '[assembly: AssemblyFileVersion("' + pkg.version + '")]'
+            replacement: '[assembly: AssemblyFileVersion("' + version + '")]'
         },
     ]);
 
@@ -46,12 +57,21 @@ function build(env, serverUrl) {
         "/p:DebugType=pdbonly",
         "/p:DebugSymbols=false"];
 
+    const distDir = path.resolve(__dirname, '../../dist');
+    utils.mkDir(distDir);
+
     // Path to MSBuild may change developer to developer
-    const msBuildExe = path.resolve('C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
+    const msBuildExe = path.resolve('D:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
     
     utils.spawn(msBuildExe, msBuildArgs);
-
+    
     const appPackagesDir = path.resolve(configDir, "AppPackages");
-    const appZipPath = path.resolve(configDir, appZipName);
-    utils.zipDir(appPackagesDir, appZipPath);
+    const appZipPath = path.resolve(distDir, appName + ".zip");
+    const bundleDirPath = path.resolve(appPackagesDir, `${windowsAppName}_${version}_Test`);
+    const bundlePath = path.resolve(bundleDirPath, `${windowsAppName}_${version}_x64.msixbundle`);
+
+    utils.zipFile(bundlePath, appZipPath);
+
+    // When building for submission, you will need everything in the folder not just the msixbundle
+    // utils.zipDir(appPackagesDir, appZipPath);
 }
