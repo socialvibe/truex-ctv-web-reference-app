@@ -39,9 +39,9 @@ function build(serverUrl) {
     const srcPkgPath = path.resolve(serviceContentId, servicePackageVersion, serviceContentId + ".pkg");
 
     utils.spawn(path.resolve(ps4_pkg_gen_location, "create_pkg.bat"), [appConfig]);
-    const distDir = path.resolve(__dirname, '../../dist');
-    const destPkgPath = path.resolve(distDir, destPkgName);
-    utils.mkDir(distDir);
+    const installersDir = path.resolve(__dirname, '../../installers');
+    const destPkgPath = path.resolve(installersDir, destPkgName);
+    utils.mkDir(installersDir);
     utils.copyFile(srcPkgPath, destPkgPath);
     console.log(`created ${destPkgPath}`);
 }

@@ -57,8 +57,8 @@ function build(env, serverUrl) {
         "/p:DebugType=pdbonly",
         "/p:DebugSymbols=false"];
 
-    const distDir = path.resolve(__dirname, '../../dist');
-    utils.mkDir(distDir);
+    const installersDir = path.resolve(__dirname, '../../installers');
+    utils.mkDir(installersDir);
 
     // Path to MSBuild may change developer to developer
     const msBuildExe = path.resolve('C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/MSBuild/Current/Bin', 'MSBuild.exe');
@@ -66,12 +66,12 @@ function build(env, serverUrl) {
     utils.spawn(msBuildExe, msBuildArgs);
     
     const appPackagesDir = path.resolve(configDir, "AppPackages");
-    const bundleDistPath = path.resolve(distDir, appName + ".zip");
+    const bundleInstallersPath = path.resolve(installersDir, appName + ".zip");
     const bundleDirPath = path.resolve(appPackagesDir, `${windowsAppName}_${version}_Test`);
     const bundlePath = path.resolve(bundleDirPath, `${windowsAppName}_${version}_x64.msixbundle`);
-    const distFilePath = path.resolve(distDir, `${appName}.msixbundle`);
+    const installersFilePath = path.resolve(installersDir, `${appName}.msixbundle`);
 
-    utils.copyFile(bundlePath, distFilePath);
+    utils.copyFile(bundlePath, installersFilePath);
 
     // When building for submission, you will need everything in the folder not just the msixbundle
     // utils.zipDir(appPackagesDir, bundleDistPath);
