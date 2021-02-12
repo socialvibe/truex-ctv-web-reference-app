@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require("path");
 const child_process = require('child_process');
+const AdmZip = require('adm-zip');
 
 /**
  * Presents helpful build time utility functions.
@@ -13,6 +14,8 @@ module.exports = {
     fatalError: fatalError,
 
     getEnv: getEnv,
+
+    ensureVersion: ensureVersion,
 
     isFile: isFile,
     ensureFile: ensureFile,
@@ -30,6 +33,9 @@ module.exports = {
     copyFile: copyFile,
     copyFileToDir: copyFileToDir,
     copyDir: copyDir,
+    
+    zipFile: zipFile,
+    zipDir: zipDir,
 
     mkDir: mkDir,
 
@@ -41,6 +47,22 @@ module.exports = {
 
     spawn: spawn,
 };
+
+function ensureVersion(version, versionDigits) {
+    var totalDigits = version.split(".");
+    var newVersion = [];
+
+    for(var i = 0; i < versionDigits; i++) {
+        var number = '0';
+        if (totalDigits[i]) {
+            number = totalDigits[i];
+        }
+
+        newVersion.push(number);
+    }
+
+    return newVersion.join(".");
+}
 
 function fatalError(msg) {
     if (msg && msg.message) msg = msg.message; // Tolerate error objects as well.
@@ -106,6 +128,26 @@ function copyFileToDir(srcPath, dstDir) {
 
 function copyDir(srcPath, dstPath) {
     if (isDir(srcPath)) fs.copySync(srcPath, dstPath);
+}
+
+function zipDir(srcPath, dstPath) {
+    if (isDir(srcPath)) {
+        var zip = new AdmZip();
+        zip.addLocalFolder(srcPath);
+        zip.writeZip(dstPath);
+    } else {
+        fatalError("directory not found: " + srcPath);
+    }
+}
+
+function zipFile(srcPath, dstPath) {
+    if (isFile(srcPath)) {
+        var zip = new AdmZip();
+        zip.addLocalFile(srcPath);
+        zip.writeZip(dstPath);
+    } else {
+        fatalError("file not found: " + srcPath);
+    }
 }
 
 /**

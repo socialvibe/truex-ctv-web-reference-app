@@ -10,8 +10,8 @@ const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 function build(serverUrl) {
     if (!serverUrl) serverUrl = utils.appUrl;
 
-    const distInstaller = `${pkg.name}_firetv_${pkg.version}.apk`;
-    console.log(`building ${distInstaller} for ${serverUrl}`);
+    const installer = `${pkg.name}_firetv_${pkg.version}.apk`;
+    console.log(`building ${installer} for ${serverUrl}`);
 
     const appDir = getAppDir();
 
@@ -29,10 +29,10 @@ function build(serverUrl) {
     const gradlew = process.platform == "win32" ? ".\\gradlew.bat" : "./gradlew";
     utils.spawn(gradlew, ['clean', 'build'], getAppDir());
 
-    const distDir = path.resolve(__dirname, '../../dist');
-    utils.mkDir(distDir);
-    utils.copyFile(buildApk, path.resolve(distDir, distInstaller));
-    console.log(`created ${distInstaller}`);
+    const installersDir = path.resolve(__dirname, '../../installers');
+    utils.mkDir(installersDir);
+    utils.copyFile(buildApk, path.resolve(installersDir, installer));
+    console.log(`created ${installer}`);
 }
 
 function getAppDir() {
