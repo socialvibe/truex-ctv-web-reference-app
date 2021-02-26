@@ -250,6 +250,11 @@ import { VideoController } from "./components/video-controller";
                 const handled = baseOnInputAction(action);
                 if (handled) return true;
 
+                if (action == inputActions.exit) {
+                    platform.exitApp();
+                    return true;
+                }
+
                 if (action == inputActions.back) {
                     returnToParentPage();
                     return true; // handled

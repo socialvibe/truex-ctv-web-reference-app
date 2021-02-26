@@ -11,6 +11,8 @@ export class InteractiveAd {
         let adOverlay;
         let tar;
 
+        const platform = videoController.platform;
+
         this.start = async () => {
             adBreak.started = true;
 
@@ -27,7 +29,13 @@ export class InteractiveAd {
                     supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
                 };
 
-                tar = new TruexAdRenderer(adBreak.vastUrl, options);
+                var vastConfigUrl = adBreak.vastUrl;
+                if (platform.isTizen) {
+                    // Work around Tizen user agent filtering for now until Tizen is enabled on the back end.
+                    vastConfigUrl = vastConfigUrl.replace(/\&?user_agent=[^&]*/, '') + '&user_agent=';
+                }
+
+                tar = new TruexAdRenderer(vastConfigUrl, options);
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
@@ -101,7 +109,28 @@ export class InteractiveAd {
                 });
             }
 
-            return Promise.resolve(undefined);
+            var advertisingId = undefined;
+
+            if (platform.isTizen) {
+                const webapis = window.webapis;
+                const adinfo = webapis && webapis.adinfo;
+                if (adinfo) {
+                    try {
+                        if (adinfo.isLATEnabled()) {
+                            console.log('tizen ad id ignored due to Limited Ad Tracking');
+                        } else {
+                            advertisingId = adinfo.getTIFA();
+                            console.log('tizen ad id: ' + advertisingId);
+                        }
+                    } catch (err) {
+                        console.warn('tizen ad id error: ' + platform.describeError(err));
+                    }
+                } else {
+                    console.warn('tizen ad id: webapis not present');
+                }
+            }
+
+            return Promise.resolve(advertisingId);
         }
 
         function handleAdError(errOrMsg) {
