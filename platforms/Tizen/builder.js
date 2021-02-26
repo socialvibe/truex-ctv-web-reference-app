@@ -55,10 +55,16 @@ function build(serverUrl, useHostedApp = true) {
         // Put in the page that loads the web app in an iframe.
         utils.copyFileToDir(path.resolve(appDir, "index.html"), buildDir);
 
-        utils.replacePatterns(path.resolve(buildDir, "index.html"), [{
-            match: /<iframe.*><\/iframe>/,
-            replacement: `<iframe src="${serverUrl}"></iframe>`
-        }]);
+        utils.replacePatterns(path.resolve(buildDir, "index.html"), [
+            {
+                match: /<title>.*<\/title>/,
+                replacement: '<title>' + pkg.name + '</title>'
+            },
+            {
+                match: /<iframe.*><\/iframe>/,
+                replacement: `<iframe src="${serverUrl}"></iframe>`
+            }
+        ]);
     }
 
     // To build with a test page:
