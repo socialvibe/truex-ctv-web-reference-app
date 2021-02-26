@@ -32,8 +32,7 @@ module.exports = {
 
     copyFile: copyFile,
     copyFileToDir: copyFileToDir,
-    copyDir: copyDir,
-    
+
     zipFile: zipFile,
     zipDir: zipDir,
 
@@ -46,6 +45,7 @@ module.exports = {
     replacePatterns: replacePatterns,
 
     spawn: spawn,
+    exec: exec
 };
 
 function ensureVersion(version, versionDigits) {
@@ -82,7 +82,7 @@ function isFile(path) {
 
 function ensureFile(path) {
     if (isFile(path)) return path;
-    fatalError("file not found:", path);
+    fatalError("file not found:" + path);
 }
 
 function isDir(path) {
@@ -117,37 +117,29 @@ function writeFile(path, content) {
 }
 
 function copyFile(srcPath, dstPath) {
-    if (isFile(srcPath)) fs.copyFileSync(srcPath, dstPath);
+    ensureFile(srcPath);
+    fs.copyFileSync(srcPath, dstPath);
 }
 
 function copyFileToDir(srcPath, dstDir) {
-    var lastSlash = srcPath.lastIndexOf("/");
-    var srcFileName = lastSlash >= 0 ? srcPath.substring(lastSlash + 1, srcPath.length) : srcPath;
+    ensureFile(srcPath);
+    const lastSlash = srcPath.lastIndexOf("/");
+    const srcFileName = lastSlash >= 0 ? srcPath.substring(lastSlash + 1, srcPath.length) : srcPath;
     copyFile(srcPath, dstDir + "/" + srcFileName);
 }
 
-function copyDir(srcPath, dstPath) {
-    if (isDir(srcPath)) fs.copySync(srcPath, dstPath);
-}
-
 function zipDir(srcPath, dstPath) {
-    if (isDir(srcPath)) {
-        var zip = new AdmZip();
-        zip.addLocalFolder(srcPath);
-        zip.writeZip(dstPath);
-    } else {
-        fatalError("directory not found: " + srcPath);
-    }
+    ensureDir(srcPath);
+    const zip = new AdmZip();
+    zip.addLocalFolder(srcPath);
+    zip.writeZip(dstPath);
 }
 
 function zipFile(srcPath, dstPath) {
-    if (isFile(srcPath)) {
-        var zip = new AdmZip();
-        zip.addLocalFile(srcPath);
-        zip.writeZip(dstPath);
-    } else {
-        fatalError("file not found: " + srcPath);
-    }
+    ensureFile(srcPath);
+    const zip = new AdmZip();
+    zip.addLocalFile(srcPath);
+    zip.writeZip(dstPath);
 }
 
 /**
@@ -173,7 +165,7 @@ function rmFile(path) {
 }
 
 function rmDir(path) {
-    if (isDir(path)) fs.rmdirSync(path);
+    if (isDir(path)) fs.rmdirSync(path, {recursive: true});
 }
 
 function replacePatterns(path, patterns) {
@@ -184,7 +176,7 @@ function replacePatterns(path, patterns) {
 }
 
 function spawn(cmd, args, cwd, suppressCmdLog) {
-    if (typeof args == "string") args = [args];
+    if (typeof args == 'string') args = args.split(/\s+/);
     if (!args) args = [];
     if (!suppressCmdLog) console.info(`spawning: ${cmd} ${args.join(' ') || ""}`);
     var options = {stdio: "inherit", stderr: "inherit"};
@@ -192,4 +184,18 @@ function spawn(cmd, args, cwd, suppressCmdLog) {
     var result = child_process.spawnSync(cmd, args, options);
     if (result.error) fatalError(result.error);
     if (result.status) fatalError("command failed: " + cmd);
+}
+
+// Like spawn, but invoked in the context of the shell, which is needed for the
+// execution of some scripts. Also returns the output of process as a string.
+function exec(cmd, args, cwd, suppressCmdLog) {
+    if (typeof args == 'string') args = args.split(/\s+/);
+    if (!args) args = [];
+    if (!suppressCmdLog) console.info("exec:", cmd, args.join(' ') || "");
+    var fullCmdString = cmd + " " + args.join(' ');
+    var options = {};
+    if (cwd) options.cwd = cwd;
+    var result = child_process.execSync(fullCmdString, options);
+    if (!result) fatalError("command failed: " + cmd);
+    return result && result.toString();
 }
