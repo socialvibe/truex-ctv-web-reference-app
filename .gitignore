@@ -37,3 +37,6 @@ LauncherApp/app/libs/
 /platforms/Tizen/build/
 /platforms/Tizen/LauncherApp/.sign/
 /platforms/Tizen/LauncherApp/*.wgt
+
+# LG build artifacts
+/platforms/LG/LauncherApp/*.ipk

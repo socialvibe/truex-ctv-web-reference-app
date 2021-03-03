@@ -1,0 +1,14 @@
+{
+    "vendor": "true[X] Seattle",
+    "largeIcon": "largeIcon.png",
+    "icon": "icon.png",
+    "main": "index.html",
+    "bgImage": "launchBGImage.png",
+    "splashBackground": "launchBGImage.png",
+    "id": "com.truex.TruexRefApp",
+    "title": "Skyline",
+    "appDescription": "Platform specific native web app container for true[X] reference app",
+    "type": "web",
+    "version": "1.2.1",
+    "iconColor": "#cccccc"
+}
