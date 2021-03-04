@@ -25,6 +25,7 @@ const deploy = () => {
     }
 
     log(`deploying to ${bucket}/${prefix}`);
+    return;
     return s3.cleanFolder(bucket, prefix)
         .then(() => {
             return uploadDist(bucket, prefix);
