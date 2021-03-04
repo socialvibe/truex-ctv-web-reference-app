@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+- "11.10.1"
+sudo: required
+branches:
+  only:
+    - develop
+    - master
+install:
+  - npm install
+before_script:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - eval $(aws ecr get-login --no-include-email --region us-east-1)
+script:
+  - npm run build
+  - node ./tasks/deploy.js
+cache:
+  directories:
+    - node_modules
+git:
+  depth: 1
