@@ -6,6 +6,7 @@ branches:
   only:
     - develop
     - master
+    - test
 install:
   - npm install
 before_script:
