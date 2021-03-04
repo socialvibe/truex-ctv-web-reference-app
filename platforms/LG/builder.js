@@ -34,12 +34,6 @@ function build(serverUrl) {
         replacement: `var appUrl = "${serverUrl}";`
     }]);
 
-    // To build with a test page:
-    // utils.copyFile(
-    //     path.resolve(__dirname, "reported-issues/test-multiple-audio-tracks.html"),
-    //     path.resolve(buildDir, "index.html")
-    // );
-
     utils.mkDir(getInstallerDir());
     const installerFile = getInstallerFile();
     utils.spawn('ares-package', ['-o', launcherDir,  '-n', launcherDir]);
