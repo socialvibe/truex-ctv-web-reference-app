@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        (function() {
+            // Set up the redirect to the app code such that caching is avoided.
+            var meta = document.createElement("meta");
+            meta.setAttribute("http-equiv", "refresh");
+
+            var appUrl = "https://ctv.truex.com/web/ref-app/master/index.html";
+            var timestamp = Date.now();
+
+            // Ensure app args are passed along (e.g. to support deep linking, etc.).
+            var queryArgs = "";
+            if (location.search) {
+                queryArgs = location.search;
+                if (queryArgs.charAt(0) == "?") queryArgs = queryArgs.substring(1);
+                queryArgs = "&" + queryArgs;
+            }
+
+            meta.setAttribute("content", "0;" + appUrl + "?ts=" + timestamp + queryArgs);
+
+            var head = document.getElementsByTagName("head")[0];
+            head.appendChild(meta);
+        })();
+    </script>
+</head>
+</html>

@@ -16,6 +16,7 @@ pipeline {
                     branch 'master'
                     branch pattern: 'release/*'
                     branch 'develop'
+                    branch 'test'
                 }
             }
             steps {
