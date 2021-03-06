@@ -30,8 +30,9 @@ export class InteractiveAd {
                 };
 
                 var vastConfigUrl = adBreak.vastUrl;
-                if (platform.isTizen) {
-                    // Work around Tizen user agent filtering for now until Tizen is enabled on the back end.
+                if (platform.isTizen || platform.isLG) {
+                    // Work around user agent filtering for now until these platforms
+                    // are enabled on the back end.
                     vastConfigUrl = vastConfigUrl.replace(/\&?user_agent=[^&]*/, '') + '&user_agent=';
                 }
 

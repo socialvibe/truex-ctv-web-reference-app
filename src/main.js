@@ -271,13 +271,13 @@ import { VideoController } from "./components/video-controller";
 
             window.addEventListener("keydown", focusManager.onKeyDown);
 
-            if (platform.useHistoryBackActions) {
-                // We need to field the back action popstate change on platforms like the FireTV,
-                // where we cannot reliably consume back action key events.
-                // see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
-                pushBackActionBlock(); // push a back action block
-                window.addEventListener("popstate", onBackAction);
-            }
+            // We need to field the back action popstate change on platforms like the FireTV and LG,
+            // where we cannot reliably consume back action key events.
+            // for FireTV see: https://developer.amazon.com/docs/fire-tv/web-app-faq.html
+            // for LG see https://webostv.developer.lge.com/develop/app-developer-guide/back-button/
+            pushBackActionBlock(); // push a back action block
+            window.addEventListener("popstate", onBackAction);
+
         } catch (err) {
             console.error('initialization error: ' + platform.describeErrorWithStack(err));
             setTimeout(() => debugLog.show(), 0);
