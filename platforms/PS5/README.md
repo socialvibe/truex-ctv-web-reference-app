@@ -1,9 +1,9 @@
-# Skyline on PS5
+# PS5 Deployment
 
 https://p.siedev.net
 
 ### PS5 Builds
-Follow these steps to build the Skyline PS5 Launcher:
+Follow these steps to build the TruexRefApp PS5 Launcher:
 
 0. Setup the environment to create the installer:
     - ensure the latest PS5 SDK is installed using the [Playstation SDK manager](https://p.siedev.net/sdk-manager/download/)
@@ -13,11 +13,11 @@ Follow these steps to build the Skyline PS5 Launcher:
           const prospero_pub_cmd = "C:/Program Files (x86)/SCE/Prospero/Tools/Publishing Tools/bin/prospero-pub-cmd.exe";    
         ```
 1. Make a build as via: `npm run build-PS5`
-    - This will make a qa .pkg installer to the `dist` folder that runs the app from `https://skyline.truex.com`
-        - e.g. `Skyline_PS5_qa_1.0.2.pkg`
+    - This will make a qa .pkg installer to the `installers` folder that runs the app from `https://ctv.truex.com/web/ref-app/master/index.html`
+        - e.g. `TruexRefApp_ps5_qa_1.0.2.pkg`
     - To customize which url to use, e.g. to point to your own laptop for development, you can do things like:
-        - `npm run build-PS5 -- dev http://192.168.0.110:8080`
-        - which will create a installer called: `Skyline_PS5_dev_1.0.2.pkg`
+        - `npm run build-ps5 -- dev http://192.168.0.110:8080`
+        - which will create a installer called: `TruexRefApp_ps5_qa_1.0.2.pkg`
 2. For testing on the PS5, one needs to install the .pkg file on the PS5.
     - copy the .pkg file to the root directory of a USB drive
     - take the USB drive and insert to your PlayStation
@@ -26,7 +26,7 @@ Follow these steps to build the Skyline PS5 Launcher:
       Please refer to the relevant media kit documentation in particular the
       Media_SDK_Web_Launcher_Package_Creation-Overview_e.pdf document.
     
-3. To debug the Skyline running on the PS5, 
+3. To debug the TruexRefApp running on the PS5, 
     - Run the Web Inspector
       - On your host PC, run the Web Inspector application. It can be installed from the SDK Manager. The
 location of the Web Inspector is SCE/Prospero/Tools/WebInspector/MiniBrowser.exe.
