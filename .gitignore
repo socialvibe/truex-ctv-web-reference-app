@@ -28,6 +28,10 @@ html_exports/
 /US0007*/
 LauncherApp/app/libs/
 
+# PS5 build artifacts
+/platforms/PS5/launcher-app/*.pkg
+/platforms/PS5/launcher-app/*.naps_metric.json
+
 # Fire TV / Android build artifacts
 /.gradle/
 /platforms/FireTV/.gradle/
