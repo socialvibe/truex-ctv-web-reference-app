@@ -42,6 +42,7 @@ The instructions for deploy to specific device platforms are available in the pl
 * [LG](./platforms/LG/README.md)
 * [Tizen](./platforms/Tizen/README.md)
 * [PS4](./platforms/PS4/README.md)
+* [PS5](./platforms/PS5/README.md)
 * [XboxOne](./platforms/XboxOne/README.md)
 
 ## History.back blocking

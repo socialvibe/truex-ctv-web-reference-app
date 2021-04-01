@@ -1,0 +1,24 @@
+{
+  "applicationCategoryType": 66048,
+  "applicationDrmType": "free",
+  "attribute": 1073741824,
+  "attribute2": 0,
+  "attribute3": 0,
+  "contentId": "US0007-NPXX53708_00-TRUEXPS5TVREFAPP",
+  "contentVersion": "01.000.000",
+  "displayLocation": 188,
+  "downloadDataSize": 1024,
+  "localizedParameters": {
+    "defaultLanguage": "en-US",
+    "en-US": {
+      "titleName": "TruexRefApp"
+    }
+  },
+  "masterVersion": "01.00",
+  "titleId": "NPXX53708",
+  "userDefinedParam1": 1,
+  "userDefinedParam2": 2,
+  "userDefinedParam3": 3,
+  "userDefinedParam4": 4,
+  "webAppUri": "https://ctv.truex.com/web/ref-app/master/index.html"
+}
