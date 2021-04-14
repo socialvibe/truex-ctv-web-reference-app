@@ -1,6 +1,6 @@
 {
     "name": "TruexRefApp",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "description": "Sample app to demonstrate how to integrate true[X]'s CTV Web ad renderer",
     "main": "index.js",
     "public": true,
@@ -8,7 +8,8 @@
         "clean": "rm -rf ./dist/*",
         "start": "webpack-serve --hot --inline --host 0.0.0.0 --port 8080 --env=dev",
         "build": "npm run clean && webpack",
-        "build-firetv": "run-func ./platforms/FireTV/builder build",
+        "build-firetv": "run-func ./platforms/AndroidFireTV/builder build firetv",
+        "build-androidtv": "run-func ./platforms/AndroidFireTV/builder build androidtv",
         "build-ps4": "run-func ./platforms/PS4/builder build",
         "build-ps5": "run-func ./platforms/PS5/builder build",
         "build-xboxone": "run-func ./platforms/XboxOne/builder build",
