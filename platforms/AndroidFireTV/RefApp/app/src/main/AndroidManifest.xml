@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/app_icon"
         android:banner="@drawable/true_vision_logo"
         android:logo="@drawable/true_vision_logo"
+        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
