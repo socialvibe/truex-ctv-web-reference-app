@@ -11,7 +11,7 @@ const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 const prospero_pub_cmd = "C:/Program Files (x86)/SCE/Prospero/Tools/Publishing Tools/bin/prospero-pub-cmd.exe";
 
 function build(env, serverUrl) {
-	// Default to a QA build using skyline.truex.com
+	// Default to a QA build using app's hosted url.
     if (!env) env = 'qa';
     if (!serverUrl) serverUrl = utils.appUrl;
 
