@@ -122,7 +122,7 @@ class MainActivity : Activity() {
             evalJS("focusManager.inject('menu')")
             return true
         }
-        return super.onKeyDown(keyCode, event)
+        return super.onKeyUp(keyCode, event)
     }
 
     fun isFireTV() : Boolean {
