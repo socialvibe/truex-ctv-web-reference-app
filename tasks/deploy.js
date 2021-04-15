@@ -12,7 +12,7 @@ const deploy = () => {
 
     const bucket = "ctv.truex.com";
     const branch = process.env.TRAVIS_BRANCH;
-    const prefix = 'web/ref-app-google-IMA/' + branch;
+    const prefix = 'web/ref-app/' + branch;
 
     const PR = process.env.TRAVIS_PULL_REQUEST;
     const isPR = PR != "false";
