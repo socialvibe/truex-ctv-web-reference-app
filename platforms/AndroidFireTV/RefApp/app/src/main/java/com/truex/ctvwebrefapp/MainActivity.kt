@@ -100,29 +100,10 @@ class MainActivity : Activity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            event.startTracking(); // Required tracking to enable long press
+            evalJS("focusManager.inject('menu')")
             return true;
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // Regular menu key can't seem to be intercepted on Android TV, so we use the
-            // long press instead.
-            evalJS("focusManager.inject('menu')")
-            return true
-        }
-        return super.onKeyLongPress(keyCode, event)
-    }
-
-    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // This will work on fire tv
-            evalJS("focusManager.inject('menu')")
-            return true
-        }
-        return super.onKeyUp(keyCode, event)
     }
 
     fun isFireTV() : Boolean {
