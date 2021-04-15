@@ -7,11 +7,15 @@ module.exports = {
 
 const pkg = utils.readJSON(path.resolve(__dirname, "../../package.json"));
 
-function build(serverUrl) {
+const ANDROID_TV = 'androidtv';
+const FIRE_TV = 'firetv';
+
+function build(platform, serverUrl) {
+    if (!platform) platform = ANDROID_TV;
     if (!serverUrl) serverUrl = utils.appUrl;
 
-    const installer = `${pkg.name}_firetv_${pkg.version}.apk`;
-    console.log(`building ${installer} for ${serverUrl}`);
+    const installerName = `${pkg.name}_${platform}_${pkg.version}.apk`;
+    console.log(`building ${installerName} for ${serverUrl}`);
 
     const appDir = getAppDir();
 
@@ -31,8 +35,10 @@ function build(serverUrl) {
 
     const installersDir = path.resolve(__dirname, '../../installers');
     utils.mkDir(installersDir);
-    utils.copyFile(buildApk, path.resolve(installersDir, installer));
-    console.log(`created ${installer}`);
+
+    const installerFilePath = path.resolve(installersDir, installerName);
+    utils.copyFile(buildApk, installerFilePath);
+    console.log(`created ${installerFilePath}`);
 }
 
 function getAppDir() {

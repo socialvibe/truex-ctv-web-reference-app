@@ -3,6 +3,7 @@ package com.truex.ctvwebrefapp
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.Settings.Secure
@@ -100,9 +101,17 @@ class MainActivity : Activity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             evalJS("focusManager.inject('menu')")
-            return true
+            return true;
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    fun isFireTV() : Boolean {
+        return Build.MODEL.indexOf("AFT") >= 0;
+    }
+
+    fun isAndroidTV() : Boolean {
+        return !isFireTV();
     }
 
 }

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.2.0
+* Add AndroidTV support.
+
 ## v1.1.2
 * Add PS5 support.
 

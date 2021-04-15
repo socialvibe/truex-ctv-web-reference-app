@@ -34,7 +34,7 @@ LauncherApp/app/libs/
 
 # Fire TV / Android build artifacts
 /.gradle/
-/platforms/FireTV/.gradle/
+/platforms/AndroidFireTV/.gradle/
 
 # Tizen build artifacts
 .manifest.tmp
