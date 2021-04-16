@@ -30,11 +30,6 @@ export class InteractiveAd {
                 };
 
                 var vastConfigUrl = adBreak.vastUrl;
-                if (platform.isTizen || platform.isLG) {
-                    // Work around user agent filtering for now until these platforms
-                    // are enabled on the back end.
-                    vastConfigUrl = vastConfigUrl.replace(/\&?user_agent=[^&]*/, '') + '&user_agent=';
-                }
 
                 tar = new TruexAdRenderer(vastConfigUrl, options);
                 tar.subscribe(handleAdEvent);
