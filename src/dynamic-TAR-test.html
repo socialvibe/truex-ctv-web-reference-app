@@ -45,6 +45,9 @@
         "https://qa-get.truex.com/22105de992284775a56f28ca6dac16c667e73cd0/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=5678"
     ];
 
+    // to prevent double launching of TruexAdRenderer in this test page.
+    var isTruexActive = false;
+
     body.addEventListener('keydown', onKeyAction);
     body.addEventListener('touchstart', showTruexAd)
     body.addEventListener('click', showTruexAd)
@@ -59,14 +62,17 @@
     }
 
     function showTruexAd() {
-        var vastConfigUrl = testAds[nextAdIndex];
+        if (!isTruexActive) {
+            isTruexActive = true;
+            var vastConfigUrl = testAds[nextAdIndex];
 
-        adDetail.innerText = "Testing Ad " + (nextAdIndex + 1);
+            adDetail.innerText = "Testing Ad " + (nextAdIndex + 1);
 
-        nextAdIndex = (nextAdIndex + 1) % testAds.length;
+            nextAdIndex = (nextAdIndex + 1) % testAds.length;
 
-        var interactiveAd = new TruexInteractiveAd(vastConfigUrl);
-        interactiveAd.show();
+            var interactiveAd = new TruexInteractiveAd(vastConfigUrl);
+            interactiveAd.show();
+        }
     }
 
     function TruexInteractiveAd(vastConfigUrl) {
@@ -171,6 +177,7 @@
 
         function closeAdOverlay() {
             console.log('truex ad closed');
+            isTruexActive = false;
             //videoController.showLoadingSpinner(false); // i.e. in a real media app
         }
 
