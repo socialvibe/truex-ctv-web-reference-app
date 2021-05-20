@@ -96,6 +96,16 @@
                 const options = {
                     // userAdvertisingId: someUserOrAdvertisingId,
                     // supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
+
+                    // Key mappings can be customized for new platforms:
+                    keyMapOverrides: {
+                        select: [68, 32], // D or space
+                        back: 66, // B
+                        moveUp: 69, // E
+                        moveDown: 88, // X
+                        moveLeft: 83, // S
+                        moveRight: 70 // F
+                    }
                 };
 
                 var TAR = TruexAdRenderer['TruexAdRenderer']; // extract the constructor from the truex module.
