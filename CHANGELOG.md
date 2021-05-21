@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.2.2
+* Demonstrate key map overrides in dynamic-TAR-test.html 
+
 ## v1.2.1
 * Use the latest TAR to allow the use existing network_user_id if present
 
