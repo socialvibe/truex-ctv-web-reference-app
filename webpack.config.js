@@ -13,19 +13,19 @@ module.exports = function(env) {
         entry: {
             main: [
                 './src/main.js',
-                './src/main.scss'
+                // './src/main.scss'
             ],
         },
         output: {
-            filename: '[name].[hash].js',
+            filename: '[name].js',
             path: path.resolve(__dirname, 'dist'),
         },
         module: {
             rules: [
-                {
-                    test: /\.scss$/,
-                    use: ['style-loader', 'css-loader', 'sass-loader']
-                },
+                // {
+                //     test: /\.scss$/,
+                //     use: ['style-loader', 'css-loader', 'sass-loader']
+                // },
                 {
                     test: /\.html$/,
                     exclude: /node_modules/,
@@ -37,23 +37,27 @@ module.exports = function(env) {
                     },],
                 },
                 {
-                    test: /\.(jpeg|.jpg|gif|png)$/i,
-                    exclude: /node_modules/,
-                    use: 'file-loader',
+                    test: /tar\.js$/i,
+                    // test: /\.(jpeg|.jpg|gif|png)$/i,
+                    // exclude: /node_modules/,
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]'
+                    }
                 },
-                {
-                    test: /\.svg$/i,
-                    exclude: /node_modules/,
-                    use: 'svg-inline-loader',
-                },
-                {
-                    test: /\.js$/,
-                    use: 'babel-loader',
-                    include: [
-                        path.resolve(__dirname, 'src'),
-                        path.resolve(__dirname, 'node_modules/truex-shared/src'),
-                    ],
-                },
+                // {
+                //     test: /\.svg$/i,
+                //     exclude: /node_modules/,
+                //     use: 'svg-inline-loader',
+                // },
+                // {
+                //     test: /\.js$/,
+                //     use: 'babel-loader',
+                //     include: [
+                //         path.resolve(__dirname, 'src'),
+                //         path.resolve(__dirname, 'node_modules/truex-shared/src'),
+                //     ],
+                // },
             ],
         },
         resolve: {
@@ -64,7 +68,7 @@ module.exports = function(env) {
         plugins: [
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                template: './src/index.html',
+                template: './src/dynamic-TAR-test.html',
                 chunks: ['main'],
             })
         ],
