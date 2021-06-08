@@ -34,13 +34,33 @@
   var oldSplit = String.prototype.split;
   var oldRegExp = window.RegExp;
 
+  var tbd = function() {return "tbd"};
+  var newSplit = tbd;
+  var newRegExp;
+
+  var afterSplit = tbd;
+  var afterRegExp;
+
+  function testRegexpClass(ctx, r) {
+      console.log('test regexp classes match: ' + ctx
+          + ' old: ' + (r.constructor == oldRegExp)
+          + " new: " + (r.constructor == newRegExp)
+          + " after: " + (r.constructor == afterRegExp)
+      );
+  }
+
   function getSplitTest() {
       var testRegexp = /\s+/;
       var pattern = "a b c";
 
       return function(ctx, r) {
           if (!r) r = testRegexp;
-          console.log('test split: ' + ctx + ': ' + JSON.stringify(pattern.split(r)));
+          console.log('test split: ' + ctx
+              + '\n  string.split: ' + JSON.stringify(pattern.split(r))
+              + '\n  oldSplit: ' + JSON.stringify(oldSplit.call(pattern,r))
+              + '\n  newSplit: ' + JSON.stringify(newSplit.call(pattern,r))
+              + '\n  afterSplit: ' + JSON.stringify(afterSplit.call(pattern,r))
+          );
           return r;
       }
   }
@@ -54,8 +74,8 @@
 <!-- Use specific branch for testing changes. -->
 <script type="application/javascript" src="http://192.168.1.82:8080/tar.js"></script>
 <script type="application/javascript">
-    var newSplit = String.prototype.split;
-    var newRegExp = window.RegExp;
+    newSplit = String.prototype.split;
+    newRegExp = window.RegExp;
 
     if (newSplit !== oldSplit) {
         console.warn('split has changed');
@@ -233,19 +253,11 @@
             isTruexActive = false;
             //videoController.showLoadingSpinner(false); // i.e. in a real media app
 
-            var afterSplit = String.prototype.split;
-            var afterRegExp = window.RegExp;
+            afterSplit = String.prototype.split;
+            afterRegExp = window.RegExp;
 
-            String.prototype.split = oldSplit;
-            window.RegExp = oldRegExp;
-
-            function testClass(ctx, r) {
-                console.log('test regexp classes match: ' + ctx
-                    + ' old: ' + (r.constructor == oldRegExp)
-                    + " new: " + (r.constructor == newRegExp)
-                    + " after: " + (r.constructor == afterRegExp)
-                );
-            }
+            String.prototype.split = newSplit;
+            window.RegExp = newRegExp;
 
             var oldTestRegexp = testSplit('after ad');
             var testRegexp3 = /\s+/;
@@ -254,13 +266,8 @@
             testSplit('after ad, regexp4', testRegexp4);
             console.log("new test regexp4: " + JSON.stringify("a b c".split(testRegexp4)));
 
-            testClass('oldR', oldTestRegexp);
-            testClass('r4', testRegexp4);
-
-            console.log("oldSplit: " + JSON.stringify(oldSplit.call("a b c"), oldTestRegexp));
-            console.log("oldSplit: " + JSON.stringify(oldSplit.call("a b c"), testRegexp4));
-            console.log("newSplit: " + JSON.stringify(newSplit.call("a b c"), oldTestRegexp));
-            console.log("newSplit: " + JSON.stringify(newSplit.call("a b c"), testRegexp4));
+            testRegexpClass('oldR', oldTestRegexp);
+            testRegexpClass('r4', testRegexp4);
         }
 
         function resumePlayback() {
