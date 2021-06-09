@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.2.3
+* Use latest TAR for polyfill fixes
+
 ## v1.2.2
 * Demonstrate key map overrides in dynamic-TAR-test.html 
 
