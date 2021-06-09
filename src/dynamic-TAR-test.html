@@ -70,9 +70,9 @@
 </script>
 <!-- Use the latest TAR or just version 1.x.x if we want to ensure no breaking changes from higher versions. -->
 <!--<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/@truex/ctv-ad-renderer@latest"></script>-->
-<!--<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/@truex/ctv-ad-renderer@1"></script>-->
+<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/@truex/ctv-ad-renderer@1"></script>
 <!-- Use specific branch for testing changes. -->
-<script type="application/javascript" src="http://192.168.1.82:8080/tar.js"></script>
+<!--<script type="application/javascript" src="http://192.168.1.82:8080/tar.js"></script>-->
 <script type="application/javascript">
     newSplit = String.prototype.split;
     newRegExp = window.RegExp;
@@ -157,6 +157,9 @@
 
                 // Explore options as needed
                 const options = {
+                    // choiceCardUrlOverride: 'http://192.168.1.82:8001/ctv/choicecard-ctv.js',
+                    choiceCardUrlOverride: 'https://s3.amazonaws.com/qa-media.truex.com/branch-test/integration/bugfix_ctv-2905-fix-funimation-crash/ctv/choicecard-ctv.js',
+
                     // userAdvertisingId: someUserOrAdvertisingId,
                     // supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
 
