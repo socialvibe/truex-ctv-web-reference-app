@@ -1,5 +1,0 @@
-<resources>
-  <drawable name="splash_logo">@drawable/true_vision_logo</drawable>
-  <drawable name="app_logo">@mipmap/app_icon</drawable>
-  <color name="background">#FFFFFF</color>
-</resources>

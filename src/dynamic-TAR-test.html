@@ -1,0 +1,206 @@
+<html xmlns="http://www.w3.org/1999/html">
+<!--
+    Test page to download the latest TAR library without the use of a package system like npm.
+-->
+<style>
+  body {
+    background-color: #00BCD4;
+  }
+
+  .line, title {
+    font-size: 20px;
+    padding: 0;
+    margin: 0;
+    margin-top: 0.5em;
+    margin-left: 10em;
+    margin-right: 10em;
+  }
+  .line {
+    text-align: left;
+  }
+  .title {
+    text-align: center;
+  }
+</style>
+<body>
+<div class="title">TAR Testing:</div>
+<div class="title">
+  <a href="javascript:showTruexAd()">Press 'X' or space to show the next true[X] ad</a>
+  <div style="width: 0.5em; display: inline-block"></div>
+</div>
+<div id="ad-display" class="line"></div>
+<div id="ad-events"></div>
+<!-- Use the latest TAR or just version 1.x.x if we want to ensure no breaking changes from higher versions. -->
+<!--<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/@truex/ctv-ad-renderer@latest"></script>-->
+<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/@truex/ctv-ad-renderer@1"></script>
+<script type="application/javascript">
+    var body = document.body;
+    var adDetail = document.getElementById('ad-display');
+    var adEventLog = document.getElementById('ad-events');
+
+    var nextAdIndex = 0;
+
+    var testAds = [
+        "https://qa-get.truex.com/22105de992284775a56f28ca6dac16c667e73cd0/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=1234",
+        "https://qa-get.truex.com/22105de992284775a56f28ca6dac16c667e73cd0/vast/config?dimension_1=sample-video&dimension_2=1&dimension_3=sample-video&dimension_4=5678&dimension_5=evergreen&stream_position=midroll&stream_id=5678"
+    ];
+
+    // to prevent double launching of TruexAdRenderer in this test page.
+    var isTruexActive = false;
+
+    body.addEventListener('keydown', onKeyAction);
+    body.addEventListener('touchstart', showTruexAd)
+    body.addEventListener('click', showTruexAd)
+    body.focus();
+
+    function onKeyAction(event) {
+        var keyCode = event.keyCode;
+        var selectKey = [13, 32].indexOf(keyCode) >= 0; // i.e. enter or space
+        if (selectKey) {
+            showTruexAd();
+        }
+    }
+
+    function showTruexAd() {
+        if (!isTruexActive) {
+            isTruexActive = true;
+            var vastConfigUrl = testAds[nextAdIndex];
+
+            adDetail.innerText = "Testing Ad " + (nextAdIndex + 1);
+
+            nextAdIndex = (nextAdIndex + 1) % testAds.length;
+
+            var interactiveAd = new TruexInteractiveAd(vastConfigUrl);
+            interactiveAd.show();
+        }
+    }
+
+    function TruexInteractiveAd(vastConfigUrl) {
+        var adFreePod = false;
+        var tar;
+        var adOverlay;
+
+        for(;;) {
+            const firstEvent = adEventLog.firstChild;
+            if (!firstEvent) break;
+            adEventLog.removeChild(firstEvent);
+        }
+
+        this.show = show;
+
+        function show() {
+            try {
+                //videoController.pause(); // i.e. in a real media app
+
+                // Explore options as needed
+                const options = {
+                    // userAdvertisingId: someUserOrAdvertisingId,
+                    // supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
+
+                    // Key mappings can be customized for new platforms:
+                    keyMapOverrides: {
+                        select: [68, 32], // D or space
+                        back: 66, // B
+                        moveUp: 69, // E
+                        moveDown: 88, // X
+                        moveLeft: 83, // S
+                        moveRight: 70 // F
+                    }
+                };
+
+                var TAR = TruexAdRenderer['TruexAdRenderer']; // extract the constructor from the truex module.
+                tar = new TAR(vastConfigUrl, options);
+                tar.subscribe(handleAdEvent);
+
+                return tar.init()
+                .then(vastConfig => {
+                    return tar.start(vastConfig);
+                })
+                .then(newAdOverlay => {
+                    adOverlay = newAdOverlay;
+                })
+                .catch(handleAdError);
+            } catch (err) {
+                handleAdError(err);
+            }
+        }
+
+        function handleAdEvent(event) {
+            const adEvents = tar.adEvents;
+
+            var logItem = document.createElement('div');
+            logItem.classList.add('line');
+            logItem.innerText = JSON.stringify(event);
+            adEventLog.appendChild(logItem);
+
+            switch (event.type) {
+                case adEvents.adError:
+                    handleAdError(event.errorMessage);
+                    break;
+
+                case adEvents.adStarted:
+                    // Choice card loaded and displayed.
+                    //videoController.showLoadingSpinner(false); // i.e. in a real media app
+                    break;
+
+                case adEvents.optIn:
+                    // User started the engagement experience
+                    break;
+
+                case adEvents.optOut:
+                    // User cancelled out of the choice card, either explicitly, or implicitly via a timeout.
+                    break;
+
+                case adEvents.adFreePod:
+                    adFreePod = true; // the user did sufficient interaction for an ad credit
+                    break;
+
+                case adEvents.userCancel:
+                    // User backed out of the ad, now showing the choice card again.
+                    break;
+
+                case adEvents.userCancelStream:
+                    // User backed out of the choice card, which means backing out of the entire video.
+                    closeAdOverlay();
+                    //videoController.closeVideoAction(); // i.e. in a real media app
+                    break;
+
+                case adEvents.noAdsAvailable:
+                case adEvents.adCompleted:
+                    // Ad is not available, or has completed. Depending on the adFreePod flag, either the main
+                    // video or the ad fallback videos are resumed.
+                    closeAdOverlay();
+                    resumePlayback();
+                    break;
+            }
+        }
+
+        function handleAdError(errOrMsg) {
+            console.error('ad error: ' + errOrMsg);
+            if (tar) {
+                // Ensure the ad is no longer blocking back or key events, etc.
+                tar.stop();
+            }
+            closeAdOverlay();
+            resumePlayback();
+        }
+
+        function closeAdOverlay() {
+            console.log('truex ad closed');
+            isTruexActive = false;
+            //videoController.showLoadingSpinner(false); // i.e. in a real media app
+        }
+
+        function resumePlayback() {
+            if (adFreePod) {
+                console.log("The user has the ad credit, skip over the fallback ad videos.");
+                // videoController.skipAd(adBreak);
+            }
+
+            console.log("reusming playback")
+            // videoController.startVideoLater();
+        }
+    }
+</script>
+</body>
+</html>

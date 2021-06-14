@@ -37,11 +37,12 @@ For platform deployments using your local build, you will need to refer to your 
 ## Platform Deployments
 
 The instructions for deploy to specific device platforms are available in the platform specific READMEs under the `./platforms` directory:
-* [Fire TV / Android TV](./platforms/FireTV/README.md)
+* [Fire TV / Android TV](platforms/AndroidFireTV/README.md)
 * [Vizio](./platforms/Vizio/README.md)
 * [LG](./platforms/LG/README.md)
 * [Tizen](./platforms/Tizen/README.md)
 * [PS4](./platforms/PS4/README.md)
+* [PS5](./platforms/PS5/README.md)
 * [XboxOne](./platforms/XboxOne/README.md)
 
 ## History.back blocking
@@ -50,9 +51,23 @@ If you choose to field and process history.back() actions, custom `popstate` eve
 
 In particular, on the Fire TV, the back action key event cannot be reliably overridden, and one must process `history.back()` actions instead via the `popstate` event handler.
 
-The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice whereby they only field back actions that are applicable only to their own application code. Please refer to this code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` and `pushBackActionStub` methods.
+The key problem comes about since the popstate event cannot be blocked, so app developers must instead follow a practice whereby they only field back actions that are applicable only to their own application code. Please refer to this code in `main.js` for an such approach, noting in particular the `onBackAction`, `pushBackActionBlock` and `pushBackActionStub` methods. In particular, note how the host app recognized its own history state changes vs true[X]'s.
 ```
 window.addEventListener("popstate", onBackAction);
+
+function onBackAction(event) {
+    // Since the true[X] ad renderer also needs to field this event, we need to ignore when the user
+    // backs out of the ad overlay.
+    //
+    // We do this by only recognizing a back action to this app's specific state.
+    const state = event && event.state;
+    const isForThisApp = state && state.app == config.name && state.isBlock;
+    if (!isForThisApp) return; // let the back action proceed, most likely from ad overlay processing.
+
+    pushBackActionStub(); // ensure the next back action for this app is blocked.
+
+    returnToParentPage();
+}
 ```
 
 # Usage

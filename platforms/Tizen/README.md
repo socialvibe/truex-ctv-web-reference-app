@@ -9,7 +9,7 @@
       * Creates a .wgt installer that refers to the hosted web app, by default 
         at `https://ctv.truex.com/web/ref-app/master/index.html`
    * `npm run build-tizen-local`
-      * Creates a .wgt installer that has the skyline app embedded inside of it.
+      * Creates a .wgt installer that has the reference app embedded inside of it.
       * The means the tizen API is available to at least the choice card.
    * NOTE: Only the local build will allow access to all the remote key events, and the TIFA (see below).
      e.g. play/pause/FF/REW, 2 to skip ads, 4 to show the in-app console log.
@@ -19,7 +19,7 @@
 1. Set up TV (See Turning on Dev Mode on Tizen TV)
 1. Install via `npm run tizen-install`. Either pass in your TV's IP, or edit the default IP in [build.js](./builder.js) as appropriate. E.g.
    * `npm run install-tizen 192.168.1.85` 
-1. On the TV's home menu bar, select the "Apps" button. The Skyline app should appear, select it to run.
+1. On the TV's home menu bar, select the "Apps" button. The TruexRefApp app should appear, select it to run.
 
 ## Tizen Identifier For Advertising (TIFA)
 This reference app shows how to access the TIFA and pass it along to the true[X] interactive ad.
@@ -53,7 +53,7 @@ Refer to the TIFA documentation for details:
     http://127.0.0.1:52960/devtools/inspector.html?ws=…/devtools/page/(2A2483283C3908B879D1E9A64A8D03C8)"
     ```
     * Open instead `chrome://inspect/#devices`, use `Configure`, add a local host entry with the same port as the link above, e.g. `localhost:52960`.
-    * The Skyline remote target should now be present to inspect using the regular Chrome debugger via the Inspect link.  
+    * The TruexRefApp remote target should now be present to inspect using the regular Chrome debugger via the Inspect link.  
 
 ## Tools
 ### IDE Installation

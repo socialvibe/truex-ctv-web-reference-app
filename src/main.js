@@ -2,8 +2,8 @@ import config              from './config';
 import { inputActions }    from 'truex-shared/focus_manager/txm_input_actions';
 import { Focusable }       from 'truex-shared/focus_manager/txm_focusable';
 import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
+import { DebugLog }        from 'truex-shared/components/debug-log';
 import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
-import { DebugLog }        from './components/debug-log';
 import { LoadingSpinner }  from "./components/loading-spinner";
 import { VideoController } from "./components/video-controller";
 
@@ -43,9 +43,6 @@ import { VideoController } from "./components/video-controller";
         // Ensure no outstanding loading spinner.
         spinner.hide();
 
-        // Ensure debug log is empty
-        debugLog.hide();
-
         focusManager.setContentFocusables([]);
     }
 
@@ -66,10 +63,6 @@ import { VideoController } from "./components/video-controller";
 
         } else if (currentPage == "playback-page") {
             renderPlaybackPage();
-
-        } else if (currentPage == "debug-log") {
-            debugLog.show();
-            setFocus(pageSelector, null, debugLog.onInputAction);
 
         } else if (currentPage == "test-page") {
             spinner.show();
@@ -198,15 +191,18 @@ import { VideoController } from "./components/video-controller";
     }
 
     function onBackAction(event) {
-        // Since the true[X] ad renderer also needs to field this event, we need to ignore when the user
-        // backs out of the ad overlay.
-        //
+        // Since the true[X] ad renderer also needs to field this event, we need to ignore
+        // when the user backs out of the ad overlay.
         // We do this by only recognizing a back action to this app's specific state.
         const state = event && event.state;
         const isForThisApp = state && state.app == config.name && state.isBlock;
-        if (!isForThisApp) return; // let the back action proceed, most likely from ad overlay processing.
+        if (!isForThisApp) {
+            // let the back action proceed, most likely from ad overlay processing.
+            return;
+        }
 
-        pushBackActionStub(); // ensure the next back action for this app is blocked.
+        // ensure the next back action for this app is blocked.
+        pushBackActionStub();
 
         returnToParentPage();
     }
@@ -222,9 +218,6 @@ import { VideoController } from "./components/video-controller";
 
     function returnToParentPage() {
         let returnToPage = 'home-page';
-        if (currentPage == 'debug-log') {
-            returnToPage = lastPage;
-        }
         showPage(returnToPage);
     }
 
@@ -243,7 +236,7 @@ import { VideoController } from "./components/video-controller";
                 if (action == inputActions.num4 || action == inputActions.leftStick || action == inputActions.menu) {
                     // Show debug log with either "4" on the remote, or clicking the left stick on the game controller.
                     // Or the menu key, e.g. for FireTV
-                    showPage('debug-log');
+                    debugLog.show();
                     return true; // handled
                 }
 

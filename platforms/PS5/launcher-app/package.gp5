@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<psproject fmt="gp5">
+  <volume>
+    <volume_type>prospero_app</volume_type>
+    <package content_id="US0007-NPXX53708_00-TRUEXPS5TVREFAPP"
+             passcode="7TS1PCMyWTqJXOkv93nHkf8IkNJ2Z7fP"/>
+    <chunk_info chunk_count="1" scenario_count="1">
+      <chunks>
+        <chunk id="0" label=""/>
+      </chunks>
+      <scenarios default_id="0">
+        <scenario id="0" type="playmode" initial_chunk_count="1" label="Single Player">
+          0 
+        </scenario>
+      </scenarios>
+    </chunk_info>
+  </volume>
+  <files img_no="0">
+    <file dst_path="sce_sys/param.json" src_path="sce_sys/param.json" chunks="0"/>
+    <file dst_path="sce_sys/icon0.png" src_path="sce_sys/icon0.png" chunks="0"/>
+    <file dst_path="sce_sys/pic0.png" src_path="sce_sys/pic0.png" chunks="0"/>
+    <file dst_path="sce_sys/pic1.png" src_path="sce_sys/pic1.png" chunks="0"/>
+    <file dst_path="sce_sys/pic2.png" src_path="sce_sys/pic2.png" chunks="0"/>
+  </files>
+  <rootdir>
+    <dir targ_name="sce_sys"/>
+  </rootdir>
+</psproject>

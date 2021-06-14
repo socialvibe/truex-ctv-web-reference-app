@@ -112,6 +112,8 @@ export class VideoController {
         this.video = video;
         this.videoOwner.insertBefore(this.video, this.videoOwner.firstChild);
 
+        video.poster = 'noposter'; // work around grey play icon on Android TV.
+
         video.src = videoStream.url;
         video.addEventListener('playing', this.onVideoStarted);
         video.addEventListener("timeupdate", this.onVideoTimeUpdate);
