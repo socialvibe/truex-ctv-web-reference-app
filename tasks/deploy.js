@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 
-require('promisify').polyfill();
+require('truex-shared/src/deploy/promisify').polyfill();
 
-const logger = require('logger');
-const s3 = require('s3-upload');
-const uploadDist = require('promise-to-upload-dist');
+const s3 = require('truex-shared/src/deploy/s3-upload');
+const uploadDist = require('truex-shared/src/deploy/upload-dist');
 const awsCloudFrontInvalidate = require("invalidate-cloudfront-edge-cache");
 
 const deploy = () => {
-    const log = logger.create('deploy');
-
     const bucket = "ctv.truex.com";
     const branch = process.env.TRAVIS_BRANCH;
     const prefix = 'web/ref-app/' + branch;
@@ -20,7 +17,7 @@ const deploy = () => {
 
     if (isPR) {
         // We only want to deploy on the final merges.
-        log(`PR deploy skipped for ${bucket}/${prefix}`);
+        console.log(`PR deploy skipped for ${bucket}/${prefix}`);
         process.exit(0);
     }
 
@@ -30,12 +27,12 @@ const deploy = () => {
             return uploadDist(bucket, prefix);
         })
         .then(() => {
-            log("invalidating cloudfront cache");
+            console.log("invalidating cloudfront cache");
             const pathsToInvalidate = [`/${prefix}/index.html`];
             return awsCloudFrontInvalidate(cloudFrontDistId, pathsToInvalidate);
         })
         .then(() => {
-            log("deploy complete");
+            console.log("deploy complete");
         })
         .catch((err) => {
             console.error(`deploy error: ${err}`);
