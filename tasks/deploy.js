@@ -21,7 +21,7 @@ const deploy = () => {
         process.exit(0);
     }
 
-    log(`deploying to ${bucket}/${prefix}`);
+    console.log(`deploying to ${bucket}/${prefix}`);
     return s3.cleanFolder(bucket, prefix)
         .then(() => {
             return uploadDist(bucket, prefix);
