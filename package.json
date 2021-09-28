@@ -45,7 +45,7 @@
         "webpack-serve": "^1.0.4"
     },
     "dependencies": {
-        "@truex/ctv-ad-renderer": "1.4.6",
+        "@truex/ctv-ad-renderer": "1.4.7",
         "adm-zip": "^0.5.1",
         "core-js": "^3.6.4",
         "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.4.0",
