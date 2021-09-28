@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## v1.4.0
+* Fix midroll stream_id to allow Skip cards
 * Use latest TAR to support release/1-4-0
 
 ## v1.3.1
