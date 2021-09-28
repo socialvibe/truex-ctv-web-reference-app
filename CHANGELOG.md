@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.4.0
+* [CTV-2596](https://truextech.atlassian.net/browse/CTV-2596): Fix midroll stream_id.
+
 ## v1.3.1
 * Use latest TAR, truex-shared to support comcast
 
