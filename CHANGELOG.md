@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## v1.4.0
-* [CTV-2596](https://truextech.atlassian.net/browse/CTV-2596): Fix midroll stream_id.
+* Fix midroll stream_id to allow Skip cards
+* Use latest TAR to support release/1-4-0
 
 ## v1.3.1
 * Use latest TAR, truex-shared to support comcast
