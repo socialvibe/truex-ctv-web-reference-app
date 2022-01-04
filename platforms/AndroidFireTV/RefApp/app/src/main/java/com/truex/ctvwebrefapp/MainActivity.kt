@@ -5,17 +5,16 @@ import android.app.Activity
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.Settings.Secure
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager.LayoutParams
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
-
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
@@ -48,7 +47,7 @@ class MainActivity : Activity() {
 
         webView.scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isScrollbarFadingEnabled = false
-        webView.addJavascriptInterface(this, "fireTvApp");
+        webView.addJavascriptInterface(this, "hostApp");
 
         // Enable chrome://inspect debugging in debug builds
         WebView.setWebContentsDebuggingEnabled(true)
@@ -62,13 +61,22 @@ class MainActivity : Activity() {
     }
 
     @JavascriptInterface
+    fun hideSplashScreen() {
+        var mainLayout : ViewGroup = findViewById(R.id.mainLayout)
+        var splashScreen : View = findViewById(R.id.appSplash)
+        if (splashScreen.parent != null) {
+            mainLayout.removeView(splashScreen)
+        }
+    }
+
+    @JavascriptInterface
     fun getAdvertisingId() {
         AsyncTask.execute {
             var adId: String?
             var limitAdTracking: Boolean
             try {
                 val adInfo: AdvertisingIdClient.Info =
-                    AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
+                        AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
                 adId = adInfo.getId()
                 limitAdTracking = adInfo.isLimitAdTrackingEnabled()
             } catch (e: Exception) {
@@ -84,7 +92,7 @@ class MainActivity : Activity() {
 
             runOnUiThread {
                 evalJS(
-                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"" + adId + "\")"
+                        "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"" + adId + "\")"
                 )
             }
         }
@@ -101,17 +109,17 @@ class MainActivity : Activity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             evalJS("focusManager.inject('menu')")
-            return true;
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
 
     fun isFireTV() : Boolean {
-        return Build.MODEL.indexOf("AFT") >= 0;
+        return Build.MODEL.indexOf("AFT") >= 0
     }
 
     fun isAndroidTV() : Boolean {
-        return !isFireTV();
+        return !isFireTV()
     }
 
 }
