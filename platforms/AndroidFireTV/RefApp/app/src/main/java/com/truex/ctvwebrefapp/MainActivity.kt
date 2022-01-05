@@ -85,13 +85,13 @@ class MainActivity : Activity() {
 
     @JavascriptInterface
     fun hideSplashScreen() {
-        runOnUiThread({
+        runOnUiThread {
             var mainLayout: ViewGroup = findViewById(R.id.mainLayout)
             var splashScreen: View? = findViewById(R.id.appSplash)
             if (splashScreen != null && splashScreen.parent != null) {
                 mainLayout.removeView(splashScreen)
             }
-        })
+        }
     }
 
     @JavascriptInterface
