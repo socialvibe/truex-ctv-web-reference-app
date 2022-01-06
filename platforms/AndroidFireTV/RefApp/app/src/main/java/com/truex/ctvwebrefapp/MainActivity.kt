@@ -2,19 +2,21 @@ package com.truex.ctvwebrefapp
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.os.Handler
 import android.provider.Settings.Secure
+import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager.LayoutParams
-import android.webkit.JavascriptInterface
-import android.webkit.WebSettings
-import android.webkit.WebView
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
+import android.graphics.Bitmap
+import android.webkit.*
 
 
 class MainActivity : Activity() {
@@ -48,7 +50,7 @@ class MainActivity : Activity() {
 
         webView.scrollBarStyle = View.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isScrollbarFadingEnabled = false
-        webView.addJavascriptInterface(this, "fireTvApp");
+        webView.addJavascriptInterface(this, "hostApp");
 
         // Enable chrome://inspect debugging in debug builds
         WebView.setWebContentsDebuggingEnabled(true)
@@ -57,8 +59,39 @@ class MainActivity : Activity() {
         webSettings.setAppCacheEnabled(false)
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
 
-        val appUrl = getString(R.string.app_url);
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                return false
+            }
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                super.onReceivedError(view, request, error)
+                hideSplashScreen()
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                // Ensure the splash screen gets removed eventually, e.g. if the webview fails to load.
+                Handler().postDelayed(Runnable {
+                    hideSplashScreen()
+                }, 3000)
+            }
+        }
+
+        val appUrl = getString(R.string.app_url)
         webView.loadUrl(appUrl)
+
+    }
+
+    @JavascriptInterface
+    fun hideSplashScreen() {
+        runOnUiThread {
+            var mainLayout: ViewGroup = findViewById(R.id.mainLayout)
+            var splashScreen: View? = findViewById(R.id.appSplash)
+            if (splashScreen != null && splashScreen.parent != null) {
+                mainLayout.removeView(splashScreen)
+            }
+        }
     }
 
     @JavascriptInterface
@@ -68,7 +101,7 @@ class MainActivity : Activity() {
             var limitAdTracking: Boolean
             try {
                 val adInfo: AdvertisingIdClient.Info =
-                    AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
+                        AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)
                 adId = adInfo.getId()
                 limitAdTracking = adInfo.isLimitAdTrackingEnabled()
             } catch (e: Exception) {
@@ -84,7 +117,7 @@ class MainActivity : Activity() {
 
             runOnUiThread {
                 evalJS(
-                    "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"" + adId + "\")"
+                        "if (webApp && webApp.onAdvertisingIdReady) webApp.onAdvertisingIdReady(\"" + adId + "\")"
                 )
             }
         }
@@ -101,17 +134,17 @@ class MainActivity : Activity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             evalJS("focusManager.inject('menu')")
-            return true;
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
 
     fun isFireTV() : Boolean {
-        return Build.MODEL.indexOf("AFT") >= 0;
+        return Build.MODEL.indexOf("AFT") >= 0
     }
 
     fun isAndroidTV() : Boolean {
-        return !isFireTV();
+        return !isFireTV()
     }
 
 }

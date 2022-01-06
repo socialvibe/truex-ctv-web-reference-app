@@ -1,6 +1,6 @@
 {
     "name": "TruexRefApp",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "description": "Sample app to demonstrate how to integrate true[X]'s CTV Web ad renderer",
     "main": "index.js",
     "public": true,

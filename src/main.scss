@@ -65,12 +65,26 @@ $contentM: 160px;
   $logoW: 300px;
   width: $logoW;
   height: ($logoW * $logoImageH) / $logoImageW;
-  background-image: url("./assets/true-vision-logo.png");
+  background-image: url("./assets/truex-vision-logo.png");
   background-size: cover;
 }
 
+.splash-page {
+  background-image: url("./assets/truex_splash.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #FFFFFF;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+}
+
 #home-page {
-  background-image: url("assets/home-page-background.png");
+  background-image: url("./assets/home-page-background.png");
   background-size: cover;
 
   .background-overlay {
