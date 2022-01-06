@@ -93,7 +93,7 @@ export class InteractiveAd {
         }
 
         async function getNativePlatformAdvertisingId() {
-            if (window.webApp && window.fireTvApp) {
+            if (window.webApp && window.hostApp) {
                 return new Promise(function(resolve, reject) {
                     window.webApp.onAdvertisingIdReady = function(advertisingId) {
                         // consume the callback
@@ -101,7 +101,7 @@ export class InteractiveAd {
                         resolve(advertisingId);
                     }
 
-                    window.fireTvApp.getAdvertisingId && window.fireTvApp.getAdvertisingId();
+                    window.hostApp.getAdvertisingId && window.hostApp.getAdvertisingId();
                 });
             }
 

@@ -27,6 +27,10 @@ module.exports = function(env) {
                     use: ['style-loader', 'css-loader', 'sass-loader']
                 },
                 {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
+                },
+                {
                     test: /\.html$/,
                     exclude: /node_modules/,
                     use: [{

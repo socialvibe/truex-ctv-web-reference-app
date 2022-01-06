@@ -23,6 +23,7 @@ To run:
 You can also build the app launcher via the command line, e.g.
 * `npm run build-firetv` to refer to the standard [hosted version](https://ctv.truex.com/web/ref-app/master/index.html).
 * `npm run build-firetv -- http://192.168.1.72:8080` to override the url.
+* You will need to be using Java 11 to run the Android SDK gradle commands.
 
 ## History.back blocking
 
