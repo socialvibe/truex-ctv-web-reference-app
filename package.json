@@ -4,6 +4,10 @@
     "description": "Sample app to demonstrate how to integrate true[X]'s CTV Web ad renderer",
     "main": "index.js",
     "public": true,
+    "engines": {
+        "node": "14"
+    },
+    "engineStrict": true,
     "scripts": {
         "clean": "rm -rf ./dist/*",
         "start": "webpack-serve --hot --inline --host 0.0.0.0 --port 8080 --env=dev",
