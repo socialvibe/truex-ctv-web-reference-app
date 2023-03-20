@@ -1,9 +1,13 @@
 {
     "name": "TruexRefApp",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "description": "Sample app to demonstrate how to integrate true[X]'s CTV Web ad renderer",
     "main": "index.js",
     "public": true,
+    "engines": {
+        "node": "14"
+    },
+    "engineStrict": true,
     "scripts": {
         "clean": "rm -rf ./dist/*",
         "start": "webpack-serve --hot --inline --host 0.0.0.0 --port 8080 --env=dev",
@@ -45,10 +49,10 @@
         "webpack-serve": "^1.0.4"
     },
     "dependencies": {
-        "@truex/ctv-ad-renderer": "1.5.8",
+        "@truex/ctv-ad-renderer": "1.7.13",
         "adm-zip": "^0.5.1",
         "core-js": "^3.6.4",
-        "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.5.6",
+        "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.7.15",
         "uuid": "^3.4.0",
         "whatwg-fetch": "^3.0.0"
     }

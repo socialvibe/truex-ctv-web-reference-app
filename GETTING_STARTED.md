@@ -101,6 +101,7 @@ Here is a [reference application example](https://github.com/socialvibe/truex-ct
 ## Supported Platforms
 
 The following are the current target platforms for the `TruexAdRenderer`:
+* Comcast X1 / Flex
 * Fire TV / Android TV
 * Vizio Smartcast
 * LG WebOS
