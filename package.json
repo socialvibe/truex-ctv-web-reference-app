@@ -41,7 +41,7 @@
         "invalidate-cloudfront-edge-cache": "^1.1.0",
         "node-sass": "^4.14.1",
         "promise-to-upload-dist": "^0.0.7",
-        "properties-reader": "^2.0.0",
+        "properties-reader": "^2.2.0",
         "run-func": "^1.0.5",
         "sass-loader": "^8.0.2",
         "webpack": "^4.12.0",
