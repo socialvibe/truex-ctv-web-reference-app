@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v1.7.0
+set cache-control header on all uploaded files
+
 ## v1.6.0
 * Use updated "Evergreen" ads for the demo.
 
