@@ -52,7 +52,7 @@
         "@truex/ctv-ad-renderer": "1.7.13",
         "adm-zip": "^0.5.1",
         "core-js": "^3.6.4",
-        "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.7.17",
+        "truex-shared": "https://github.com/socialvibe/truex-shared-js.git#1.7.18",
         "uuid": "^3.4.0",
         "whatwg-fetch": "^3.0.0"
     }
