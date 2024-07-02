@@ -9,7 +9,7 @@ npm add @truex/ad-renderer
 this will add an entry in the `"dependencies"` section in the `package.json` file, something like:
 ```json
     "dependencies": {
-        "@truex/ad-renderer": "1.0.0",
+        "@truex/ad-renderer": "1.12.5",
 ```
 One then builds and runs their web app like usual, e.g. invoking `npm start` for webpack-based projects.
 
