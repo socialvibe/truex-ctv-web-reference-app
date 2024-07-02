@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+import { TruexAdRenderer } from '@truex/ad-renderer';
 
 // Use a random UUID for the "opt out of tracking" advertising id that is stable for all ads in an app session.
 const optOutAdvertisingId = uuid.v4();
