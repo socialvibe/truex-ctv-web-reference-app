@@ -4,12 +4,12 @@ This document describes the initial steps needed to make use of the `TruexAdRend
 
 The true[X] ad renderer is available as an `npm` module. For the typical web app based around a `package.json` project file, one adds the true[X] dependency as follows:
 ```sh
-npm add @truex/ctv-ad-renderer
+npm add @truex/ad-renderer
 ```
 this will add an entry in the `"dependencies"` section in the `package.json` file, something like:
 ```json
     "dependencies": {
-        "@truex/ctv-ad-renderer": "1.0.0",
+        "@truex/ad-renderer": "1.12.5",
 ```
 One then builds and runs their web app like usual, e.g. invoking `npm start` for webpack-based projects.
 
@@ -17,7 +17,7 @@ One typically develops web apps in a local browser like Chrome, e.g. referring t
 
 To actually integrate the true[X] ad renderer, one has to create and invoke it during your app's video playback when the time of an ad break is reached. The pattern will look something like:
 ```javascript
-import { TruexAdRenderer } from '@truex/ctv-ad-renderer';
+import { TruexAdRenderer } from '@truex/ad-renderer';
 
 ...
 
