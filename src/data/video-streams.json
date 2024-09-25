@@ -10,13 +10,13 @@
         "breakId": "preroll",
         "timeOffset": "00:00:00.000",
         "videoAdDuration": "92",
-        "vastUrl": "https://get.truex.com/d3bfc4a1c2f31ab987f2725a5ed03c9ae5837887/vast/config?dimension_2=0&stream_position=preroll&stream_id=1234"
+        "vastUrl": "https://get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=preroll&stream_id=1234"
       },
       {
         "breakId": "midroll-1",
         "timeOffset": "00:08:05.000",
         "videoAdDuration": "92",
-        "vastUrl": "https://get.truex.com/d3bfc4a1c2f31ab987f2725a5ed03c9ae5837887/vast/config?dimension_2=1&stream_position=midroll&stream_id=1234"
+        "vastUrl": "https://get.truex.com/72904fe382372efcdcea6314aa1d7a37db6051b9/vast/config?dimension_1=sample-video&dimension_2=0&dimension_3=sample-video&dimension_4=1234&dimension_5=evergreen&stream_position=midroll&stream_id=1234"
       }
     ]
   }
