@@ -12,7 +12,11 @@ module.exports = function(env) {
         mode: 'development',
         entry: {
             main: [
-                './src/main.js',
+                './src/main-ssai.js',
+                './src/main.scss'
+            ],
+            csai: [
+                './src/main-csai.js',
                 './src/main.scss'
             ],
         },
@@ -70,6 +74,11 @@ module.exports = function(env) {
                 filename: 'index.html',
                 template: './src/index.html',
                 chunks: ['main'],
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'index-csai.html',
+                template: './src/index-csai.html',
+                chunks: ['csai'],
             })
         ],
         devtool: 'cheap-module-source-map'

@@ -5,7 +5,7 @@ import { TXMFocusManager } from 'truex-shared/focus_manager/txm_focus_manager';
 import { DebugLog }        from 'truex-shared/components/debug-log';
 import { TruexAdRenderer } from '@truex/ad-renderer';
 import { LoadingSpinner }  from "./components/loading-spinner";
-import { VideoController } from "./components/video-controller";
+import { VideoController } from "./components/csai/video-controller";
 import homeBackgroundPath from "./assets/home-page-background.png";
 
 (function () {
@@ -28,7 +28,7 @@ import homeBackgroundPath from "./assets/home-page-background.png";
     videoController.loadingSpinner = spinner;
     videoController.closeVideoAction = returnToParentPage;
 
-    const videoStreams = require('./data/video-streams.json');
+    const videoStreams = require('./data/video-streams-csai.json');
     let currentVideoStream = videoStreams[0];
 
     function hidePage() {
@@ -176,7 +176,7 @@ import homeBackgroundPath from "./assets/home-page-background.png";
 
             if (action == inputActions.num2 || action == inputActions.rightStick) {
                 // QA helper to allow ads to be skipped.
-                videoController.skipAd();
+                videoController.skipAdBreak();
                 return true; // handled
             }
         });
