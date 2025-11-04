@@ -117,7 +117,7 @@ import homeBackgroundPath from "./assets/home-page-background.png";
         appContent.style.webkitTransform = transform;
         appContent.style.webkitTransformOrigin = origin;
 
-        console.log(`screen size: ${screenW} ${screenH} scale: ${scaleFactor}`)
+        console.log(`screen size: ${screenW} ${screenH} scale: ${scaleFactor}`);
     }
 
     function enableStyle(elementOrSelector, cssStyle, enabled) {

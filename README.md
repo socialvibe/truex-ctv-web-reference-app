@@ -90,7 +90,7 @@ To run a local build, run the `npm start` command to run a local webpack instanc
 * SSAI demo: `http://localhost:8080` or `http://0.0.0.0:8080`
 * CSAI demo: `http://localhost:8080/index-csai.html` or `http://0.0.0.0:8080/index-csai.html`
 
-For platform deployments using your local build, you will need to refer to your PC's IP address as the launcher url, e.g. `http://1912.168.1.72:8080`, using instead your real IP on the local Wifi network, of course. 
+For platform deployments using your local build, you will need to refer to your PC's IP address as the launcher url, e.g. `http://192.168.1.72:8080`, using instead your real IP on the local Wifi network, of course.
 
 ## Platform Deployments
 
