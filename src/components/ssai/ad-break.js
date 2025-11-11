@@ -1,20 +1,39 @@
 /**
  * Describes a single ad break that maps to 1 or more fallback ad videos in the main video
- * (ads are assumed to be sitched in), that furthermore describes a true[X] interactive ad to show
+ * (ads are assumed to be stitched in), that furthermore describes interactive ads to show
  * over top of the main video when the ad break is encountered during playback.
+ *
+ * In SSAI (Server-Side Ad Insertion), ads are pre-stitched into the video stream by the server.
+ * This class tracks the timing and metadata for each ad break within the stitched stream.
  */
 export class AdBreak {
     constructor(vmapJson) {
         this.id = vmapJson.breakId;
         this.displayTimeOffset = parseTimeLabel(vmapJson.timeOffset);
         this.duration = parseFloat(vmapJson.videoAdDuration);
-        this.vastUrl = vmapJson.vastUrl;
+
+        // Store the ads array - may contain TrueX, IDVx, or standard ads
+        this.ads = vmapJson.ads || [];
+
         this.started = false;
         this.completed = false;
 
         // video timestamps are filled in when the ad playlist is set in the video controller.
         this.startTime = 0;
         this.endTime = 0;
+
+        // Tracks the cumulative end time of the currently playing ad (interactive or not).
+        // When resuming playback (if user doesn't earn credit), seek to this position
+        // to skip past the interactive ads and play fallback ads.
+        // Initialized in setAdPlaylist after startTime is set.
+        this.lastAdEndTime = 0;
+    }
+
+    /**
+     * Get the current ad to play (first unplayed ad in the sequence)
+     */
+    getCurrentAd() {
+        return this.ads.find(ad => !ad.completed) || null;
     }
 }
 

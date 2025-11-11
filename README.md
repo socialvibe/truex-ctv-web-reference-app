@@ -4,7 +4,7 @@ For an initial introduction on how to integrate the true[X] SDK into a web appli
 
 This project contains sample source code that demonstrates example integrations of Infillion's CTV Web ad renderer. It provides two complete reference implementations:
 
-* **SSAI Example** (`index.html`) - Server-Side Ad Insertion where ads are stitched into the video stream. Demonstrates TrueX ad integration.
+* **SSAI Example** (`index.html`) - Server-Side Ad Insertion where ads are stitched into the video stream. Demonstrates TrueX and IDVx ad integration.
 * **CSAI Example** (`index-csai.html`) - Client-Side Ad Insertion where ads play separately from the main video. Demonstrates both TrueX and IDVx ad integration.
 
 **Infillion interactive ads** include:
@@ -23,8 +23,12 @@ The SSAI example (`index.html`, `main-ssai.js`) demonstrates integration where a
 
 In SSAI, ad playlist configuration is maintained in `data/video-streams-ssai.json` as part of the `vmap` key. Key fields in the data file:
 * `timeOffset`: the content video time where the ad break occurs (e.g., "00:08:05" for 8 minutes 5 seconds in)
-* `videoAdDuration`: the length of the ad fallback video stitched into the main video
-* `vastUrl`: the VAST config URL used to query Infillion interactive ad configurations
+* `videoAdDuration`: the total length of stitched ads (interactive placeholders + fallback ads) in seconds
+* `ads`: array of ad objects, each with:
+  * `adSystem`: ad type ("trueX", "IDVx", or "GDFP")
+  * `description`: VAST config URL for interactive ads
+  * `adParameters`: JSON configuration for interactive ads (alternative to description)
+  * `duration`: length of the ad placeholder or video
 
 The SSAI `VideoController` (from `components/ssai/video-controller.js`) calculates `startTime` and `endTime` for each ad break based on the `timeOffset` and all prior ad durations, since ads are stitched into the timeline. It must adjust video times to account for this stitching, calculating "playing video time" by subtracting ad durations from the raw video position.
 
@@ -42,7 +46,7 @@ In CSAI, the main video pauses when an ad break's `timeOffset` is reached, ads p
 
 ## Infillion Interactive Ads
 
-The CSAI implementation demonstrates both types of Infillion interactive ads:
+Both implementations demonstrate both types of Infillion interactive ads:
 
 ### TrueX Ads
 TrueX ads present an **interactive choice card** where users can **opt-in** to engage with branded content. The user makes an active choice to interact with the ad. If the user completes the interaction, they earn an **ad credit that skips the entire ad break**, and the main video resumes immediately. If the user opts out or ignores the choice card, standard fallback ads play instead.
@@ -50,7 +54,7 @@ TrueX ads present an **interactive choice card** where users can **opt-in** to e
 **Key characteristics:**
 - **Opt-in via choice card** - User must actively choose to engage
 - **Skips entire ad break** - Successful engagement bypasses all remaining ads in the pod
-- **Configuration**: Uses the `description` field containing a VAST config URL (e.g., `get.truex.com/...`)
+- **Configuration**: Uses the `description` field containing a VAST config URL (in both SSAI and CSAI, e.g., `get.truex.com/...`)
 
 ### IDVx Ads
 IDVx ads are **interactive ads** that start **automatically without requiring opt-in**. Unlike TrueX ads which require users to opt-in via a choice card, IDVx ads begin playing automatically. While no opt-in is required to start, users can interact with the ad content throughout its duration. IDVx ads **play inline with other ads** in the ad break. After an IDVx ad completes, the next ad in the sequence plays.
@@ -59,11 +63,11 @@ IDVx ads are **interactive ads** that start **automatically without requiring op
 - **Automatic start** - No opt-in required, begins playing automatically
 - **Interactive throughout** - Users can interact with ad content for its duration
 - **Plays inline** - Completes and continues to next ad in the pod
-- **Configuration**: Uses the `adParameters` field containing JSON configuration
+- **Configuration**: Uses the `adParameters` field containing JSON configuration (in both SSAI and CSAI)
 
 ## Common Flow
 
-Both implementations follow a similar pattern for TrueX ad integration:
+Both implementations follow a similar pattern for TrueX and IDVx ad integration:
 
 1. Video stream objects are given to the `startVideo` method of the `VideoController` instance
 2. The `setAdPlaylist` method creates an array of `AdBreak` instances from the vmap configuration
@@ -73,7 +77,7 @@ Both implementations follow a similar pattern for TrueX ad integration:
 
 The key difference between SSAI and CSAI is that SSAI requires time offset calculations since ads are stitched into the timeline, while CSAI simply pauses/resumes the main video at the ad break `timeOffset`.
 
-**Note**: The CSAI implementation also demonstrates IDVx ad integration using the `adParameters` field, showing how multiple ad types can be sequenced in a single ad pod.
+**Note**: Both SSAI and CSAI implementations support multiple interactive ads per ad break (TrueX, IDVx) with fallback ads, showing how different ad types can be sequenced in a single ad pod.
 
 # Build/Develop/Deploy
 
@@ -82,6 +86,7 @@ To begin development, run the standard `npm install` to download the project's d
 To deploy in general, one makes a deployable version in the `./dist` folder via `npm run build` and then hosts those contents somewhere appropriate. One then ensures the various platform installer configurations refer to that URL.
 
 The hosted copy of this reference app is currently available at:
+* CSAI: [https://ctv.truex.com/web/ref-app/master/index-csai.html](https://ctv.truex.com/web/ref-app/master/index-csai.html)
 * SSAI: [https://ctv.truex.com/web/ref-app/master/index.html](https://ctv.truex.com/web/ref-app/master/index.html)
 
 This can be viewed directly in Chrome to review and debug the reference app generically.

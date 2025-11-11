@@ -1,6 +1,6 @@
 /**
  * Represents a single ad within an ad break.
- * Supports multiple ad types: trueX (interactive), IDVx (identity-verified), and standard video ads.
+ * Supports multiple ad types: trueX, IDVx, and standard video ads.
  */
 export class Ad {
     constructor(adJson) {
