@@ -4,7 +4,16 @@ import { TruexAdRenderer } from '@truex/ad-renderer';
 // Use a random UUID for the "opt out of tracking" advertising id that is stable for all ads in an app session.
 const optOutAdvertisingId = uuid.v4();
 
-// Exercises the True[X] Ad Renderer for interactive ads.
+/**
+ * Exercises the TruexAdRenderer for interactive ads (TrueX and IDVx).
+ *
+ * Infillion Ad Types in SSAI:
+ * - TrueX: Interactive choice card with ad credit
+ * - IDVx: Interactive ad without choice card
+ *
+ * In SSAI, these ads are represented as placeholder videos stitched into the stream.
+ * When encountered, we pause the main video and show the interactive overlay.
+ */
 export class InteractiveAd {
     constructor(adBreak, videoController) {
         let adFreePod = false;
@@ -15,6 +24,14 @@ export class InteractiveAd {
 
         this.start = async () => {
             adBreak.started = true;
+
+            const ad = adBreak.getCurrentAd();
+            if (!ad) {
+                console.error('No ad found in ad break:', adBreak.id);
+                return;
+            }
+
+            ad.started = true;
 
             videoController.showLoadingSpinner(true);
 
@@ -29,9 +46,45 @@ export class InteractiveAd {
                     supportsUserCancelStream: true // i.e. user backing out of an ad will cancel the entire video
                 };
 
-                var vastConfigUrl = adBreak.vastUrl;
+                // Extract VAST config URL from Description field (if present)
+                let vastConfigUrl = ad.description ? ad.description.trim() : null;
+                if (vastConfigUrl && !vastConfigUrl.startsWith('http')) {
+                    vastConfigUrl = 'https://' + vastConfigUrl;
+                }
 
-                tar = new TruexAdRenderer(vastConfigUrl, options);
+                // Substitute macros in the VAST config URL (for demo purposes)
+                // In production, these would be substituted by the VAST server
+                if (vastConfigUrl && videoController.videoStream) {
+                    const streamId = videoController.videoStream.id || 'demo-stream-' + Date.now();
+                    const userId = 'demo-user-' + Date.now();
+                    vastConfigUrl = vastConfigUrl.replace('#{stream-id}', streamId);
+                    vastConfigUrl = vastConfigUrl.replace('#{user-id}', userId);
+                }
+
+                // Get JSON config from AdParameters field (if present)
+                let vastConfigJson = null;
+                if (ad.adParameters) {
+                    if (typeof ad.adParameters === 'string') {
+                        try {
+                            vastConfigJson = JSON.parse(ad.adParameters.trim());
+                        } catch (err) {
+                            console.error('Failed to parse adParameters JSON:', err);
+                        }
+                    } else {
+                        vastConfigJson = ad.adParameters;
+                    }
+                }
+
+                if (!vastConfigUrl && !vastConfigJson) {
+                    console.error('No VAST config found for interactive ad:', ad.id);
+                    handleAdError('No VAST config available');
+                    return;
+                }
+
+                // Pass JSON if available, otherwise URL
+                const vastConfigUrlOrJson = vastConfigJson || vastConfigUrl;
+
+                tar = new TruexAdRenderer(vastConfigUrlOrJson, options);
                 tar.subscribe(handleAdEvent);
 
                 return tar.init()
@@ -148,13 +201,20 @@ export class InteractiveAd {
         }
 
         function resumePlayback() {
-            if (adFreePod) {
-                // The user has the ad credit, skip over the ad video.
-                adBreak.completed = true;
-                videoController.skipAd(adBreak);
+            // Mark the individual ad as completed so getCurrentAd() can find the next one
+            const ad = adBreak.getCurrentAd();
+            if (ad) {
+                ad.completed = true;
             }
 
-            videoController.startVideoLater();
+            if (adFreePod) {
+                // The user has earned ad credit, skip the entire ad break
+                adBreak.completed = true;
+                videoController.skipAdBreak(adBreak);
+            } else {
+                // User didn't earn credit, resume at fallback ads
+                videoController.resumeAdBreak(adBreak);
+            }
         }
     }
 }

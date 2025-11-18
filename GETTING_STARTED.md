@@ -2,6 +2,27 @@
 
 This document describes the initial steps needed to make use of the `TruexAdRenderer` in an HTML5 web application intended for Smart TVs and game consoles, i.e. for the so-called "10 foot" experience.
 
+## What are Infillion Interactive Ads?
+
+Infillion interactive ads provide engaging advertising experiences on Connected TV platforms. There are two types:
+
+### TrueX Ads
+TrueX ads present users with an **interactive choice card** where they can **opt-in** to engage with branded content. The user makes an active choice whether to interact with the ad. When users complete the interaction, they earn an **ad credit that skips the entire ad break**, allowing them to return immediately to their content. This creates a win-win: viewers get ad-free content, and advertisers get highly engaged audiences.
+
+**Key features:**
+- **Opt-in via choice card** - Users actively choose to engage
+- **Skips entire ad break** - Successful engagement bypasses all remaining ads
+
+### IDVx Ads
+IDVx ads are **interactive ads** that start **automatically without requiring opt-in**. Unlike TrueX ads which require users to opt-in via a choice card, IDVx ads begin playing automatically. While no opt-in is required to start, users can interact with the ad content throughout its duration. IDVx ads **play inline with other ads** in the break sequence. After an IDVx ad completes, the next ad in the pod plays.
+
+**Key features:**
+- **Automatic start** - No opt-in required, begins playing automatically
+- **Interactive throughout** - Users can interact with ad content for its duration
+- **Plays inline** - Completes and continues to next ad in sequence
+
+## Integration
+
 The true[X] ad renderer is available as an `npm` module. For the typical web app based around a `package.json` project file, one adds the true[X] dependency as follows:
 ```sh
 npm add @truex/ad-renderer
@@ -96,7 +117,12 @@ function handleAdError(errOrMsg) {
 
 ## Integration Example
 
-Here is a [reference application example](https://github.com/socialvibe/truex-ctv-web-reference-app) that uses the `TruexAdRenderer`, demonstrating its use from a main video, as well as including several platform launcher projects that demonstrate how to sideload the reference application to various devices.
+This [reference application](https://github.com/socialvibe/truex-ctv-web-reference-app) provides complete working examples of the `TruexAdRenderer` integration. It includes:
+
+* **SSAI Example** - Demonstrates TrueX ad integration with Server-Side Ad Insertion where ads are stitched into the video stream
+* **CSAI Example** - Demonstrates both TrueX and IDVx ad integration with Client-Side Ad Insertion where ads play separately from the main video
+
+The examples show how to integrate Infillion interactive ads, handle ad events, manage ad credits, and fallback to standard video ads when needed. The repository also includes platform launcher projects demonstrating how to sideload the reference application to various devices.
 
 ## Supported Platforms
 
